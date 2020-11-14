@@ -1,0 +1,3 @@
+[submodule "buildsystem"]
+	path = buildsystem
+	url = git@gitlab.allthingsembedded.net:Javier_varez/buildsystem.git
