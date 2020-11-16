@@ -3,9 +3,34 @@
 
 #include <cstdint>
 
+struct InternedString {
+  const char* str;
+};
+
 template<class Derived>
 class Logger {
-public:
+ public:
+  template<typename ... T>
+  inline void log(T ...args) {
+    sendRemainingArguments(args...);
+  }
+
+  inline void printfFmtValidator([[maybe_unused]] const char* fmt, ...)
+    __attribute__((format (printf, 2, 3))) { }
+
+ private:
+  template<typename T>
+  inline void sendArgument(const T argument) {
+    Derived& derived = static_cast<Derived&>(*this);
+    derived.addData(reinterpret_cast<const uint8_t*>(&argument), sizeof(T));
+  }
+
+  template<>
+  inline void sendArgument(const char* argument) {
+    Derived& derived = static_cast<Derived&>(*this);
+    derived.addString(argument);
+  }
+
   template<typename T>
   inline void sendRemainingArguments(const T& first_arg) {
     sendArgument(first_arg);
@@ -16,34 +41,45 @@ public:
     sendArgument(first_arg);
     sendRemainingArguments(args...);
   }
-
-  inline void printfFmtValidator(const char* fmt, ...) __attribute__ ((format (printf, 2, 3))) {
-    (void) fmt;
-  }
-
- private:
-  template<typename T>
-  inline void sendArgument(const T& argument) {
-    Derived& derived = static_cast<Derived&>(*this);
-    derived.addData(reinterpret_cast<const uint8_t*>(argument), sizeof(T));
-  }
 };
 
-#define LOG_DEBUG(logger, fmt) \
-    { \
-        if (false) (logger)->printfFmtValidator(fmt); \
-        __attribute__((section(".intern_strings"))) static const char string[] = fmt; \
-        std::uint32_t fmt_id = reinterpret_cast<std::uint32_t>(string); \
-        (logger)->sendRemainingArguments(fmt_id); \
-    }
+template<char... N>
+struct InternedDebugString {
+  __attribute__((section(".interned_strings.debug"))) static constexpr char string[] { N... };
+};
 
-#define LOG_DEBUG_ARGS(logger, fmt, ...) \
-    { \
-        if (false) (logger)->printfFmtValidator(fmt, __VA_ARGS__); \
-        __attribute__((section(".intern_strings"))) static const char string[] = fmt; \
-        std::uint32_t fmt_id = reinterpret_cast<std::uint32_t>(string); \
-        (logger)->sendRemainingArguments(fmt_id, __VA_ARGS__); \
-    }
+template<char... N>
+constexpr char InternedDebugString<N...>::string[];
+
+template<char... N>
+struct InternedInfoString {
+  __attribute__((section(".interned_strings.info"))) static constexpr char string[] { N... };
+};
+
+template<char... N>
+constexpr char InternedInfoString<N...>::string[];
+
+template<typename T, T... C>
+InternedString operator ""_intern_debug() {
+  return InternedString { decltype(InternedDebugString<C..., T{}>{})::string };
+}
+
+template<typename T, T... C>
+InternedString operator ""_intern_info() {
+  return InternedString { decltype(InternedInfoString<C..., T{}>{})::string };
+}
+
+#define LOG_DEBUG(logger, fmt, ...) \
+  { \
+    (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
+    (logger)->log(fmt ## _intern_debug, ## __VA_ARGS__); \
+  }
+
+#define LOG_INFO(logger, fmt, ...) \
+  { \
+    (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
+    (logger)->log(fmt ## _intern_info, ## __VA_ARGS__); \
+  }
 
 #endif
 

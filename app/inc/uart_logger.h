@@ -7,6 +7,7 @@
 class UartLogger: public Logger<UartLogger> {
  private:
   void addData(const uint8_t* data, uint32_t length);
+  void addString(const char* str);
 
   friend Logger<UartLogger>;
 };

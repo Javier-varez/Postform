@@ -15,7 +15,8 @@ LOCAL_CFLAGS := \
     -I$(LOCAL_DIR)/inc \
     -Wall \
     -Werror \
-    -Wextra
+    -Wextra \
+    -Wno-gnu-string-literal-operator-template
 LOCAL_CXXFLAGS := \
     $(LOCAL_CFLAGS) \
     -fno-exceptions \
@@ -28,5 +29,7 @@ LOCAL_LINKER_FILE := \
 LOCAL_SRC := \
     $(LOCAL_DIR)/src/startup.cpp \
     $(LOCAL_DIR)/src/uart_logger.cpp \
+    $(LOCAL_DIR)/src/rtt_logger.cpp \
+    $(LOCAL_DIR)/src/segger_rtt.cpp \
     $(LOCAL_DIR)/src/main.cpp
 include $(BUILD_BINARY)

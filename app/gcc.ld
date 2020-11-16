@@ -1,5 +1,5 @@
-/* Linker script to configure memory regions. 
- * Need modifying for a specific board. 
+/* Linker script to configure memory regions.
+ * Need modifying for a specific board.
  *   FLASH.ORIGIN: starting address of flash
  *   FLASH.LENGTH: length of flash
  *   RAM.ORIGIN: starting address of RAM bank 0
@@ -15,7 +15,7 @@ MEMORY
  * with other linker script that defines memory regions FLASH and RAM.
  * It references following symbols, which must be defined in code:
  *   Reset_Handler : Entry of reset handler
- * 
+ *
  * It defines following symbols, which code can use without definition:
  *   __exidx_start
  *   __exidx_end
@@ -72,7 +72,7 @@ SECTIONS
 		KEEP(*(.eh_frame*))
 	} > FLASH
 
-	.ARM.extab : 
+	.ARM.extab :
 	{
 		*(.ARM.extab* .gnu.linkonce.armextab.*)
 	} > FLASH
@@ -166,7 +166,14 @@ SECTIONS
 		. = ALIGN(4);
 		__bss_end__ = .;
 	} > RAM
-	
+
+	.uninit :
+	{
+		. = ALIGN(4);
+		*(.uninit*)
+		. = ALIGN(4);
+	} > RAM
+
 	.heap (COPY):
 	{
 		__end__ = .;
@@ -189,13 +196,18 @@ SECTIONS
 	__StackInit = __StackTop - 1;
 	__StackLimit = __StackTop - SIZEOF(.stack_dummy);
 	PROVIDE(__stack = __StackTop);
-	
+
 	/* Check if data + heap + stack exceeds RAM limit */
 	ASSERT(__StackLimit >= __HeapLimit, "region RAM overflowed with stack")
 
-	.intern_strings 0 (INFO):
+	.interned_strings 0 (INFO):
 	{
-		*(.intern_strings*)
+		__InterenedDebugStart = .;
+		*(.interned_strings.debug)
+		__InterenedDebugEnd = .;
+		__InterenedInfoStart = .;
+		*(.interned_strings.info)
+		__InterenedInfoEnd = .;
 	}
 }
 
