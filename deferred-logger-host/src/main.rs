@@ -1,7 +1,9 @@
+use object::read::{File as ElfFile, Object, ObjectSection};
 use probe_rs::config::registry;
 use probe_rs::flashing::{download_file, FileDownloadError, Format};
 use probe_rs::{Probe, Session};
 use probe_rs_rtt::Rtt;
+use std::fs;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
@@ -59,6 +61,33 @@ fn download_firmware(session: &Arc<Mutex<Session>>, elf: &PathBuf) {
     println!("Download complete!");
 }
 
+fn parse_elf_file(elf_path: &PathBuf) -> Vec<u8> {
+    let file_contents = fs::read(elf_path).unwrap();
+    let elf_file = ElfFile::parse(&file_contents[..]).unwrap();
+    let string_section = elf_file.section_by_name(".interned_strings").unwrap();
+    let data = string_section.data().unwrap();
+
+    data.into()
+}
+
+fn recover_format_string<'a>(str_buffer: &'a [u8]) -> &'a str {
+    let nul_range_end = str_buffer
+        .iter()
+        .position(|&c| c == b'\0')
+        .unwrap_or(str_buffer.len());
+
+    std::str::from_utf8(&str_buffer[..nul_range_end]).unwrap()
+}
+
+fn parse_received_message(mappings: &[u8], message: &[u8]) {
+    let str_ptr = (message[0] as u32) << 0
+        | (message[1] as u32) << 8
+        | (message[2] as u32) << 16
+        | (message[3] as u32) << 24;
+    let string = recover_format_string(&mappings[str_ptr as usize..]);
+    println!("String is: {}", string);
+}
+
 #[derive(Debug, StructOpt)]
 #[structopt(name = "deferred-logger")]
 struct Opts {
@@ -92,6 +121,9 @@ fn main() {
 
     println!("{:?}", opts);
 
+    let elf_name = opts.elf.unwrap();
+    let string_section = parse_elf_file(&elf_name);
+
     let probes = Probe::list_all();
     if probes.len() > 1 {
         println!("More than one probe conected! {:?}", probes);
@@ -102,7 +134,7 @@ fn main() {
     if let Some(chip) = opts.chip {
         println!("Chip is {}", chip);
         let session = Arc::new(Mutex::new(probe.attach(chip).unwrap()));
-        download_firmware(&session, &opts.elf.unwrap());
+        download_firmware(&session, &elf_name);
 
         let mut rtt = Rtt::attach(session.clone()).unwrap();
         println!("Rtt connected");
@@ -111,7 +143,7 @@ fn main() {
                 let mut buf = [0u8; 1024];
                 let count = input.read(&mut buf[..]).unwrap();
                 if count > 0 {
-                    println!("Received data is: {:?}", &buf[..count]);
+                    parse_received_message(&string_section[..], &buf[..count]);
                 }
             }
         }

@@ -124,6 +124,7 @@ dependencies = [
 name = "deferred-logger"
 version = "0.1.0"
 dependencies = [
+ "object 0.22.0",
  "probe-rs",
  "probe-rs-rtt",
  "structopt",
@@ -377,6 +378,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "object"
+version = "0.22.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8d3b63360ec3cb337817c2dbd47ab4a0f170d285d8e5a2064600f3def1402397"
+dependencies = [
+ "flate2",
+ "wasmparser",
+]
+
+[[package]]
 name = "pkg-config"
 version = "0.3.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -409,7 +420,7 @@ dependencies = [
  "libftdi1-sys",
  "log",
  "num-traits",
- "object",
+ "object 0.21.1",
  "probe-rs-t2rust",
  "rusb",
  "scroll",
