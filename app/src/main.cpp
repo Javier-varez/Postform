@@ -20,20 +20,19 @@ constexpr uint32_t GPIO_CRH_OFFSET = 0x04;
 constexpr uint32_t GPIO_BSRR_OFFSET = 0x10;
 
 int main() {
-  Rtt& rtt = Rtt::getInstance();
+  RttLogger logger;
 
-  const char *str = "Let's try it out!";
-  rtt.write((const uint8_t*)str, 18);
-
-  // RttLogger logger;
-  // LOG_DEBUG(&logger, "Ooopsie%s", "cool!");
-  // LOG_INFO(&logger, "Ooops%die2", 23);
-  // LOG_DEBUG(&logger, "Ugh, It does work! %u", 123);
   RegAccess<RCC_APB2_ENR>::writeRegister(0x10);
   RegAccess<GPIO_PORTC + GPIO_CRH_OFFSET>::writeRegister(1 << 20);
   while (true) {
+    LOG_DEBUG(&logger, "Ooopsie%s", "cool!");
+    for (volatile int i = 0; i < 500000; i++) { }
     RegAccess<GPIO_PORTC + GPIO_BSRR_OFFSET>::writeRegister(1 << 13);
+    LOG_INFO(&logger, "Ooops%die2", 23);
+    for (volatile int i = 0; i < 500000; i++) { }
     RegAccess<GPIO_PORTC + GPIO_BSRR_OFFSET>::writeRegister(1 << 29);
+    LOG_DEBUG(&logger, "Third string!");
+    for (volatile int i = 0; i < 500000; i++) { }
   }
   return 0;
 }

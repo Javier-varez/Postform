@@ -57,27 +57,20 @@ class Rtt {
       down_channel("down", down_buffer, down_buffer_size) { }
   };
 
-  static Rtt& getInstance() {
-    static Rtt rtt;
-    return rtt;
-  }
-
-  void write(const uint8_t *data, uint32_t size);
-
- private:
-  Rtt() = default;
-
   class Writer {
    public:
     void write(const uint8_t *data, uint32_t size);
     void commit();
 
-    Writer(Channel* channel);
+    Writer();
     Writer(const Writer&) = delete;
-    Writer(Writer&&) = delete;
     Writer& operator=(const Writer&) = delete;
-    Writer& operator=(Writer&&) = delete;
+
+    Writer(Writer&&);
+    Writer& operator=(Writer&&);
     ~Writer();
+
+    operator bool() { return State::Writable == m_state; }
 
    private:
     enum class State {
@@ -85,13 +78,33 @@ class Rtt {
       Finished
     };
 
+    Rtt* m_rtt = nullptr;
     Channel* m_channel = nullptr;
     uint32_t m_write_ptr = 0;
     State m_state = State::Writable;
 
-
+    Writer(Rtt* rtt, Channel* channel);
     uint32_t getMaxContiguous() const;
+
+    friend class Rtt;
   };
+
+  static Rtt& getInstance() {
+    static Rtt rtt;
+    return rtt;
+  }
+
+  Writer getWriter();
+
+ private:
+  std::atomic<bool> m_taken { false };
+
+  Rtt() = default;
+  void releaseWriter() {
+    m_taken.store(false);
+  }
+
+  friend class Writer;
 };
 
 #endif

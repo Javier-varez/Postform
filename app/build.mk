@@ -28,7 +28,6 @@ LOCAL_LINKER_FILE := \
     $(LOCAL_DIR)/gcc.ld
 LOCAL_SRC := \
     $(LOCAL_DIR)/src/startup.cpp \
-    $(LOCAL_DIR)/src/uart_logger.cpp \
     $(LOCAL_DIR)/src/rtt_logger.cpp \
     $(LOCAL_DIR)/src/segger_rtt.cpp \
     $(LOCAL_DIR)/src/main.cpp

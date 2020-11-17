@@ -1,12 +1,11 @@
-
-use structopt::StructOpt;
-use std::path::{ PathBuf };
-use std::time::Duration;
-use std::sync::{ Arc, Mutex };
-use probe_rs::{ Probe, Session };
-use probe_rs::config::{ registry };
-use probe_rs::flashing::{ download_file, Format, FileDownloadError };
+use probe_rs::config::registry;
+use probe_rs::flashing::{download_file, FileDownloadError, Format};
+use probe_rs::{Probe, Session};
 use probe_rs_rtt::Rtt;
+use std::path::PathBuf;
+use std::sync::{Arc, Mutex};
+use std::time::Duration;
+use structopt::StructOpt;
 
 fn print_probes() {
     let probes = Probe::list_all();
@@ -39,12 +38,18 @@ fn download_firmware(session: &Arc<Mutex<Session>>, elf: &PathBuf) {
     match download_file(&mut mutex_guard, &elf, Format::Elf) {
         Err(error) => {
             match error {
-                FileDownloadError::Elf(_) => { println!("Error with elf file"); },
-                FileDownloadError::Flash(_) => { println!("Error flashing the device"); }
-                _ => { println!("Other error downloading FW"); }
+                FileDownloadError::Elf(_) => {
+                    println!("Error with elf file");
+                }
+                FileDownloadError::Flash(_) => {
+                    println!("Error flashing the device");
+                }
+                _ => {
+                    println!("Other error downloading FW");
+                }
             }
             return;
-        },
+        }
         _ => {}
     };
 
@@ -55,9 +60,7 @@ fn download_firmware(session: &Arc<Mutex<Session>>, elf: &PathBuf) {
 }
 
 #[derive(Debug, StructOpt)]
-#[structopt(
-    name = "deferred-logger",
-)]
+#[structopt(name = "deferred-logger")]
 struct Opts {
     /// List supported chips and exit.
     #[structopt(long)]
@@ -104,13 +107,13 @@ fn main() {
         let mut rtt = Rtt::attach(session.clone()).unwrap();
         println!("Rtt connected");
         if let Some(input) = rtt.up_channels().take(0) {
-            let mut buf = [0u8; 1024];
-            let count = input.read(&mut buf[..]).unwrap();
-
-            let array: Vec<u8> = buf[..count].into();
-            let received_string = String::from_utf8(array).unwrap();
-
-            println!("Read data is: {}", received_string);
+            loop {
+                let mut buf = [0u8; 1024];
+                let count = input.read(&mut buf[..]).unwrap();
+                if count > 0 {
+                    println!("Received data is: {:?}", &buf[..count]);
+                }
+            }
         }
     }
 }

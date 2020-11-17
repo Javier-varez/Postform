@@ -13,17 +13,54 @@ CLINKAGE Rtt::ControlBlock _SEGGER_RTT {
   s_down_buffer, DOWN_BUFFER_SIZE
 };
 
-void Rtt::write(const uint8_t *data, uint32_t size) {
-  Writer writer(&_SEGGER_RTT.up_channel);
-  writer.write(data, size);
+
+Rtt::Writer Rtt::getWriter() {
+  if (!m_taken.exchange(true)) {
+    // Writer was taken successfully
+    return Writer { this, &_SEGGER_RTT.up_channel };
+  }
+
+  return Writer {};
 }
 
-Rtt::Writer::Writer(Channel* channel) :
+Rtt::Writer::Writer() : m_state(State::Finished) { }
+
+Rtt::Writer::Writer(Rtt* rtt, Channel* channel) :
+  m_rtt(rtt),
   m_channel(channel),
   m_write_ptr(channel->write.load()) { }
 
 Rtt::Writer::~Writer() {
   commit();
+}
+
+Rtt::Writer::Writer(Writer&& other) {
+  m_rtt = other.m_rtt;
+  m_channel = other.m_channel;
+  m_write_ptr = other.m_write_ptr;
+  m_state = other.m_state;
+
+  other.m_rtt = nullptr;
+  other.m_channel = nullptr;
+  other.m_write_ptr = 0;
+  other.m_state = State::Finished;
+}
+
+Rtt::Writer& Rtt::Writer::operator=(Writer&& other) {
+  if (this != &other) {
+    commit();
+
+    m_rtt = other.m_rtt;
+    m_channel = other.m_channel;
+    m_write_ptr = other.m_write_ptr;
+    m_state = other.m_state;
+
+    other.m_rtt = nullptr;
+    other.m_channel = nullptr;
+    other.m_write_ptr = 0;
+    other.m_state = State::Finished;
+  }
+  return *this;
 }
 
 void Rtt::Writer::write(const uint8_t* data, uint32_t size) {
@@ -63,6 +100,7 @@ void Rtt::Writer::commit() {
     // Update the write pointer and mark the writer as done
     m_channel->write.store(m_write_ptr);
     m_state = State::Finished;
+    if (m_rtt) m_rtt->releaseWriter();
   }
 }
 
@@ -78,5 +116,3 @@ uint32_t Rtt::Writer::getMaxContiguous() const {
     return channel_size - m_write_ptr;
   }
 }
-
-

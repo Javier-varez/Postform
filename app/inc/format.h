@@ -12,23 +12,26 @@ class Logger {
  public:
   template<typename ... T>
   inline void log(T ...args) {
+    Derived& derived = static_cast<Derived&>(*this);
+    derived.startMessage();
     sendRemainingArguments(args...);
+    derived.finishMessage();
   }
 
   inline void printfFmtValidator([[maybe_unused]] const char* fmt, ...)
-    __attribute__((format (printf, 2, 3))) { }
+    __attribute__((format(printf, 2, 3))) { }
 
  private:
   template<typename T>
   inline void sendArgument(const T argument) {
     Derived& derived = static_cast<Derived&>(*this);
-    derived.addData(reinterpret_cast<const uint8_t*>(&argument), sizeof(T));
+    derived.appendData(reinterpret_cast<const uint8_t*>(&argument), sizeof(T));
   }
 
   template<>
   inline void sendArgument(const char* argument) {
     Derived& derived = static_cast<Derived&>(*this);
-    derived.addString(argument);
+    derived.appendString(argument);
   }
 
   template<typename T>
