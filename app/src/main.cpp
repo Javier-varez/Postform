@@ -25,13 +25,13 @@ int main() {
   RegAccess<RCC_APB2_ENR>::writeRegister(0x10);
   RegAccess<GPIO_PORTC + GPIO_CRH_OFFSET>::writeRegister(1 << 20);
   while (true) {
-    LOG_DEBUG(&logger, "Ooopsie%s", "cool!");
+    LOG_DEBUG(&logger, "Is this %s or what?!", "nice");
     for (volatile int i = 0; i < 500000; i++) { }
     RegAccess<GPIO_PORTC + GPIO_BSRR_OFFSET>::writeRegister(1 << 13);
-    LOG_INFO(&logger, "Ooops%die2", 23);
+    LOG_INFO(&logger, "I am %d years old...", 28);
     for (volatile int i = 0; i < 500000; i++) { }
     RegAccess<GPIO_PORTC + GPIO_BSRR_OFFSET>::writeRegister(1 << 29);
-    LOG_DEBUG(&logger, "Third string!");
+    LOG_DEBUG(&logger, "Third string! With multiple %s and more numbers: %d", "args", 124);
     for (volatile int i = 0; i < 500000; i++) { }
   }
   return 0;

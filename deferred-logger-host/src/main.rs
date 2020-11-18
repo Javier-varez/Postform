@@ -70,13 +70,62 @@ fn parse_elf_file(elf_path: &PathBuf) -> Vec<u8> {
     data.into()
 }
 
-fn recover_format_string<'a>(str_buffer: &'a [u8]) -> &'a str {
+fn recover_format_string<'a>(str_buffer: &'a [u8]) -> &'a [u8] {
     let nul_range_end = str_buffer
         .iter()
         .position(|&c| c == b'\0')
         .unwrap_or(str_buffer.len());
 
-    std::str::from_utf8(&str_buffer[..nul_range_end]).unwrap()
+    &str_buffer[..nul_range_end]
+}
+
+fn format_string(format: &[u8], arguments: &[u8]) -> String {
+    let mut formatted_str = String::new();
+    let mut format = format;
+    let mut arguments = arguments;
+    while format.len() != 0 {
+        match format[0] {
+            b'%' => {
+                match format[1] {
+                    b's' => {
+                        let nul_range_end = arguments
+                            .iter()
+                            .position(|&c| c == b'\0')
+                            .unwrap_or(arguments.len());
+
+                        let res = std::str::from_utf8(&arguments[..nul_range_end]).unwrap();
+                        formatted_str.push_str(res);
+                        arguments = &arguments[nul_range_end + 1..];
+                    }
+                    b'd' => {
+                        let integer_val = (arguments[0] as u32) << 0
+                            | (arguments[1] as u32) << 8
+                            | (arguments[2] as u32) << 16
+                            | (arguments[3] as u32) << 24;
+                        let str = format!("{}", integer_val);
+                        formatted_str.push_str(&str);
+                        arguments = &arguments[4..];
+                    }
+                    _ => {
+                        let format_spec = std::str::from_utf8(&format[..2]).unwrap();
+                        panic!("Unknown format specifier: {}", format_spec);
+                    }
+                }
+                format = &format[2..];
+            }
+            _ => {
+                let percentage_or_end = format
+                    .iter()
+                    .position(|&c| c == b'%')
+                    .unwrap_or(format.len());
+                let format_chunk = std::str::from_utf8(&format[..percentage_or_end]).unwrap();
+                formatted_str.push_str(format_chunk);
+                format = &format[percentage_or_end..];
+            }
+        }
+    }
+
+    formatted_str
 }
 
 fn parse_received_message(mappings: &[u8], message: &[u8]) {
@@ -84,8 +133,9 @@ fn parse_received_message(mappings: &[u8], message: &[u8]) {
         | (message[1] as u32) << 8
         | (message[2] as u32) << 16
         | (message[3] as u32) << 24;
-    let string = recover_format_string(&mappings[str_ptr as usize..]);
-    println!("String is: {}", string);
+    let format = recover_format_string(&mappings[str_ptr as usize..]);
+    let formatted_str = format_string(format, &message[4..]);
+    println!("String is: {}", formatted_str);
 }
 
 #[derive(Debug, StructOpt)]
