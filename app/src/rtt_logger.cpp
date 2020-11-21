@@ -2,32 +2,19 @@
 #include "rtt_logger.h"
 
 void RttLogger::startMessage() {
-  m_index = 0;
+  Rtt& rtt = Rtt::getInstance();
+  m_writer = rtt.getWriter();
 }
 
 void RttLogger::appendData(const uint8_t* data, uint32_t length) {
-  if ((BUFFER_LENGTH - m_index) > length) {
-    memcpy(&m_buffer[m_index], data, length);
-    m_index += length;
-  }
+  m_writer.write(data, length);
 }
 
 void RttLogger::appendString(const char* str) {
-  while ((*str != '\0') && (m_index < BUFFER_LENGTH)) {
-    m_buffer[m_index] = *str;
-    m_index++;
-    str++;
-  };
-
-  if (m_index < BUFFER_LENGTH) {
-    m_buffer[m_index++] = '\0';
-  }
+  const uint32_t len = strlen(str) + 1;
+  m_writer.write(reinterpret_cast<const uint8_t*>(str), len);
 }
 
 void RttLogger::finishMessage() {
-  Rtt& rtt = Rtt::getInstance();
-  Rtt::Writer writer = rtt.getWriter();
-
-  writer.write(m_buffer, m_index);
-  writer.commit();
+  m_writer.commit();
 }

@@ -31,7 +31,7 @@ int main() {
     LOG_INFO(&logger, "I am %d years old...", 28);
     for (volatile int i = 0; i < 500000; i++) { }
     RegAccess<GPIO_PORTC + GPIO_BSRR_OFFSET>::writeRegister(1 << 29);
-    LOG_DEBUG(&logger, "Third string! With multiple %s and more numbers: %d", "args", 124);
+    LOG_DEBUG(&logger, "Third string! With multiple %s and more numbers: %d", "args", -1124);
     for (volatile int i = 0; i < 500000; i++) { }
   }
   return 0;

@@ -2,6 +2,7 @@
 #define FORMAT_H_
 
 #include <cstdint>
+#include <cstring>
 
 struct InternedString {
   const char* str;
@@ -28,7 +29,6 @@ class Logger {
     derived.appendData(reinterpret_cast<const uint8_t*>(&argument), sizeof(T));
   }
 
-  template<>
   inline void sendArgument(const char* argument) {
     Derived& derived = static_cast<Derived&>(*this);
     derived.appendString(argument);

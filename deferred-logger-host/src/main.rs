@@ -98,6 +98,15 @@ fn format_string(format: &[u8], arguments: &[u8]) -> String {
                         arguments = &arguments[nul_range_end + 1..];
                     }
                     b'd' => {
+                        let integer_val = (arguments[0] as i32) << 0
+                            | (arguments[1] as i32) << 8
+                            | (arguments[2] as i32) << 16
+                            | (arguments[3] as i32) << 24;
+                        let str = format!("{}", integer_val);
+                        formatted_str.push_str(&str);
+                        arguments = &arguments[4..];
+                    }
+                    b'u' => {
                         let integer_val = (arguments[0] as u32) << 0
                             | (arguments[1] as u32) << 8
                             | (arguments[2] as u32) << 16
@@ -182,7 +191,6 @@ fn main() {
     let probe = probes[0].open().unwrap();
 
     if let Some(chip) = opts.chip {
-        println!("Chip is {}", chip);
         let session = Arc::new(Mutex::new(probe.attach(chip).unwrap()));
         download_firmware(&session, &elf_name);
 
