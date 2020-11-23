@@ -63,14 +63,42 @@ fn download_firmware(session: &Arc<Mutex<Session>>, elf: &PathBuf) {
 }
 
 struct LogSection {
+    name: &'static str,
+    color: color::Rgb,
     start: u32,
     end: u32,
 }
 
 struct InternedStringInfo {
     strings: Vec<u8>,
-    debug_section: LogSection,
-    info_section: LogSection,
+    log_sections: Vec<LogSection>,
+}
+
+fn parse_log_section<'a, T: Object<'a, 'a>>(
+    elf_file: &'a T,
+    section: &'static str,
+    color: color::Rgb,
+) -> LogSection {
+    let start_symbol_name = format!("__Interned{}Start", section);
+    let end_symbol_name = format!("__Interned{}End", section);
+    let start = elf_file
+        .symbols()
+        .find(|x| x.name().unwrap() == start_symbol_name)
+        .expect(& format!("Error finding symbol {}", start_symbol_name))
+        .address() as u32;
+
+    let end = elf_file
+        .symbols()
+        .find(|x| x.name().unwrap() == end_symbol_name)
+        .expect(& format!("Error finding symbol {}", end_symbol_name))
+        .address() as u32;
+
+    LogSection {
+        name: section,
+        color: color,
+        start: start,
+        end: end,
+    }
 }
 
 fn parse_elf_file(elf_path: &PathBuf) -> InternedStringInfo {
@@ -79,44 +107,21 @@ fn parse_elf_file(elf_path: &PathBuf) -> InternedStringInfo {
     let string_section = elf_file.section_by_name(".interned_strings").unwrap();
     let interned_strings = string_section.data().unwrap();
 
-    let debug_start = elf_file
-        .symbols()
-        .find(|x| x.name().unwrap() == "__InterenedDebugStart")
-        .unwrap()
-        .address() as u32;
-
-    let debug_end = elf_file
-        .symbols()
-        .find(|x| x.name().unwrap() == "__InterenedDebugEnd")
-        .unwrap()
-        .address() as u32;
-
-    let debug_section = LogSection {
-        start: debug_start,
-        end: debug_end,
-    };
-
-    let info_start = elf_file
-        .symbols()
-        .find(|x| x.name().unwrap() == "__InterenedInfoStart")
-        .unwrap()
-        .address() as u32;
-
-    let info_end = elf_file
-        .symbols()
-        .find(|x| x.name().unwrap() == "__InterenedInfoEnd")
-        .unwrap()
-        .address() as u32;
-
-    let info_section = LogSection {
-        start: info_start,
-        end: info_end,
-    };
+    let mut sections: Vec<LogSection> = vec![];
+    sections.push(parse_log_section(
+        &elf_file,
+        "Debug",
+        color::Rgb(0u8, 255u8, 0u8),
+    ));
+    sections.push(parse_log_section(
+        &elf_file,
+        "Info",
+        color::Rgb(255u8, 255u8, 0u8),
+    ));
 
     InternedStringInfo {
         strings: interned_strings.into(),
-        debug_section: debug_section,
-        info_section: info_section,
+        log_sections: sections,
     }
 }
 
@@ -187,22 +192,27 @@ fn format_string(format: &[u8], arguments: &[u8]) -> String {
     formatted_str
 }
 
-enum LogLevel {
-    Debug,
-    Info,
-}
+fn get_log_section<'a>(
+    interned_string_info: &'a InternedStringInfo,
+    str_ptr: u32,
+) -> &'a LogSection {
+    let log_section = interned_string_info.log_sections.iter().find(|&x| {
+        return str_ptr >= x.start && str_ptr < x.end;
+    });
 
-fn get_log_level(interned_string_info: &InternedStringInfo, str_ptr: u32) -> LogLevel {
-    if str_ptr >= interned_string_info.info_section.start
-        && str_ptr < interned_string_info.info_section.end
-    {
-        return LogLevel::Info;
-    } else if str_ptr >= interned_string_info.debug_section.start
-        && str_ptr < interned_string_info.debug_section.end
-    {
-        return LogLevel::Debug;
+    match log_section {
+        Some(section) => {
+            return section;
+        }
+        None => {
+            return &LogSection {
+                name: "Unknown",
+                color: color::Rgb(255u8, 0u8, 0u8),
+                start: 0u32,
+                end: 0u32,
+            };
+        }
     }
-    LogLevel::Debug
 }
 
 fn parse_received_message(interned_string_info: &InternedStringInfo, message: &[u8]) {
@@ -213,19 +223,14 @@ fn parse_received_message(interned_string_info: &InternedStringInfo, message: &[
     let mappings = &interned_string_info.strings[str_ptr as usize..];
     let format = recover_format_string(mappings);
     let formatted_str = format_string(format, &message[4..]);
-    match get_log_level(interned_string_info, str_ptr) {
-        LogLevel::Debug => print!(
-            "{}Debug: {}",
-            color::Fg(color::Green),
-            color::Fg(color::Reset)
-        ),
-        LogLevel::Info => print!(
-            "{}Info: {}",
-            color::Fg(color::Rgb(255u8, 255u8, 0u8)),
-            color::Fg(color::Reset)
-        ),
-    };
-    println!("{}", formatted_str);
+    let log_section = get_log_section(interned_string_info, str_ptr);
+    println!(
+        "{}{}: {}{}",
+        color::Fg(log_section.color),
+        log_section.name,
+        color::Fg(color::Reset),
+        formatted_str
+    );
 }
 
 #[derive(Debug, StructOpt)]
