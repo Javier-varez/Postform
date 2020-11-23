@@ -1,4 +1,4 @@
-use object::read::{File as ElfFile, Object, ObjectSection};
+use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
 use probe_rs::config::registry;
 use probe_rs::flashing::{download_file, FileDownloadError, Format};
 use probe_rs::{Probe, Session};
@@ -8,6 +8,7 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use structopt::StructOpt;
+use termion::color;
 
 fn print_probes() {
     let probes = Probe::list_all();
@@ -61,13 +62,62 @@ fn download_firmware(session: &Arc<Mutex<Session>>, elf: &PathBuf) {
     println!("Download complete!");
 }
 
-fn parse_elf_file(elf_path: &PathBuf) -> Vec<u8> {
+struct LogSection {
+    start: u32,
+    end: u32,
+}
+
+struct InternedStringInfo {
+    strings: Vec<u8>,
+    debug_section: LogSection,
+    info_section: LogSection,
+}
+
+fn parse_elf_file(elf_path: &PathBuf) -> InternedStringInfo {
     let file_contents = fs::read(elf_path).unwrap();
     let elf_file = ElfFile::parse(&file_contents[..]).unwrap();
     let string_section = elf_file.section_by_name(".interned_strings").unwrap();
-    let data = string_section.data().unwrap();
+    let interned_strings = string_section.data().unwrap();
 
-    data.into()
+    let debug_start = elf_file
+        .symbols()
+        .find(|x| x.name().unwrap() == "__InterenedDebugStart")
+        .unwrap()
+        .address() as u32;
+
+    let debug_end = elf_file
+        .symbols()
+        .find(|x| x.name().unwrap() == "__InterenedDebugEnd")
+        .unwrap()
+        .address() as u32;
+
+    let debug_section = LogSection {
+        start: debug_start,
+        end: debug_end,
+    };
+
+    let info_start = elf_file
+        .symbols()
+        .find(|x| x.name().unwrap() == "__InterenedInfoStart")
+        .unwrap()
+        .address() as u32;
+
+    let info_end = elf_file
+        .symbols()
+        .find(|x| x.name().unwrap() == "__InterenedInfoEnd")
+        .unwrap()
+        .address() as u32;
+
+    let info_section = LogSection {
+        start: info_start,
+        end: info_end,
+    };
+
+    InternedStringInfo {
+        strings: interned_strings.into(),
+        debug_section: debug_section,
+        info_section: info_section,
+    }
 }
 
 fn recover_format_string<'a>(str_buffer: &'a [u8]) -> &'a [u8] {
@@ -137,14 +187,45 @@ fn format_string(format: &[u8], arguments: &[u8]) -> String {
     formatted_str
 }
 
-fn parse_received_message(mappings: &[u8], message: &[u8]) {
+enum LogLevel {
+    Debug,
+    Info,
+}
+
+fn get_log_level(interned_string_info: &InternedStringInfo, str_ptr: u32) -> LogLevel {
+    if str_ptr >= interned_string_info.info_section.start
+        && str_ptr < interned_string_info.info_section.end
+    {
+        return LogLevel::Info;
+    } else if str_ptr >= interned_string_info.debug_section.start
+        && str_ptr < interned_string_info.debug_section.end
+    {
+        return LogLevel::Debug;
+    }
+    LogLevel::Debug
+}
+
+fn parse_received_message(interned_string_info: &InternedStringInfo, message: &[u8]) {
     let str_ptr = (message[0] as u32) << 0
         | (message[1] as u32) << 8
         | (message[2] as u32) << 16
         | (message[3] as u32) << 24;
-    let format = recover_format_string(&mappings[str_ptr as usize..]);
+    let mappings = &interned_string_info.strings[str_ptr as usize..];
+    let format = recover_format_string(mappings);
     let formatted_str = format_string(format, &message[4..]);
-    println!("String is: {}", formatted_str);
+    match get_log_level(interned_string_info, str_ptr) {
+        LogLevel::Debug => print!(
+            "{}Debug: {}",
+            color::Fg(color::Green),
+            color::Fg(color::Reset)
+        ),
+        LogLevel::Info => print!(
+            "{}Info: {}",
+            color::Fg(color::Rgb(255u8, 255u8, 0u8)),
+            color::Fg(color::Reset)
+        ),
+    };
+    println!("{}", formatted_str);
 }
 
 #[derive(Debug, StructOpt)]
@@ -178,10 +259,8 @@ fn main() {
         return print_chips();
     }
 
-    println!("{:?}", opts);
-
     let elf_name = opts.elf.unwrap();
-    let string_section = parse_elf_file(&elf_name);
+    let interned_string_info = parse_elf_file(&elf_name);
 
     let probes = Probe::list_all();
     if probes.len() > 1 {
@@ -201,7 +280,7 @@ fn main() {
                 let mut buf = [0u8; 1024];
                 let count = input.read(&mut buf[..]).unwrap();
                 if count > 0 {
-                    parse_received_message(&string_section[..], &buf[..count]);
+                    parse_received_message(&interned_string_info, &buf[..count]);
                 }
             }
         }
