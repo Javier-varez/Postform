@@ -202,12 +202,12 @@ SECTIONS
 
 	.interned_strings 0 (INFO):
 	{
-		__InterenedDebugStart = .;
+		__InternedDebugStart = .;
 		*(.interned_strings.debug)
-		__InterenedDebugEnd = .;
-		__InterenedInfoStart = .;
+		__InternedDebugEnd = .;
+		__InternedInfoStart = .;
 		*(.interned_strings.info)
-		__InterenedInfoEnd = .;
+		__InternedInfoEnd = .;
 	}
 }
 
