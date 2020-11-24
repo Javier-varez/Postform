@@ -29,6 +29,7 @@ LOCAL_LINKER_FILE := \
 LOCAL_SRC := \
     $(LOCAL_DIR)/src/startup.cpp \
     $(LOCAL_DIR)/src/rtt_logger.cpp \
-    $(LOCAL_DIR)/src/segger_rtt.cpp \
+    $(LOCAL_DIR)/src/rtt.cpp \
+    $(LOCAL_DIR)/src/rtt_writer.cpp \
     $(LOCAL_DIR)/src/main.cpp
 include $(BUILD_BINARY)

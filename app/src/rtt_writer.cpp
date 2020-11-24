@@ -1,33 +1,11 @@
 
-#include "segger_rtt.h"
-
-#include "utils.h"
-
-static constexpr std::uint32_t UP_BUFFER_SIZE = 1024;
-static constexpr std::uint32_t DOWN_BUFFER_SIZE = 16;
-static UNINIT std::uint8_t s_up_buffer[UP_BUFFER_SIZE];
-static UNINIT std::uint8_t s_down_buffer[DOWN_BUFFER_SIZE];
-
-CLINKAGE Rtt::ControlBlock _SEGGER_RTT;
-Rtt::ControlBlock _SEGGER_RTT {
-  s_up_buffer, UP_BUFFER_SIZE,
-  s_down_buffer, DOWN_BUFFER_SIZE
-};
-
-
-Rtt::Writer Rtt::getWriter() {
-  if (!m_taken.exchange(true)) {
-    // Writer was taken successfully
-    return Writer { this, &_SEGGER_RTT.up_channel };
-  }
-
-  return Writer {};
-}
+#include "rtt_writer.h"
+#include "rtt.h"
 
 Rtt::Writer::Writer() : m_state(State::Finished) { }
 
-Rtt::Writer::Writer(Rtt* rtt, Channel* channel) :
-  m_rtt(rtt),
+Rtt::Writer::Writer(Rtt::Manager* manager, Rtt::Channel* channel) :
+  m_manager(manager),
   m_channel(channel),
   m_write_ptr(channel->write.load()) { }
 
@@ -36,12 +14,12 @@ Rtt::Writer::~Writer() {
 }
 
 Rtt::Writer::Writer(Writer&& other) {
-  m_rtt = other.m_rtt;
+  m_manager = other.m_manager;
   m_channel = other.m_channel;
   m_write_ptr = other.m_write_ptr;
   m_state = other.m_state;
 
-  other.m_rtt = nullptr;
+  other.m_manager = nullptr;
   other.m_channel = nullptr;
   other.m_write_ptr = 0;
   other.m_state = State::Finished;
@@ -51,12 +29,12 @@ Rtt::Writer& Rtt::Writer::operator=(Writer&& other) {
   if (this != &other) {
     commit();
 
-    m_rtt = other.m_rtt;
+    m_manager = other.m_manager;
     m_channel = other.m_channel;
     m_write_ptr = other.m_write_ptr;
     m_state = other.m_state;
 
-    other.m_rtt = nullptr;
+    other.m_manager = nullptr;
     other.m_channel = nullptr;
     other.m_write_ptr = 0;
     other.m_state = State::Finished;
@@ -101,7 +79,7 @@ void Rtt::Writer::commit() {
     // Update the write pointer and mark the writer as done
     m_channel->write.store(m_write_ptr);
     m_state = State::Finished;
-    if (m_rtt) m_rtt->releaseWriter();
+    if (m_manager) m_manager->releaseWriter();
   }
 }
 

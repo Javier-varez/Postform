@@ -4,7 +4,7 @@
 #define RTT_LOGGER_H_
 
 #include "format.h"
-#include "segger_rtt.h"
+#include "rtt.h"
 
 class RttLogger: public Logger<RttLogger> {
  private:

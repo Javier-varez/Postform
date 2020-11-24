@@ -2,7 +2,7 @@
 #include "rtt_logger.h"
 
 void RttLogger::startMessage() {
-  Rtt& rtt = Rtt::getInstance();
+  Rtt::Manager& rtt = Rtt::Manager::getInstance();
   m_writer = rtt.getWriter();
 }
 
