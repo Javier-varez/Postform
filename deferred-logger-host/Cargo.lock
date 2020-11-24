@@ -112,6 +112,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "cobs"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c44be444fc7959957b0f331d596bafcfbbe30cbdf41665d1c40c68eda24137f6"
+
+[[package]]
 name = "crc32fast"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -124,6 +130,7 @@ dependencies = [
 name = "deferred-logger"
 version = "0.1.0"
 dependencies = [
+ "cobs",
  "object 0.22.0",
  "probe-rs",
  "probe-rs-rtt",

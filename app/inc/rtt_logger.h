@@ -8,7 +8,7 @@
 
 class RttLogger: public Logger<RttLogger> {
  private:
-  Rtt::RawWriter m_writer;
+  Rtt::CobsWriter m_writer;
 
   void startMessage();
   void appendData(const uint8_t* data, uint32_t length);

@@ -12,4 +12,4 @@ probe-rs-rtt = "0.4.0"
 structopt = "0.3"
 object = "0.22.0"
 termion = "1.5.5"
-
+cobs = "0.1.4"

@@ -9,6 +9,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use structopt::StructOpt;
 use termion::color;
+use cobs::CobsDecoder;
 
 fn print_probes() {
     let probes = Probe::list_all();
@@ -280,12 +281,25 @@ fn main() {
 
         let mut rtt = Rtt::attach(session.clone()).unwrap();
         println!("Rtt connected");
+
         if let Some(input) = rtt.up_channels().take(0) {
+            let mut dec_buf = [0u8; 1024];
+            let mut decoder = CobsDecoder::new(&mut dec_buf);
             loop {
                 let mut buf = [0u8; 1024];
                 let count = input.read(&mut buf[..]).unwrap();
                 if count > 0 {
-                    parse_received_message(&interned_string_info, &buf[..count]);
+                    for i in 0..count {
+                        match decoder.feed(buf[i]).expect("Error parsing COBS encoded data") {
+                            Some(msg_len) => {
+                                drop(decoder);
+                                parse_received_message(&interned_string_info, &dec_buf[..msg_len]);
+                                decoder = CobsDecoder::new(&mut dec_buf[..]);
+                            }
+                            None => {}
+                        }
+
+                    }
                 }
             }
         }

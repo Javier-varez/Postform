@@ -15,10 +15,15 @@ Rtt::ControlBlock _SEGGER_RTT {
 };
 
 Rtt::RawWriter Rtt::Manager::getRawWriter() {
-  if (!m_taken.exchange(true)) {
-    // Writer was taken successfully
+  if (takeWriter()) {
     return RawWriter { this, &_SEGGER_RTT.up_channel };
   }
-
   return RawWriter {};
+}
+
+Rtt::CobsWriter Rtt::Manager::getCobsWriter() {
+  if (takeWriter()) {
+    return CobsWriter { this, &_SEGGER_RTT.up_channel };
+  }
+  return CobsWriter {};
 }

@@ -7,6 +7,7 @@
 #include <cstring>
 
 #include "rtt/raw_writer.h"
+#include "rtt/cobs_writer.h"
 
 namespace Rtt {
 
@@ -66,6 +67,7 @@ class Manager {
   }
 
   RawWriter getRawWriter();
+  CobsWriter getCobsWriter();
 
  private:
   std::atomic<bool> m_taken { false };
@@ -75,7 +77,12 @@ class Manager {
     m_taken.store(false);
   }
 
+  bool takeWriter() {
+    return !m_taken.exchange(true);
+  }
+
   friend class RawWriter;
+  friend class CobsWriter;
 };
 }  // namespace Rtt
 
