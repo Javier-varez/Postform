@@ -1,12 +1,12 @@
 
-#ifndef RTT_H_
-#define RTT_H_
+#ifndef RTT_RTT_H_
+#define RTT_RTT_H_
 
 #include <atomic>
 #include <cstdint>
 #include <cstring>
 
-#include "rtt_writer.h"
+#include "rtt/raw_writer.h"
 
 namespace Rtt {
 
@@ -65,7 +65,7 @@ class Manager {
     return manager;
   }
 
-  Writer getWriter();
+  RawWriter getRawWriter();
 
  private:
   std::atomic<bool> m_taken { false };
@@ -75,8 +75,8 @@ class Manager {
     m_taken.store(false);
   }
 
-  friend class Writer;
+  friend class RawWriter;
 };
 }  // namespace Rtt
 
-#endif  // RTT_H_
+#endif  // RTT_RTT_H_

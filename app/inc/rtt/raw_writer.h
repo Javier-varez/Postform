@@ -1,6 +1,6 @@
 
-#ifndef RTT_WRITER_H_
-#define RTT_WRITER_H_
+#ifndef RTT_RAW_WRITER_H_
+#define RTT_RAW_WRITER_H_
 
 #include <cstdint>
 
@@ -8,18 +8,18 @@ namespace Rtt {
 class Manager;
 struct Channel;
 
-class Writer {
+class RawWriter {
  public:
   void write(const uint8_t *data, uint32_t size);
   void commit();
 
-  Writer();
-  Writer(const Writer&) = delete;
-  Writer& operator=(const Writer&) = delete;
+  RawWriter();
+  RawWriter(const RawWriter&) = delete;
+  RawWriter& operator=(const RawWriter&) = delete;
 
-  Writer(Writer&&);
-  Writer& operator=(Writer&&);
-  ~Writer();
+  RawWriter(RawWriter&&);
+  RawWriter& operator=(RawWriter&&);
+  ~RawWriter();
 
   operator bool() { return State::Writable == m_state; }
 
@@ -34,7 +34,7 @@ class Writer {
   uint32_t m_write_ptr = 0;
   State m_state = State::Writable;
 
-  Writer(Manager* rtt, Channel* channel);
+  RawWriter(Manager* rtt, Channel* channel);
   uint32_t getMaxContiguous() const;
 
   friend class Manager;
@@ -42,4 +42,4 @@ class Writer {
 
 }  // namespace Rtt
 
-#endif  // RTT_WRITER_H_
+#endif  // RTT_RAW_WRITER_H_

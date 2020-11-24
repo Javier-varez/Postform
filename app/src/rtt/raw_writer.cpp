@@ -1,19 +1,19 @@
 
-#include "rtt_writer.h"
-#include "rtt.h"
+#include "rtt/raw_writer.h"
+#include "rtt/rtt.h"
 
-Rtt::Writer::Writer() : m_state(State::Finished) { }
+Rtt::RawWriter::RawWriter() : m_state(State::Finished) { }
 
-Rtt::Writer::Writer(Rtt::Manager* manager, Rtt::Channel* channel) :
+Rtt::RawWriter::RawWriter(Rtt::Manager* manager, Rtt::Channel* channel) :
   m_manager(manager),
   m_channel(channel),
   m_write_ptr(channel->write.load()) { }
 
-Rtt::Writer::~Writer() {
+Rtt::RawWriter::~RawWriter() {
   commit();
 }
 
-Rtt::Writer::Writer(Writer&& other) {
+Rtt::RawWriter::RawWriter(RawWriter&& other) {
   m_manager = other.m_manager;
   m_channel = other.m_channel;
   m_write_ptr = other.m_write_ptr;
@@ -25,7 +25,7 @@ Rtt::Writer::Writer(Writer&& other) {
   other.m_state = State::Finished;
 }
 
-Rtt::Writer& Rtt::Writer::operator=(Writer&& other) {
+Rtt::RawWriter& Rtt::RawWriter::operator=(RawWriter&& other) {
   if (this != &other) {
     commit();
 
@@ -42,7 +42,7 @@ Rtt::Writer& Rtt::Writer::operator=(Writer&& other) {
   return *this;
 }
 
-void Rtt::Writer::write(const uint8_t* data, uint32_t size) {
+void Rtt::RawWriter::write(const uint8_t* data, uint32_t size) {
   if (m_state == State::Finished) {
     return;
   }
@@ -74,7 +74,7 @@ void Rtt::Writer::write(const uint8_t* data, uint32_t size) {
   }
 }
 
-void Rtt::Writer::commit() {
+void Rtt::RawWriter::commit() {
   if (m_state == State::Writable) {
     // Update the write pointer and mark the writer as done
     m_channel->write.store(m_write_ptr);
@@ -83,7 +83,7 @@ void Rtt::Writer::commit() {
   }
 }
 
-uint32_t Rtt::Writer::getMaxContiguous() const {
+uint32_t Rtt::RawWriter::getMaxContiguous() const {
   uint32_t read = m_channel->read.load();
   uint32_t channel_size = m_channel->size;
 

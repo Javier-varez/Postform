@@ -1,5 +1,5 @@
-#ifndef FORMAT_H_
-#define FORMAT_H_
+#ifndef LOGGER_H_
+#define LOGGER_H_
 
 #include <cstdint>
 #include <cstring>
@@ -84,5 +84,4 @@ InternedString operator ""_intern_info() {
     (logger)->log(fmt ## _intern_info, ## __VA_ARGS__); \
   }
 
-#endif
-
+#endif  // LOGGER_H_

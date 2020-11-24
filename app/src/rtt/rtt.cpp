@@ -1,5 +1,5 @@
 
-#include "rtt.h"
+#include "rtt/rtt.h"
 
 #include "utils.h"
 
@@ -14,11 +14,11 @@ Rtt::ControlBlock _SEGGER_RTT {
   s_down_buffer, DOWN_BUFFER_SIZE
 };
 
-Rtt::Writer Rtt::Manager::getWriter() {
+Rtt::RawWriter Rtt::Manager::getRawWriter() {
   if (!m_taken.exchange(true)) {
     // Writer was taken successfully
-    return Writer { this, &_SEGGER_RTT.up_channel };
+    return RawWriter { this, &_SEGGER_RTT.up_channel };
   }
 
-  return Writer {};
+  return RawWriter {};
 }

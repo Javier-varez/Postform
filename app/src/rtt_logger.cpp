@@ -3,7 +3,7 @@
 
 void RttLogger::startMessage() {
   Rtt::Manager& rtt = Rtt::Manager::getInstance();
-  m_writer = rtt.getWriter();
+  m_writer = rtt.getRawWriter();
 }
 
 void RttLogger::appendData(const uint8_t* data, uint32_t length) {
