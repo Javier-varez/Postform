@@ -119,6 +119,16 @@ fn parse_elf_file(elf_path: &PathBuf) -> InternedStringInfo {
         "Info",
         color::Rgb(255u8, 255u8, 0u8),
     ));
+    sections.push(parse_log_section(
+        &elf_file,
+        "Warning",
+        color::Rgb(255u8, 0xA5u8, 0u8),
+    ));
+    sections.push(parse_log_section(
+        &elf_file,
+        "Error",
+        color::Rgb(255u8, 0u8, 0u8),
+    ));
 
     InternedStringInfo {
         strings: interned_strings.into(),

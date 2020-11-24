@@ -62,6 +62,22 @@ struct InternedInfoString {
 template<char... N>
 constexpr char InternedInfoString<N...>::string[];
 
+template<char... N>
+struct InternedWarningString {
+  __attribute__((section(".interned_strings.warning"))) static constexpr char string[] { N... };
+};
+
+template<char... N>
+constexpr char InternedWarningString<N...>::string[];
+
+template<char... N>
+struct InternedErrorString {
+  __attribute__((section(".interned_strings.error"))) static constexpr char string[] { N... };
+};
+
+template<char... N>
+constexpr char InternedErrorString<N...>::string[];
+
 template<typename T, T... C>
 InternedString operator ""_intern_debug() {
   return InternedString { decltype(InternedDebugString<C..., T{}>{})::string };
@@ -70,6 +86,16 @@ InternedString operator ""_intern_debug() {
 template<typename T, T... C>
 InternedString operator ""_intern_info() {
   return InternedString { decltype(InternedInfoString<C..., T{}>{})::string };
+}
+
+template<typename T, T... C>
+InternedString operator ""_intern_warning() {
+  return InternedString { decltype(InternedWarningString<C..., T{}>{})::string };
+}
+
+template<typename T, T... C>
+InternedString operator ""_intern_error() {
+  return InternedString { decltype(InternedErrorString<C..., T{}>{})::string };
 }
 
 #define LOG_DEBUG(logger, fmt, ...) \
@@ -82,6 +108,18 @@ InternedString operator ""_intern_info() {
   { \
     (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
     (logger)->log(fmt ## _intern_info, ## __VA_ARGS__); \
+  }
+
+#define LOG_WARNING(logger, fmt, ...) \
+  { \
+    (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
+    (logger)->log(fmt ## _intern_warning, ## __VA_ARGS__); \
+  }
+
+#define LOG_ERROR(logger, fmt, ...) \
+  { \
+    (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
+    (logger)->log(fmt ## _intern_error, ## __VA_ARGS__); \
   }
 
 #endif  // LOGGER_H_

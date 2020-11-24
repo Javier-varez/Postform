@@ -208,6 +208,12 @@ SECTIONS
 		__InternedInfoStart = .;
 		*(.interned_strings.info)
 		__InternedInfoEnd = .;
+		__InternedWarningStart = .;
+		*(.interned_strings.warning)
+		__InternedWarningEnd = .;
+		__InternedErrorStart = .;
+		*(.interned_strings.error)
+		__InternedErrorEnd = .;
 	}
 }
 

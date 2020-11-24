@@ -27,7 +27,8 @@ int main() {
   while (true) {
     LOG_DEBUG(&logger, "Is this %s or what?!", "nice");
     LOG_INFO(&logger, "I am %d years old...", 28);
-    LOG_DEBUG(&logger, "Third string! With multiple %s and more numbers: %d", "args", -1124);
+    LOG_WARNING(&logger, "Third string! With multiple %s and more numbers: %d", "args", -1124);
+    LOG_ERROR(&logger, "Oh boy, error %d just happened", 234556);
     for (volatile int i = 0; i < 500000; i++) { }
     RegAccess<GPIO_PORTC + GPIO_BSRR_OFFSET>::writeRegister(1 << 13);
     for (volatile int i = 0; i < 500000; i++) { }
