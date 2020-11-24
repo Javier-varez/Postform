@@ -1,3 +1,4 @@
+use cobs::CobsDecoder;
 use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
 use probe_rs::config::registry;
 use probe_rs::flashing::{download_file, FileDownloadError, Format};
@@ -9,7 +10,6 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use structopt::StructOpt;
 use termion::color;
-use cobs::CobsDecoder;
 
 fn print_probes() {
     let probes = Probe::list_all();
@@ -85,13 +85,13 @@ fn parse_log_section<'a, T: Object<'a, 'a>>(
     let start = elf_file
         .symbols()
         .find(|x| x.name().unwrap() == start_symbol_name)
-        .expect(& format!("Error finding symbol {}", start_symbol_name))
+        .expect(&format!("Error finding symbol {}", start_symbol_name))
         .address() as u32;
 
     let end = elf_file
         .symbols()
         .find(|x| x.name().unwrap() == end_symbol_name)
-        .expect(& format!("Error finding symbol {}", end_symbol_name))
+        .expect(&format!("Error finding symbol {}", end_symbol_name))
         .address() as u32;
 
     LogSection {
@@ -284,21 +284,21 @@ fn main() {
 
         if let Some(input) = rtt.up_channels().take(0) {
             let mut dec_buf = [0u8; 1024];
+            let mut buf = [0u8; 1024];
             let mut decoder = CobsDecoder::new(&mut dec_buf);
             loop {
-                let mut buf = [0u8; 1024];
                 let count = input.read(&mut buf[..]).unwrap();
-                if count > 0 {
-                    for i in 0..count {
-                        match decoder.feed(buf[i]).expect("Error parsing COBS encoded data") {
-                            Some(msg_len) => {
-                                drop(decoder);
-                                parse_received_message(&interned_string_info, &dec_buf[..msg_len]);
-                                decoder = CobsDecoder::new(&mut dec_buf[..]);
-                            }
-                            None => {}
+                for i in 0..count {
+                    match decoder
+                        .feed(buf[i])
+                        .expect("Error parsing COBS encoded data")
+                    {
+                        Some(msg_len) => {
+                            drop(decoder);
+                            parse_received_message(&interned_string_info, &dec_buf[..msg_len]);
+                            decoder = CobsDecoder::new(&mut dec_buf[..]);
                         }
-
+                        None => {}
                     }
                 }
             }
