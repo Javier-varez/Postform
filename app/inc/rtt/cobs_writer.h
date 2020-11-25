@@ -40,6 +40,7 @@ class CobsWriter {
   void encodeInPlace(const uint8_t* data, uint32_t size);
   uint8_t markerDistance();
   void incrementWritePtr();
+  void updateMarker();
 
   friend class Manager;
 };

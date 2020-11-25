@@ -66,29 +66,28 @@ void Rtt::CobsWriter::incrementWritePtr() {
   }
 }
 
+void Rtt::CobsWriter::updateMarker() {
+  // Encode chunk length and move marker
+  m_channel->buffer[m_marker_ptr] = markerDistance();
+
+  // Update marker position
+  m_marker_ptr = m_write_ptr;
+  m_channel->buffer[m_marker_ptr] = 0;
+
+  incrementWritePtr();
+}
+
 void Rtt::CobsWriter::encodeInPlace(const uint8_t* data, uint32_t size) {
   for (uint32_t i = 0; i < size; i++) {
     if (data[i] == 0) {
-      // Encode chunk length and move marker
-      m_channel->buffer[m_marker_ptr] = markerDistance();
-
-      // Update marker position
-      m_marker_ptr = m_write_ptr;
-      m_channel->buffer[m_marker_ptr] = 0;
-
-      incrementWritePtr();
+      updateMarker();
     } else {
       m_channel->buffer[m_write_ptr] = data[i];
       incrementWritePtr();
 
       // Check if we need to insert a virtual zero.
       if (markerDistance() == 0xFF) {
-        m_channel->buffer[m_marker_ptr] = 0xFF;
-
-        m_marker_ptr = m_write_ptr;
-        m_channel->buffer[m_marker_ptr] = 0;
-
-        incrementWritePtr();
+        updateMarker();
       }
     }
   }
@@ -123,9 +122,7 @@ void Rtt::CobsWriter::write(const uint8_t* data, uint32_t size) {
 void Rtt::CobsWriter::commit() {
   if (m_state == State::Writable) {
     // Update the write pointer and mark the writer as done
-    m_channel->buffer[m_marker_ptr] = markerDistance();
-    m_channel->buffer[m_write_ptr] = 0;
-    incrementWritePtr();
+    updateMarker();
 
     m_channel->write.store(m_write_ptr);
     m_state = State::Finished;
