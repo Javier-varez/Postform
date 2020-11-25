@@ -36,10 +36,9 @@ class CobsWriter {
   State m_state = State::Writable;
 
   CobsWriter(Manager* rtt, Channel* channel);
-  uint32_t getMaxContiguous() const;
-  void encodeInPlace(const uint8_t* data, uint32_t size);
+  void blockUntilNotFull();
   uint8_t markerDistance();
-  void incrementWritePtr();
+  uint32_t nextWritePtr();
   void updateMarker();
 
   friend class Manager;

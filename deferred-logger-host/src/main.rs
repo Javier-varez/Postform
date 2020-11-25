@@ -293,22 +293,26 @@ fn main() {
         println!("Rtt connected");
 
         if let Some(input) = rtt.up_channels().take(0) {
-            let mut dec_buf = [0u8; 1024];
-            let mut buf = [0u8; 1024];
+            let mut dec_buf = [0u8; 4096];
+            let mut buf = [0u8; 4096];
             let mut decoder = CobsDecoder::new(&mut dec_buf);
             loop {
                 let count = input.read(&mut buf[..]).unwrap();
                 for i in 0..count {
-                    match decoder
-                        .feed(buf[i])
-                        .expect("Error parsing COBS encoded data")
+                    match decoder.feed(buf[i])
                     {
-                        Some(msg_len) => {
+                        Ok(Some(msg_len)) => {
                             drop(decoder);
                             parse_received_message(&interned_string_info, &dec_buf[..msg_len]);
                             decoder = CobsDecoder::new(&mut dec_buf[..]);
                         }
-                        None => {}
+                        Err(decoded_size) => {
+                            drop(decoder);
+                            println!("Cobs decoding failed after {} bytes", decoded_size);
+                            println!("Decoded buffer: {:?}", &dec_buf[..]);
+                            return;
+                        }
+                        Ok(None) => {}
                     }
                 }
             }
