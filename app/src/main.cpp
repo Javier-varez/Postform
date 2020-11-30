@@ -28,6 +28,8 @@ int main() {
   RegAccess<RCC_APB2_ENR>::writeRegister(0x10);
   RegAccess<GPIO_PORTC + GPIO_CRH_OFFSET>::writeRegister(1 << 20);
 
+  logger.setLevel(LogLevel::INFO);
+
   uint32_t iteration = 0;
   while (true) {
     // All the logs here together act as the worst case for the decoder. Without proper framing

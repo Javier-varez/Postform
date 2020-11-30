@@ -9,11 +9,21 @@ struct InternedString {
   const char* str;
 };
 
+enum class LogLevel {
+  DEBUG,
+  INFO,
+  WARNING,
+  ERROR,
+  OFF
+};
+
 template<class Derived>
 class Logger {
  public:
   template<typename ... T>
-  inline void log(T ...args) {
+  inline void log(LogLevel level, T ...args) {
+    if (level < m_level) return;
+
     SysTick& systick = SysTick::getInstance();
     Derived& derived = static_cast<Derived&>(*this);
     derived.startMessage(systick.getCoarseTickCount());
@@ -24,7 +34,11 @@ class Logger {
   inline void printfFmtValidator([[maybe_unused]] const char* fmt, ...)
     __attribute__((format(printf, 2, 3))) { }
 
+  void setLevel(LogLevel level) { m_level = level; }
+
  private:
+  LogLevel m_level = LogLevel::DEBUG;
+
   template<typename T>
   inline void sendArgument(const T argument) {
     Derived& derived = static_cast<Derived&>(*this);
@@ -103,25 +117,25 @@ InternedString operator ""_intern_error() {
 #define LOG_DEBUG(logger, fmt, ...) \
   { \
     (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
-    (logger)->log(fmt ## _intern_debug, ## __VA_ARGS__); \
+    (logger)->log(LogLevel::DEBUG, fmt ## _intern_debug, ## __VA_ARGS__); \
   }
 
 #define LOG_INFO(logger, fmt, ...) \
   { \
     (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
-    (logger)->log(fmt ## _intern_info, ## __VA_ARGS__); \
+    (logger)->log(LogLevel::INFO, fmt ## _intern_info, ## __VA_ARGS__); \
   }
 
 #define LOG_WARNING(logger, fmt, ...) \
   { \
     (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
-    (logger)->log(fmt ## _intern_warning, ## __VA_ARGS__); \
+    (logger)->log(LogLevel::WARNING, fmt ## _intern_warning, ## __VA_ARGS__); \
   }
 
 #define LOG_ERROR(logger, fmt, ...) \
   { \
     (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
-    (logger)->log(fmt ## _intern_error, ## __VA_ARGS__); \
+    (logger)->log(LogLevel::ERROR, fmt ## _intern_error, ## __VA_ARGS__); \
   }
 
 #endif  // LOGGER_H_
