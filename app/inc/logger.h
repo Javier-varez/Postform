@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <hal/systick.h>
 
 struct InternedString {
   const char* str;
@@ -13,8 +14,9 @@ class Logger {
  public:
   template<typename ... T>
   inline void log(T ...args) {
+    SysTick& systick = SysTick::getInstance();
     Derived& derived = static_cast<Derived&>(*this);
-    derived.startMessage();
+    derived.startMessage(systick.getCoarseTickCount());
     sendRemainingArguments(args...);
     derived.finishMessage();
   }

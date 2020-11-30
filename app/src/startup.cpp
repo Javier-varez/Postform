@@ -1,8 +1,8 @@
 #include <algorithm>
 #include <cstdint>
 
-std::uint32_t* const CORE_DEBUG_DHCSR =
-    reinterpret_cast<std::uint32_t*>(0xE000EDF0UL);
+volatile std::uint32_t* const CORE_DEBUG_DHCSR =
+    reinterpret_cast<volatile std::uint32_t*>(0xE000EDF0UL);
 
 extern std::uint8_t __StackInit;
 

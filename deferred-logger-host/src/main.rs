@@ -227,20 +227,25 @@ fn get_log_section<'a>(
 }
 
 fn parse_received_message(interned_string_info: &InternedStringInfo, message: &[u8]) {
-    let str_ptr = (message[0] as u32) << 0
+    let timestamp = (message[0] as u32) << 0
         | (message[1] as u32) << 8
         | (message[2] as u32) << 16
         | (message[3] as u32) << 24;
+    let str_ptr = (message[4] as u32) << 0
+        | (message[5] as u32) << 8
+        | (message[6] as u32) << 16
+        | (message[7] as u32) << 24;
     let mappings = &interned_string_info.strings[str_ptr as usize..];
     let format = recover_format_string(mappings);
-    let formatted_str = format_string(format, &message[4..]);
+    let formatted_str = format_string(format, &message[8..]);
     let log_section = get_log_section(interned_string_info, str_ptr);
     println!(
-        "{}{}: {}{}",
-        color::Fg(log_section.color),
-        log_section.name,
-        color::Fg(color::Reset),
-        formatted_str
+        "{timestamp:<11}{color}{level:<11}{reset_color}: {msg}",
+        timestamp=timestamp,
+        color=color::Fg(log_section.color),
+        level=log_section.name,
+        reset_color=color::Fg(color::Reset),
+        msg=formatted_str
     );
 }
 
@@ -299,8 +304,7 @@ fn main() {
             loop {
                 let count = input.read(&mut buf[..]).unwrap();
                 for i in 0..count {
-                    match decoder.feed(buf[i])
-                    {
+                    match decoder.feed(buf[i]) {
                         Ok(Some(msg_len)) => {
                             drop(decoder);
                             parse_received_message(&interned_string_info, &dec_buf[..msg_len]);

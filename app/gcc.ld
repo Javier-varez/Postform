@@ -9,6 +9,7 @@ MEMORY
 {
   FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 64K
   RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 20K
+  SYSTICK (rw) : ORIGIN = 0xE000E010, LENGTH = 16
 }
 
 /* Linker script to place sections and symbol values. Should be used together
@@ -45,6 +46,10 @@ ENTRY(Reset_Handler)
 
 SECTIONS
 {
+	.systick_regs (NOLOAD) : {
+		*(.bss.systick_regs)
+	} > SYSTICK
+
 	.text :
 	{
 		KEEP(*(.isr_vector))

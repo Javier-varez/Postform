@@ -32,5 +32,6 @@ LOCAL_SRC := \
     $(LOCAL_DIR)/src/rtt/rtt.cpp \
     $(LOCAL_DIR)/src/rtt/raw_writer.cpp \
     $(LOCAL_DIR)/src/rtt/cobs_writer.cpp \
+    $(LOCAL_DIR)/src/hal/systick.cpp \
     $(LOCAL_DIR)/src/main.cpp
 include $(BUILD_BINARY)

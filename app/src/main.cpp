@@ -2,6 +2,7 @@
 #include <cstdint>
 
 #include "rtt_logger.h"
+#include "hal/systick.h"
 
 template<std::uint32_t PTR>
 class RegAccess {
@@ -21,6 +22,8 @@ constexpr uint32_t GPIO_BSRR_OFFSET = 0x10;
 
 int main() {
   RttLogger logger;
+  SysTick& systick = SysTick::getInstance();
+  systick.init(1'000'000);
 
   RegAccess<RCC_APB2_ENR>::writeRegister(0x10);
   RegAccess<GPIO_PORTC + GPIO_CRH_OFFSET>::writeRegister(1 << 20);

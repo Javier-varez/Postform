@@ -10,7 +10,7 @@ class RttLogger: public Logger<RttLogger> {
  private:
   Rtt::CobsWriter m_writer;
 
-  void startMessage();
+  void startMessage(uint32_t timestamp);
   void appendData(const uint8_t* data, uint32_t length);
   void appendString(const char* str);
   void finishMessage();
