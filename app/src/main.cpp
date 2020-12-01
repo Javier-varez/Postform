@@ -23,7 +23,9 @@ constexpr uint32_t GPIO_BSRR_OFFSET = 0x10;
 int main() {
   RttLogger logger;
   SysTick& systick = SysTick::getInstance();
-  systick.init(1'000'000);
+
+  const uint32_t systick_clk_hz = 1'000'000;
+  systick.init(systick_clk_hz);
 
   RegAccess<RCC_APB2_ENR>::writeRegister(0x10);
   RegAccess<GPIO_PORTC + GPIO_CRH_OFFSET>::writeRegister(1 << 20);

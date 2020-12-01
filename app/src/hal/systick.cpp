@@ -41,11 +41,11 @@ extern "C" void SysTick_Handler() {
   SysTick::getInstance().m_ticks++;
 }
 
-void SysTick::init(uint32_t core_clk_mhz) {
+void SysTick::init(uint32_t core_clk_hz) {
   m_ticks = 0;
   s_systick_regs.CSR.bits.enable = false;
 
-  m_max_count = core_clk_mhz / TICKS_PER_SECOND;
+  m_max_count = core_clk_hz / TICKS_PER_SECOND;
   const uint32_t reload_value = m_max_count - 1;
   s_systick_regs.RVR.bits.rv = reload_value;
 
@@ -57,7 +57,7 @@ void SysTick::init(uint32_t core_clk_mhz) {
 uint64_t SysTick::getTickCount() {
   uint32_t coarse = getCoarseTickCount();
   uint32_t fine = getFineTickCount();
-  
+
   if ((coarse != getCoarseTickCount()) &&
       (fine < (m_max_count / 2))) {
     coarse = getCoarseTickCount();
