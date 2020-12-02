@@ -67,6 +67,10 @@ uint64_t SysTick::getTickCount() {
 }
 
 uint32_t SysTick::getFineTickCount() {
-  return s_systick_regs.CVR.reg;
+  return m_max_count - s_systick_regs.CVR.reg - 1;
 }
 
+void SysTick::delay(uint32_t coarse_ticks) {
+  const uint32_t start = m_ticks;
+  while((m_ticks - start) < coarse_ticks);
+}

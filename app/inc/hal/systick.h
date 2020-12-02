@@ -8,6 +8,8 @@ extern "C" void SysTick_Handler();
 
 class SysTick {
  public:
+  constexpr static uint32_t TICKS_PER_SECOND = 1000;
+
   void init(uint32_t core_clk_mhz);
 
   uint64_t getTickCount();
@@ -15,6 +17,7 @@ class SysTick {
   uint32_t getCoarseTickCount() {
     return m_ticks;
   }
+  void delay(uint32_t coarse_ticks);
 
   static SysTick& getInstance() {
     static SysTick systick;
@@ -22,8 +25,7 @@ class SysTick {
   }
 
  private:
-  constexpr static uint32_t TICKS_PER_SECOND = 1000;
-  uint32_t m_ticks { 0 };
+  volatile uint32_t m_ticks { 0 };
   uint32_t m_max_count = 0;
 
   SysTick() = default;

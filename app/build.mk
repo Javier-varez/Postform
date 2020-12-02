@@ -20,7 +20,9 @@ LOCAL_CFLAGS := \
 LOCAL_CXXFLAGS := \
     $(LOCAL_CFLAGS) \
     -fno-exceptions \
-    -fno-rtti
+    -fno-rtti \
+    -ffunction-sections \
+    -fdata-sections
 LOCAL_LDFLAGS := \
     $(COMPILER_LDFLAGS) \
     -Wl,--gc-sections
