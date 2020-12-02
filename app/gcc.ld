@@ -85,18 +85,18 @@ SECTIONS
  		*(.dtors)
 
 		KEEP(*(.eh_frame*))
-	} > RAM AT> FLASH
+	} > FLASH
 
 	.ARM.extab :
 	{
 		*(.ARM.extab* .gnu.linkonce.armextab.*)
-	} > RAM AT> FLASH
+	} > FLASH
 
 	__exidx_start = .;
 	.ARM.exidx :
 	{
 		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
-	} > RAM AT> FLASH
+	} > FLASH
 	__exidx_end = .;
 
 	.data :
@@ -132,8 +132,8 @@ SECTIONS
 
 	} > RAM AT>FLASH
 
-	__copy_start__ = ADDR(.text);
-	__copy_origin = LOADADDR(.text);
+	__copy_start__ = ADDR(.data);
+	__copy_origin = LOADADDR(.data);
 
 	.bss :
 	{
