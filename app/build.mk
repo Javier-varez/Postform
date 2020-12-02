@@ -13,6 +13,8 @@ LOCAL_CFLAGS := \
     -Os \
     -g3 \
     -I$(LOCAL_DIR)/inc \
+    -Ilibopencm3/include \
+    -DSTM32F1 \
     -Wall \
     -Werror \
     -Wextra \
@@ -25,7 +27,9 @@ LOCAL_CXXFLAGS := \
     -fdata-sections
 LOCAL_LDFLAGS := \
     $(COMPILER_LDFLAGS) \
-    -Wl,--gc-sections
+    -Wl,--gc-sections \
+    -Llibopencm3/lib \
+    -lopencm3_stm32f1
 LOCAL_LINKER_FILE := \
     $(LOCAL_DIR)/gcc.ld
 LOCAL_SRC := \
@@ -37,3 +41,15 @@ LOCAL_SRC := \
     $(LOCAL_DIR)/src/hal/systick.cpp \
     $(LOCAL_DIR)/src/main.cpp
 include $(BUILD_BINARY)
+
+$(LOCAL_TARGET): libopencm3/lib/libopencm3_stm32f1.a
+
+libopencm3/lib/libopencm3_stm32f1.a:
+	$(call print-build-header, libopencm3, MAKE $(notdir $@))
+	$(SILENT)$(MAKE) -C libopencm3 TARGETS=stm32/f1 > /dev/null
+
+clean_libopencm3:
+	$(SILENT)$(MAKE) -C libopencm3 clean > /dev/null
+.PHONY: clean_libopencm3
+
+clean: clean_libopencm3

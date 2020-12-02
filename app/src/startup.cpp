@@ -9,11 +9,11 @@ extern std::uint8_t __StackInit;
 extern "C"
 void Reset_Handler() {
     // Initialize data section
-    extern std::uint8_t __data_start__;
-    extern std::uint8_t __data_end__;
-    extern std::uint8_t __etext;
-    std::size_t size = static_cast<size_t>(&__data_end__ - &__data_start__);
-    std::copy(&__etext, &__etext + size, &__data_start__);
+    extern std::uint8_t __copy_start__;
+    extern std::uint8_t __copy_end__;
+    extern std::uint8_t __copy_origin;
+    std::size_t size = static_cast<size_t>(&__copy_end__ - &__copy_start__);
+    std::copy(&__copy_origin, &__copy_origin + size, &__copy_start__);
 
     // Initialize bss section
     extern std::uint8_t __bss_start__;
@@ -31,10 +31,10 @@ void Reset_Handler() {
     // Jump to main
     asm volatile (
         "msr msp, %[stack_top]\n"
-        // We want to make sure that any stacking 
+        // We want to make sure that any stacking
         // operations after this use the correct
         // stack pointer value
-        "dsb\n" 
+        "dsb\n"
         "bl main"
         : : [stack_top] "r" (&__StackInit)
     );

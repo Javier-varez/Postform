@@ -50,10 +50,22 @@ SECTIONS
 		*(.bss.systick_regs)
 	} > SYSTICK
 
-	.text :
+	.root_section :
 	{
 		KEEP(*(.isr_vector))
+		*startup.o(.text*)
+
+		*(.text.__aeabi_memcpy)
+		*(.text.__aeabi_memset)
+		*(.text.__aeabi_memclr)
+		*(.text.memcpy)
+		*(.text.memset)
+	} > FLASH
+
+	.text :
+	{
 		*(.text*)
+		*(.rodata*)
 
 		KEEP(*(.init))
 		KEEP(*(.fini))
@@ -72,65 +84,23 @@ SECTIONS
  		*(SORT(.dtors.*))
  		*(.dtors)
 
-		*(.rodata*)
-
 		KEEP(*(.eh_frame*))
-	} > FLASH
+	} > RAM AT> FLASH
 
 	.ARM.extab :
 	{
 		*(.ARM.extab* .gnu.linkonce.armextab.*)
-	} > FLASH
+	} > RAM AT> FLASH
 
 	__exidx_start = .;
 	.ARM.exidx :
 	{
 		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
-	} > FLASH
+	} > RAM AT> FLASH
 	__exidx_end = .;
 
-	/* To copy multiple ROM to RAM sections,
-	 * uncomment .copy.table section and,
-	 * define __STARTUP_COPY_MULTIPLE in startup_ARMCMx.S */
-	/*
-	.copy.table :
+	.data :
 	{
-		. = ALIGN(4);
-		__copy_table_start__ = .;
-		LONG (__etext)
-		LONG (__data_start__)
-		LONG (__data_end__ - __data_start__)
-		LONG (__etext2)
-		LONG (__data2_start__)
-		LONG (__data2_end__ - __data2_start__)
-		__copy_table_end__ = .;
-	} > FLASH
-	*/
-
-	/* To clear multiple BSS sections,
-	 * uncomment .zero.table section and,
-	 * define __STARTUP_CLEAR_BSS_MULTIPLE in startup_ARMCMx.S */
-	/*
-	.zero.table :
-	{
-		. = ALIGN(4);
-		__zero_table_start__ = .;
-		LONG (__bss_start__)
-		LONG (__bss_end__ - __bss_start__)
-		LONG (__bss2_start__)
-		LONG (__bss2_end__ - __bss2_start__)
-		__zero_table_end__ = .;
-	} > FLASH
-	*/
-
-	/* Location counter can end up 2byte aligned with narrow Thumb code but
-	   __etext is assumed by startup code to be the LMA of a section in RAM
-	   which must be 4byte aligned */
-	__etext = ALIGN (4);
-
-	.data : AT (__etext)
-	{
-		__data_start__ = .;
 		*(vtable)
 		*(.data*)
 
@@ -158,9 +128,12 @@ SECTIONS
 		KEEP(*(.jcr*))
 		. = ALIGN(4);
 		/* All data end */
-		__data_end__ = .;
+		__copy_end__ = .;
 
-	} > RAM
+	} > RAM AT>FLASH
+
+	__copy_start__ = ADDR(.text);
+	__copy_origin = LOADADDR(.text);
 
 	.bss :
 	{

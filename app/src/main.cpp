@@ -1,14 +1,18 @@
 
 #include <cstdint>
 
+#include <libopencm3/stm32/rcc.h>
+
 #include "rtt_logger.h"
 #include "hal/systick.h"
 
 int main() {
+  rcc_clock_setup_pll(&rcc_hse_configs[RCC_CLOCK_HSE8_72MHZ]);
+
   RttLogger logger;
   SysTick& systick = SysTick::getInstance();
 
-  const uint32_t systick_clk_hz = 1'000'000;
+  const uint32_t systick_clk_hz = 72'000'000;
   systick.init(systick_clk_hz);
 
   logger.setLevel(LogLevel::INFO);

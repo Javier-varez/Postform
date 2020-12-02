@@ -49,7 +49,7 @@ void SysTick::init(uint32_t core_clk_hz) {
   const uint32_t reload_value = m_max_count - 1;
   s_systick_regs.RVR.bits.rv = reload_value;
 
-  s_systick_regs.CSR.bits.clksource = false;
+  s_systick_regs.CSR.bits.clksource = true;
   s_systick_regs.CSR.bits.tickint = true;
   s_systick_regs.CSR.bits.enable = true;
 }
