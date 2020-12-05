@@ -24,11 +24,9 @@ class Logger {
   inline void log(LogLevel level, T ...args) {
     if (level < m_level) return;
 
-    SysTick& systick = SysTick::getInstance();
-    Derived& derived = static_cast<Derived&>(*this);
-    derived.startMessage(systick.getCoarseTickCount());
+    m_derived.startMessage(m_systick.getCoarseTickCount());
     sendRemainingArguments(args...);
-    derived.finishMessage();
+    m_derived.finishMessage();
   }
 
   inline void printfFmtValidator([[maybe_unused]] const char* fmt, ...)
@@ -38,16 +36,16 @@ class Logger {
 
  private:
   LogLevel m_level = LogLevel::DEBUG;
+  Derived& m_derived = static_cast<Derived&>(*this);
+  SysTick& m_systick = SysTick::getInstance();
 
   template<typename T>
   inline void sendArgument(const T argument) {
-    Derived& derived = static_cast<Derived&>(*this);
-    derived.appendData(reinterpret_cast<const uint8_t*>(&argument), sizeof(T));
+    m_derived.appendData(reinterpret_cast<const uint8_t*>(&argument), sizeof(T));
   }
 
   inline void sendArgument(const char* argument) {
-    Derived& derived = static_cast<Derived&>(*this);
-    derived.appendString(argument);
+    m_derived.appendString(argument);
   }
 
   template<typename T>

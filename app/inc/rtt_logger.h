@@ -4,10 +4,14 @@
 #define RTT_LOGGER_H_
 
 #include "logger.h"
-#include "rtt/rtt.h"
+#include "rtt/rtt_manager.h"
 
 class RttLogger: public Logger<RttLogger> {
+ public:
+  RttLogger();
+
  private:
+  Rtt::Manager& m_manager;
   Rtt::CobsWriter m_writer;
 
   void startMessage(uint32_t timestamp);

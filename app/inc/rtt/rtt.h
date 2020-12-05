@@ -6,9 +6,6 @@
 #include <cstdint>
 #include <cstring>
 
-#include "rtt/raw_writer.h"
-#include "rtt/cobs_writer.h"
-
 namespace Rtt {
 
 enum class Flags: uint32_t {
@@ -20,9 +17,9 @@ struct Channel {
   const char* const name { nullptr };
   std::uint8_t* const buffer = nullptr;
   const std::uint32_t size { 0 };
-  std::atomic<std::uint32_t> write { 0 };
-  std::atomic<std::uint32_t> read { 0 };
-  std::atomic<Flags> flags { Flags::NO_BLOCK_TRIM };
+  std::uint32_t write { 0 };
+  volatile std::uint32_t read { 0 };
+  Flags flags { Flags::NO_BLOCK_TRIM };
 
   Channel(const char* name, std::uint8_t* buffer, std::uint32_t size) :
     name(name), buffer(buffer), size(size) { }
@@ -59,31 +56,6 @@ struct ControlBlock {
     down_channel("down", down_buffer, down_buffer_size) { }
 };
 
-class Manager {
- public:
-  static Manager& getInstance() {
-    static Manager manager;
-    return manager;
-  }
-
-  RawWriter getRawWriter();
-  CobsWriter getCobsWriter();
-
- private:
-  std::atomic<bool> m_taken { false };
-
-  Manager() = default;
-  void releaseWriter() {
-    m_taken.store(false);
-  }
-
-  bool takeWriter() {
-    return !m_taken.exchange(true);
-  }
-
-  friend class RawWriter;
-  friend class CobsWriter;
-};
 }  // namespace Rtt
 
 #endif  // RTT_RTT_H_

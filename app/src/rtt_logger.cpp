@@ -1,10 +1,12 @@
 
 #include "rtt_logger.h"
 
-void RttLogger::startMessage(uint32_t timestamp) {
-  Rtt::Manager& rtt = Rtt::Manager::getInstance();
-  m_writer = rtt.getCobsWriter();
+RttLogger::RttLogger() :
+  Logger<RttLogger>(),
+  m_manager(Rtt::Manager::getInstance()) {}
 
+void RttLogger::startMessage(uint32_t timestamp) {
+  m_writer = m_manager.getCobsWriter();
   m_writer.write(reinterpret_cast<const uint8_t*>(&timestamp), sizeof(uint32_t));
 }
 

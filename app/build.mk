@@ -28,6 +28,7 @@ LOCAL_CXXFLAGS := \
 LOCAL_LDFLAGS := \
     $(COMPILER_LDFLAGS) \
     -Wl,--gc-sections \
+    -lnosys \
     -Llibopencm3/lib \
     -lopencm3_stm32f1
 LOCAL_LINKER_FILE := \
@@ -35,7 +36,7 @@ LOCAL_LINKER_FILE := \
 LOCAL_SRC := \
     $(LOCAL_DIR)/src/startup.cpp \
     $(LOCAL_DIR)/src/rtt_logger.cpp \
-    $(LOCAL_DIR)/src/rtt/rtt.cpp \
+    $(LOCAL_DIR)/src/rtt/rtt_manager.cpp \
     $(LOCAL_DIR)/src/rtt/raw_writer.cpp \
     $(LOCAL_DIR)/src/rtt/cobs_writer.cpp \
     $(LOCAL_DIR)/src/hal/systick.cpp \
