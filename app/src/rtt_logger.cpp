@@ -5,9 +5,9 @@ RttLogger::RttLogger() :
   Logger<RttLogger>(),
   m_manager(Rtt::Manager::getInstance()) {}
 
-void RttLogger::startMessage(uint32_t timestamp) {
+void RttLogger::startMessage(uint64_t timestamp) {
   m_writer = m_manager.getCobsWriter();
-  m_writer.write(reinterpret_cast<const uint8_t*>(&timestamp), sizeof(uint32_t));
+  m_writer.write(reinterpret_cast<const uint8_t*>(&timestamp), sizeof(timestamp));
 }
 
 void RttLogger::appendData(const uint8_t* data, uint32_t length) {

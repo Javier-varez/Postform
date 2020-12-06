@@ -24,7 +24,7 @@ class Logger {
   inline void log(LogLevel level, T ...args) {
     if (level < m_level) return;
 
-    m_derived.startMessage(m_systick.getCoarseTickCount());
+    m_derived.startMessage(m_systick.getTickCount());
     sendRemainingArguments(args...);
     m_derived.finishMessage();
   }

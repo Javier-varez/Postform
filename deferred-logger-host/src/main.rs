@@ -214,17 +214,21 @@ fn get_log_section<'a>(
 }
 
 fn parse_received_message(interned_string_info: &InternedStringInfo, message: &[u8]) {
-    let timestamp = (message[0] as u32) << 0
-        | (message[1] as u32) << 8
-        | (message[2] as u32) << 16
-        | (message[3] as u32) << 24;
-    let str_ptr = (message[4] as u32) << 0
-        | (message[5] as u32) << 8
-        | (message[6] as u32) << 16
-        | (message[7] as u32) << 24;
+    let timestamp = (message[0] as u64) << 0
+        | (message[1] as u64) << 8
+        | (message[2] as u64) << 16
+        | (message[3] as u64) << 24
+        | (message[4] as u64) << 32
+        | (message[5] as u64) << 40
+        | (message[6] as u64) << 48
+        | (message[7] as u64) << 56;
+    let str_ptr = (message[8] as u32) << 0
+        | (message[9] as u32) << 8
+        | (message[10] as u32) << 16
+        | (message[11] as u32) << 24;
     let mappings = &interned_string_info.strings[str_ptr as usize..];
     let (file_name, line_number, format) = recover_format_string(mappings);
-    let formatted_str = format_string(format, &message[8..]);
+    let formatted_str = format_string(format, &message[12..]);
     let log_section = get_log_section(interned_string_info, str_ptr);
     println!(
         "{timestamp:<11}{color}{level:<11}{reset_color}: {msg}",
