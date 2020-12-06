@@ -112,28 +112,31 @@ InternedString operator ""_intern_error() {
   return InternedString { decltype(InternedErrorString<C..., T{}>{})::string };
 }
 
+#define STRINGIFY(X) #X
+#define EXPAND_AND_STRINGIFY(X) STRINGIFY(X)
+
 #define LOG_DEBUG(logger, fmt, ...) \
   { \
     (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
-    (logger)->log(LogLevel::DEBUG, fmt ## _intern_debug, ## __VA_ARGS__); \
+    (logger)->log(LogLevel::DEBUG, __FILE__ "@" EXPAND_AND_STRINGIFY(__LINE__) "@" fmt ## _intern_debug, ## __VA_ARGS__); \
   }
 
 #define LOG_INFO(logger, fmt, ...) \
   { \
     (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
-    (logger)->log(LogLevel::INFO, fmt ## _intern_info, ## __VA_ARGS__); \
+    (logger)->log(LogLevel::INFO, __FILE__ "@" EXPAND_AND_STRINGIFY(__LINE__) "@" fmt ## _intern_info, ## __VA_ARGS__); \
   }
 
 #define LOG_WARNING(logger, fmt, ...) \
   { \
     (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
-    (logger)->log(LogLevel::WARNING, fmt ## _intern_warning, ## __VA_ARGS__); \
+    (logger)->log(LogLevel::WARNING, __FILE__ "@" EXPAND_AND_STRINGIFY(__LINE__) "@" fmt ## _intern_warning, ## __VA_ARGS__); \
   }
 
 #define LOG_ERROR(logger, fmt, ...) \
   { \
     (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
-    (logger)->log(LogLevel::ERROR, fmt ## _intern_error, ## __VA_ARGS__); \
+    (logger)->log(LogLevel::ERROR, __FILE__ "@" EXPAND_AND_STRINGIFY(__LINE__) "@" fmt ## _intern_error, ## __VA_ARGS__); \
   }
 
 #endif  // LOGGER_H_

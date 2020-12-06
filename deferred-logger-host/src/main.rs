@@ -1,15 +1,14 @@
 use cobs::CobsDecoder;
 use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
 use probe_rs::config::registry;
-use probe_rs::flashing::{download_file, FileDownloadError, Format};
-use probe_rs::{Probe, Session};
+use probe_rs::{Probe};
 use probe_rs_rtt::Rtt;
 use std::fs;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
 use structopt::StructOpt;
 use termion::color;
+use deferred_logger::{download_firmware, run_core};
 
 fn print_probes() {
     let probes = Probe::list_all();
@@ -25,6 +24,7 @@ fn print_probes() {
     }
 }
 
+
 fn print_chips() {
     let registry = registry::families().expect("Could not retrieve chip family registry");
     for chip_family in registry {
@@ -36,32 +36,6 @@ fn print_chips() {
     }
 }
 
-fn download_firmware(session: &Arc<Mutex<Session>>, elf: &PathBuf) {
-    let mut mutex_guard = session.lock().unwrap();
-    println!("Loading FW to target");
-    match download_file(&mut mutex_guard, &elf, Format::Elf) {
-        Err(error) => {
-            match error {
-                FileDownloadError::Elf(_) => {
-                    println!("Error with elf file");
-                }
-                FileDownloadError::Flash(_) => {
-                    println!("Error flashing the device");
-                }
-                _ => {
-                    println!("Other error downloading FW");
-                }
-            }
-            return;
-        }
-        _ => {}
-    };
-
-    let mut core = mutex_guard.core(0).unwrap();
-    let _ = core.reset_and_halt(Duration::from_millis(10)).unwrap();
-    core.run().unwrap();
-    println!("Download complete!");
-}
 
 struct LogSection {
     name: &'static str,
@@ -136,13 +110,26 @@ fn parse_elf_file(elf_path: &PathBuf) -> InternedStringInfo {
     }
 }
 
-fn recover_format_string<'a>(str_buffer: &'a [u8]) -> &'a [u8] {
-    let nul_range_end = str_buffer
+fn find_first_character_position<'a>(buffer: &'a [u8], char: u8) -> usize {
+    buffer
         .iter()
-        .position(|&c| c == b'\0')
-        .unwrap_or(str_buffer.len());
+        .position(|&c| c == char)
+        .unwrap_or(buffer.len())
+}
 
-    &str_buffer[..nul_range_end]
+fn recover_format_string<'a>(mut str_buffer: &'a [u8]) -> (&'a [u8], &'a [u8], &'a [u8]) {
+    let at_pos = find_first_character_position(str_buffer, b'@');
+    let file_name = &str_buffer[..at_pos];
+    str_buffer = &str_buffer[at_pos+1..];
+
+    let at_pos = find_first_character_position(str_buffer, b'@');
+    let line_number = &str_buffer[..at_pos];
+    str_buffer = &str_buffer[at_pos+1..];
+
+    let nul_char_pos = find_first_character_position(str_buffer, b'\0');
+    let format = &str_buffer[..nul_char_pos];
+
+    (file_name, line_number, format)
 }
 
 fn format_string(format: &[u8], arguments: &[u8]) -> String {
@@ -236,7 +223,7 @@ fn parse_received_message(interned_string_info: &InternedStringInfo, message: &[
         | (message[6] as u32) << 16
         | (message[7] as u32) << 24;
     let mappings = &interned_string_info.strings[str_ptr as usize..];
-    let format = recover_format_string(mappings);
+    let (file_name, line_number, format) = recover_format_string(mappings);
     let formatted_str = format_string(format, &message[8..]);
     let log_section = get_log_section(interned_string_info, str_ptr);
     println!(
@@ -246,6 +233,13 @@ fn parse_received_message(interned_string_info: &InternedStringInfo, message: &[
         level=log_section.name,
         reset_color=color::Fg(color::Reset),
         msg=formatted_str
+    );
+    println!(
+        "{color}└── File: {file_name}, Line number: {line_number}{reset}",
+        color=color::Fg(color::LightBlack),
+        file_name=String::from_utf8_lossy(file_name),
+        line_number=String::from_utf8_lossy(line_number),
+        reset=color::Fg(color::Reset)
     );
 }
 
@@ -297,12 +291,14 @@ fn main() {
         let mut rtt = Rtt::attach(session.clone()).unwrap();
         println!("Rtt connected");
 
-        if let Some(input) = rtt.up_channels().take(0) {
+        run_core(session);
+
+        if let Some(log_channel) = rtt.up_channels().take(0) {
             let mut dec_buf = [0u8; 4096];
             let mut buf = [0u8; 4096];
             let mut decoder = CobsDecoder::new(&mut dec_buf);
             loop {
-                let count = input.read(&mut buf[..]).unwrap();
+                let count = log_channel.read(&mut buf[..]).unwrap();
                 for i in 0..count {
                     match decoder.feed(buf[i]) {
                         Ok(Some(msg_len)) => {
@@ -310,10 +306,10 @@ fn main() {
                             parse_received_message(&interned_string_info, &dec_buf[..msg_len]);
                             decoder = CobsDecoder::new(&mut dec_buf[..]);
                         }
-                        Err(decoded_size) => {
+                        Err(decoded_len) => {
                             drop(decoder);
-                            println!("Cobs decoding failed after {} bytes", decoded_size);
-                            println!("Decoded buffer: {:?}", &dec_buf[..]);
+                            println!("Cobs decoding failed after {} bytes", decoded_len);
+                            println!("Decoded buffer: {:?}", &dec_buf[..decoded_len]);
                             return;
                         }
                         Ok(None) => {}
