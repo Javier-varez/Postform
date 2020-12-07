@@ -1,14 +1,14 @@
 use cobs::CobsDecoder;
+use deferred_logger::{download_firmware, run_core};
 use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
 use probe_rs::config::registry;
-use probe_rs::{Probe};
+use probe_rs::Probe;
 use probe_rs_rtt::Rtt;
-use std::fs;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
+use std::{convert::TryInto, fs};
 use structopt::StructOpt;
 use termion::color;
-use deferred_logger::{download_firmware, run_core};
 
 fn print_probes() {
     let probes = Probe::list_all();
@@ -24,7 +24,6 @@ fn print_probes() {
     }
 }
 
-
 fn print_chips() {
     let registry = registry::families().expect("Could not retrieve chip family registry");
     for chip_family in registry {
@@ -36,7 +35,6 @@ fn print_chips() {
     }
 }
 
-
 struct LogSection {
     name: &'static str,
     color: color::Rgb,
@@ -45,6 +43,7 @@ struct LogSection {
 }
 
 struct InternedStringInfo {
+    timestamp_freq: f64,
     strings: Vec<u8>,
     log_sections: Vec<LogSection>,
 }
@@ -76,7 +75,7 @@ fn parse_log_section<'a, T: Object<'a, 'a>>(
     }
 }
 
-fn parse_elf_file(elf_path: &PathBuf) -> InternedStringInfo {
+fn parse_elf_file(elf_path: &PathBuf, timestamp_freq: f64) -> InternedStringInfo {
     let file_contents = fs::read(elf_path).unwrap();
     let elf_file = ElfFile::parse(&file_contents[..]).unwrap();
     let string_section = elf_file.section_by_name(".interned_strings").unwrap();
@@ -105,6 +104,7 @@ fn parse_elf_file(elf_path: &PathBuf) -> InternedStringInfo {
     ));
 
     InternedStringInfo {
+        timestamp_freq,
         strings: interned_strings.into(),
         log_sections: sections,
     }
@@ -120,11 +120,11 @@ fn find_first_character_position<'a>(buffer: &'a [u8], char: u8) -> usize {
 fn recover_format_string<'a>(mut str_buffer: &'a [u8]) -> (&'a [u8], &'a [u8], &'a [u8]) {
     let at_pos = find_first_character_position(str_buffer, b'@');
     let file_name = &str_buffer[..at_pos];
-    str_buffer = &str_buffer[at_pos+1..];
+    str_buffer = &str_buffer[at_pos + 1..];
 
     let at_pos = find_first_character_position(str_buffer, b'@');
     let line_number = &str_buffer[..at_pos];
-    str_buffer = &str_buffer[at_pos+1..];
+    str_buffer = &str_buffer[at_pos + 1..];
 
     let nul_char_pos = find_first_character_position(str_buffer, b'\0');
     let format = &str_buffer[..nul_char_pos];
@@ -151,22 +151,16 @@ fn format_string(format: &[u8], arguments: &[u8]) -> String {
                         arguments = &arguments[nul_range_end + 1..];
                     }
                     b'd' => {
-                        let integer_val = (arguments[0] as i32) << 0
-                            | (arguments[1] as i32) << 8
-                            | (arguments[2] as i32) << 16
-                            | (arguments[3] as i32) << 24;
+                        let integer_val = i32::from_le_bytes(arguments.try_into().expect("Not enough data for argument"));
                         let str = format!("{}", integer_val);
                         formatted_str.push_str(&str);
-                        arguments = &arguments[4..];
+                        arguments = &arguments[std::mem::size_of::<i32>()..];
                     }
                     b'u' => {
-                        let integer_val = (arguments[0] as u32) << 0
-                            | (arguments[1] as u32) << 8
-                            | (arguments[2] as u32) << 16
-                            | (arguments[3] as u32) << 24;
+                        let integer_val = u32::from_le_bytes(arguments.try_into().expect("Not enough data for argument"));
                         let str = format!("{}", integer_val);
                         formatted_str.push_str(&str);
-                        arguments = &arguments[4..];
+                        arguments = &arguments[std::mem::size_of::<u32>()..];
                     }
                     _ => {
                         let format_spec = std::str::from_utf8(&format[..2]).unwrap();
@@ -213,37 +207,39 @@ fn get_log_section<'a>(
     }
 }
 
-fn parse_received_message(interned_string_info: &InternedStringInfo, message: &[u8]) {
-    let timestamp = (message[0] as u64) << 0
-        | (message[1] as u64) << 8
-        | (message[2] as u64) << 16
-        | (message[3] as u64) << 24
-        | (message[4] as u64) << 32
-        | (message[5] as u64) << 40
-        | (message[6] as u64) << 48
-        | (message[7] as u64) << 56;
-    let str_ptr = (message[8] as u32) << 0
-        | (message[9] as u32) << 8
-        | (message[10] as u32) << 16
-        | (message[11] as u32) << 24;
+fn parse_received_message(interned_string_info: &InternedStringInfo, mut message: &[u8]) {
+    let timestamp = u64::from_le_bytes(
+        message[..std::mem::size_of::<u64>()]
+            .try_into()
+            .expect("Not enough data received for timestamp"),
+    ) as f64 / interned_string_info.timestamp_freq;
+    message = &message[std::mem::size_of::<u64>()..];
+
+    let str_ptr = u32::from_le_bytes(
+        message[..std::mem::size_of::<u32>()]
+            .try_into()
+            .expect("Not enough data received for format string pointer"),
+    );
+    message = &message[std::mem::size_of::<u32>()..];
+
     let mappings = &interned_string_info.strings[str_ptr as usize..];
     let (file_name, line_number, format) = recover_format_string(mappings);
-    let formatted_str = format_string(format, &message[12..]);
+    let formatted_str = format_string(format, message);
     let log_section = get_log_section(interned_string_info, str_ptr);
     println!(
-        "{timestamp:<11}{color}{level:<11}{reset_color}: {msg}",
-        timestamp=timestamp,
-        color=color::Fg(log_section.color),
-        level=log_section.name,
-        reset_color=color::Fg(color::Reset),
-        msg=formatted_str
+        "{timestamp:<12.6} {color}{level:<11}{reset_color}: {msg}",
+        timestamp = timestamp,
+        color = color::Fg(log_section.color),
+        level = log_section.name,
+        reset_color = color::Fg(color::Reset),
+        msg = formatted_str
     );
     println!(
         "{color}└── File: {file_name}, Line number: {line_number}{reset}",
-        color=color::Fg(color::LightBlack),
-        file_name=String::from_utf8_lossy(file_name),
-        line_number=String::from_utf8_lossy(line_number),
-        reset=color::Fg(color::Reset)
+        color = color::Fg(color::LightBlack),
+        file_name = String::from_utf8_lossy(file_name),
+        line_number = String::from_utf8_lossy(line_number),
+        reset = color::Fg(color::Reset)
     );
 }
 
@@ -265,6 +261,9 @@ struct Opts {
     /// Path to an ELF firmware file.
     #[structopt(name = "ELF", parse(from_os_str), required_unless_one(&["list-chips", "list-probes"]))]
     elf: Option<PathBuf>,
+
+    #[structopt(long, required_unless_one(&["list-chips", "list-probes"]))]
+    timestamp_freq: f64
 }
 
 fn main() {
@@ -279,7 +278,8 @@ fn main() {
     }
 
     let elf_name = opts.elf.unwrap();
-    let interned_string_info = parse_elf_file(&elf_name);
+    let timestamp_freq = opts.timestamp_freq;
+    let interned_string_info = parse_elf_file(&elf_name, timestamp_freq);
 
     let probes = Probe::list_all();
     if probes.len() > 1 {
