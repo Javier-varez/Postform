@@ -58,13 +58,13 @@ fn parse_log_section<'a, T: Object<'a, 'a>>(
     let start = elf_file
         .symbols()
         .find(|x| x.name().unwrap() == start_symbol_name)
-        .expect(&format!("Error finding symbol {}", start_symbol_name))
+        .unwrap_or_else(|| panic!("Error finding symbol {}", start_symbol_name))
         .address() as u32;
 
     let end = elf_file
         .symbols()
         .find(|x| x.name().unwrap() == end_symbol_name)
-        .expect(&format!("Error finding symbol {}", end_symbol_name))
+        .unwrap_or_else(|| panic!("Error finding symbol {}", end_symbol_name))
         .address() as u32;
 
     LogSection {
@@ -110,14 +110,14 @@ fn parse_elf_file(elf_path: &PathBuf, timestamp_freq: f64) -> InternedStringInfo
     }
 }
 
-fn find_first_character_position<'a>(buffer: &'a [u8], char: u8) -> usize {
+fn find_first_character_position(buffer: &[u8], char: u8) -> usize {
     buffer
         .iter()
         .position(|&c| c == char)
         .unwrap_or(buffer.len())
 }
 
-fn recover_format_string<'a>(mut str_buffer: &'a [u8]) -> (&'a [u8], &'a [u8], &'a [u8]) {
+fn recover_format_string(mut str_buffer: &[u8]) -> (&[u8], &[u8], &[u8]) {
     let at_pos = find_first_character_position(str_buffer, b'@');
     let file_name = &str_buffer[..at_pos];
     str_buffer = &str_buffer[at_pos + 1..];
@@ -136,7 +136,7 @@ fn format_string(format: &[u8], arguments: &[u8]) -> String {
     let mut formatted_str = String::new();
     let mut format = format;
     let mut arguments = arguments;
-    while format.len() != 0 {
+    while !format.is_empty() {
         match format[0] {
             b'%' => {
                 match format[1] {
@@ -188,26 +188,20 @@ fn format_string(format: &[u8], arguments: &[u8]) -> String {
     formatted_str
 }
 
-fn get_log_section<'a>(
-    interned_string_info: &'a InternedStringInfo,
-    str_ptr: u32,
-) -> &'a LogSection {
-    let log_section = interned_string_info.log_sections.iter().find(|&x| {
-        return str_ptr >= x.start && str_ptr < x.end;
-    });
+fn get_log_section(interned_string_info: &InternedStringInfo, str_ptr: u32) -> &LogSection {
+    let log_section = interned_string_info
+        .log_sections
+        .iter()
+        .find(|&x| str_ptr >= x.start && str_ptr < x.end);
 
     match log_section {
-        Some(section) => {
-            return section;
-        }
-        None => {
-            return &LogSection {
-                name: "Unknown",
-                color: color::Rgb(255u8, 0u8, 0u8),
-                start: 0u32,
-                end: 0u32,
-            };
-        }
+        Some(section) => section,
+        None => &LogSection {
+            name: "Unknown",
+            color: color::Rgb(255u8, 0u8, 0u8),
+            start: 0u32,
+            end: 0u32,
+        },
     }
 }
 
@@ -308,8 +302,8 @@ fn main() {
             let mut decoder = CobsDecoder::new(&mut dec_buf);
             loop {
                 let count = log_channel.read(&mut buf[..]).unwrap();
-                for i in 0..count {
-                    match decoder.feed(buf[i]) {
+                for data_byte in buf.iter().take(count) {
+                    match decoder.feed(*data_byte) {
                         Ok(Some(msg_len)) => {
                             drop(decoder);
                             parse_received_message(&interned_string_info, &dec_buf[..msg_len]);
