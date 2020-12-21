@@ -69,9 +69,9 @@ fn parse_log_section<'a, T: Object<'a, 'a>>(
 
     LogSection {
         name: section,
-        color: color,
-        start: start,
-        end: end,
+        color,
+        start,
+        end,
     }
 }
 
@@ -151,13 +151,17 @@ fn format_string(format: &[u8], arguments: &[u8]) -> String {
                         arguments = &arguments[nul_range_end + 1..];
                     }
                     b'd' => {
-                        let integer_val = i32::from_le_bytes(arguments.try_into().expect("Not enough data for argument"));
+                        let integer_val = i32::from_le_bytes(
+                            arguments.try_into().expect("Not enough data for argument"),
+                        );
                         let str = format!("{}", integer_val);
                         formatted_str.push_str(&str);
                         arguments = &arguments[std::mem::size_of::<i32>()..];
                     }
                     b'u' => {
-                        let integer_val = u32::from_le_bytes(arguments.try_into().expect("Not enough data for argument"));
+                        let integer_val = u32::from_le_bytes(
+                            arguments.try_into().expect("Not enough data for argument"),
+                        );
                         let str = format!("{}", integer_val);
                         formatted_str.push_str(&str);
                         arguments = &arguments[std::mem::size_of::<u32>()..];
@@ -212,7 +216,8 @@ fn parse_received_message(interned_string_info: &InternedStringInfo, mut message
         message[..std::mem::size_of::<u64>()]
             .try_into()
             .expect("Not enough data received for timestamp"),
-    ) as f64 / interned_string_info.timestamp_freq;
+    ) as f64
+        / interned_string_info.timestamp_freq;
     message = &message[std::mem::size_of::<u64>()..];
 
     let str_ptr = u32::from_le_bytes(
@@ -263,7 +268,7 @@ struct Opts {
     elf: Option<PathBuf>,
 
     #[structopt(long, required_unless_one(&["list-chips", "list-probes"]))]
-    timestamp_freq: f64
+    timestamp_freq: Option<f64>,
 }
 
 fn main() {
@@ -278,7 +283,7 @@ fn main() {
     }
 
     let elf_name = opts.elf.unwrap();
-    let timestamp_freq = opts.timestamp_freq;
+    let timestamp_freq = opts.timestamp_freq.unwrap();
     let interned_string_info = parse_elf_file(&elf_name, timestamp_freq);
 
     let probes = Probe::list_all();
