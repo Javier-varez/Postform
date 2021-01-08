@@ -3,12 +3,10 @@ LOCAL_DIR := $(call current-dir)
 include $(CLEAR_VARS)
 LOCAL_NAME := format
 TARGET_CFLAGS := \
-    $(COMPILER_TRIPLE) \
     -mcpu=cortex-m3 \
     -mfloat-abi=soft \
     -mthumb
 LOCAL_CFLAGS := \
-    $(COMPILER_CFLAGS) \
     $(TARGET_CFLAGS) \
     -Os \
     -g3 \
@@ -26,7 +24,6 @@ LOCAL_CXXFLAGS := \
     -ffunction-sections \
     -fdata-sections
 LOCAL_LDFLAGS := \
-    $(COMPILER_LDFLAGS) \
     -Wl,--gc-sections \
     -lnosys \
     -Llibopencm3/lib \
@@ -41,6 +38,9 @@ LOCAL_SRC := \
     $(LOCAL_DIR)/src/rtt/cobs_writer.cpp \
     $(LOCAL_DIR)/src/hal/systick.cpp \
     $(LOCAL_DIR)/src/main.cpp
+LOCAL_ARM_ARCHITECTURE := v7-m
+LOCAL_ARM_FPU := nofp
+LOCAL_COMPILER := arm_clang
 include $(BUILD_BINARY)
 
 $(LOCAL_TARGET): libopencm3/lib/libopencm3_stm32f1.a
