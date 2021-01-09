@@ -1,6 +1,6 @@
 use cobs::CobsDecoder;
-use deferred_logger::{download_firmware, run_core};
 use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
+use postform_host::{download_firmware, run_core};
 use probe_rs::config::registry;
 use probe_rs::Probe;
 use probe_rs_rtt::Rtt;
