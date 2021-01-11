@@ -6,6 +6,11 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
+mod postform;
+
+pub use postform::parse_received_message;
+pub use postform::ElfMetadata;
+
 /// Loads an ELF file at the given path to a running session
 pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &PathBuf) {
     let mut mutex_guard = session.lock().unwrap();
