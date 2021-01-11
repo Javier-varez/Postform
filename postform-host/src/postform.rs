@@ -1,12 +1,11 @@
-
 use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
-use std::{convert::TryInto, path::PathBuf, fs};
+use std::{convert::TryInto, fs, path::PathBuf};
 
 #[derive(Copy, Clone, Debug)]
 pub enum Error {
     FileNotFound,
     UnexpectedFileFormat,
-    LevelNotFound
+    LevelNotFound,
 }
 
 #[derive(Copy, Clone, Debug, strum_macros::ToString)]
@@ -15,7 +14,7 @@ pub enum LogLevel {
     Info,
     Warning,
     Error,
-    Unknown
+    Unknown,
 }
 
 impl LogLevel {
@@ -55,28 +54,33 @@ pub struct ElfMetadata {
     log_sections: Vec<LogSection>,
 }
 
-impl ElfMetadata {    
+impl ElfMetadata {
     pub fn parse_elf_file(elf_path: &PathBuf, timestamp_freq: f64) -> Result<Self, Error> {
         let file_contents = match fs::read(elf_path) {
             Ok(content) => content,
-            Err(_) => { return Err(Error::FileNotFound); }
+            Err(_) => {
+                return Err(Error::FileNotFound);
+            }
         };
 
         let elf_file = ElfFile::parse(&file_contents[..]).unwrap();
         let string_section = elf_file.section_by_name(".interned_strings").unwrap();
         let interned_strings = string_section.data().unwrap();
 
-        let levels = [LogLevel::Debug, LogLevel::Info, LogLevel::Warning, LogLevel::Error];
+        let levels = [
+            LogLevel::Debug,
+            LogLevel::Info,
+            LogLevel::Warning,
+            LogLevel::Error,
+        ];
         let mut sections = vec![];
         for level in &levels {
             if let Ok((start, end)) = level.find_level_in_elf(&elf_file) {
-                sections.push(
-                    LogSection {
-                        level: *level,
-                        start,
-                        end
-                    }
-                );
+                sections.push(LogSection {
+                    level: *level,
+                    start,
+                    end,
+                });
             } else {
                 println!("Warning: Level {:?} not found in elf file", level);
             }
@@ -189,7 +193,7 @@ pub struct Log {
     pub level: LogLevel,
     pub message: String,
     pub file_name: String,
-    pub line_number: String
+    pub line_number: String,
 }
 
 pub fn parse_received_message(interned_string_info: &ElfMetadata, mut message: &[u8]) -> Log {
@@ -218,6 +222,6 @@ pub fn parse_received_message(interned_string_info: &ElfMetadata, mut message: &
         level: log_section.level,
         message: formatted_str,
         file_name: String::from_utf8_lossy(file_name).to_string(),
-        line_number: String::from_utf8_lossy(line_number).to_string()
+        line_number: String::from_utf8_lossy(line_number).to_string(),
     }
 }

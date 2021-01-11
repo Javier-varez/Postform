@@ -1,9 +1,9 @@
 use cobs::CobsDecoder;
-use std::path::PathBuf;
-use postform_host::{download_firmware, run_core, parse_received_message, ElfMetadata};
+use postform_host::{download_firmware, parse_received_message, run_core, ElfMetadata};
 use probe_rs::config::registry;
 use probe_rs::Probe;
 use probe_rs_rtt::Rtt;
+use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use structopt::StructOpt;
 use termion::color;
