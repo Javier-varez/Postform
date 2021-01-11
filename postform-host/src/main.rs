@@ -1,12 +1,10 @@
 use cobs::CobsDecoder;
-use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
-use postform_host::{download_firmware, run_core};
+use std::path::PathBuf;
+use postform_host::{download_firmware, run_core, parse_received_message, ElfMetadata};
 use probe_rs::config::registry;
 use probe_rs::Probe;
 use probe_rs_rtt::Rtt;
-use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
-use std::{convert::TryInto, fs};
 use structopt::StructOpt;
 use termion::color;
 
@@ -35,213 +33,6 @@ fn print_chips() {
     }
 }
 
-struct LogSection {
-    name: &'static str,
-    color: color::Rgb,
-    start: u32,
-    end: u32,
-}
-
-struct InternedStringInfo {
-    timestamp_freq: f64,
-    strings: Vec<u8>,
-    log_sections: Vec<LogSection>,
-}
-
-fn parse_log_section<'a, T: Object<'a, 'a>>(
-    elf_file: &'a T,
-    section: &'static str,
-    color: color::Rgb,
-) -> LogSection {
-    let start_symbol_name = format!("__Interned{}Start", section);
-    let end_symbol_name = format!("__Interned{}End", section);
-    let start = elf_file
-        .symbols()
-        .find(|x| x.name().unwrap() == start_symbol_name)
-        .unwrap_or_else(|| panic!("Error finding symbol {}", start_symbol_name))
-        .address() as u32;
-
-    let end = elf_file
-        .symbols()
-        .find(|x| x.name().unwrap() == end_symbol_name)
-        .unwrap_or_else(|| panic!("Error finding symbol {}", end_symbol_name))
-        .address() as u32;
-
-    LogSection {
-        name: section,
-        color,
-        start,
-        end,
-    }
-}
-
-fn parse_elf_file(elf_path: &PathBuf, timestamp_freq: f64) -> InternedStringInfo {
-    let file_contents = fs::read(elf_path).unwrap();
-    let elf_file = ElfFile::parse(&file_contents[..]).unwrap();
-    let string_section = elf_file.section_by_name(".interned_strings").unwrap();
-    let interned_strings = string_section.data().unwrap();
-
-    let mut sections: Vec<LogSection> = vec![];
-    sections.push(parse_log_section(
-        &elf_file,
-        "Debug",
-        color::Rgb(0u8, 255u8, 0u8),
-    ));
-    sections.push(parse_log_section(
-        &elf_file,
-        "Info",
-        color::Rgb(255u8, 255u8, 0u8),
-    ));
-    sections.push(parse_log_section(
-        &elf_file,
-        "Warning",
-        color::Rgb(255u8, 0xA5u8, 0u8),
-    ));
-    sections.push(parse_log_section(
-        &elf_file,
-        "Error",
-        color::Rgb(255u8, 0u8, 0u8),
-    ));
-
-    InternedStringInfo {
-        timestamp_freq,
-        strings: interned_strings.into(),
-        log_sections: sections,
-    }
-}
-
-fn find_first_character_position(buffer: &[u8], char: u8) -> usize {
-    buffer
-        .iter()
-        .position(|&c| c == char)
-        .unwrap_or(buffer.len())
-}
-
-fn recover_format_string(mut str_buffer: &[u8]) -> (&[u8], &[u8], &[u8]) {
-    let at_pos = find_first_character_position(str_buffer, b'@');
-    let file_name = &str_buffer[..at_pos];
-    str_buffer = &str_buffer[at_pos + 1..];
-
-    let at_pos = find_first_character_position(str_buffer, b'@');
-    let line_number = &str_buffer[..at_pos];
-    str_buffer = &str_buffer[at_pos + 1..];
-
-    let nul_char_pos = find_first_character_position(str_buffer, b'\0');
-    let format = &str_buffer[..nul_char_pos];
-
-    (file_name, line_number, format)
-}
-
-fn format_string(format: &[u8], arguments: &[u8]) -> String {
-    let mut formatted_str = String::new();
-    let mut format = format;
-    let mut arguments = arguments;
-    while !format.is_empty() {
-        match format[0] {
-            b'%' => {
-                match format[1] {
-                    b's' => {
-                        let nul_range_end = arguments
-                            .iter()
-                            .position(|&c| c == b'\0')
-                            .unwrap_or(arguments.len());
-
-                        let res = std::str::from_utf8(&arguments[..nul_range_end]).unwrap();
-                        formatted_str.push_str(res);
-                        arguments = &arguments[nul_range_end + 1..];
-                    }
-                    b'd' => {
-                        let integer_val = i32::from_le_bytes(
-                            arguments.try_into().expect("Not enough data for argument"),
-                        );
-                        let str = format!("{}", integer_val);
-                        formatted_str.push_str(&str);
-                        arguments = &arguments[std::mem::size_of::<i32>()..];
-                    }
-                    b'u' => {
-                        let integer_val = u32::from_le_bytes(
-                            arguments.try_into().expect("Not enough data for argument"),
-                        );
-                        let str = format!("{}", integer_val);
-                        formatted_str.push_str(&str);
-                        arguments = &arguments[std::mem::size_of::<u32>()..];
-                    }
-                    _ => {
-                        let format_spec = std::str::from_utf8(&format[..2]).unwrap();
-                        panic!("Unknown format specifier: {}", format_spec);
-                    }
-                }
-                format = &format[2..];
-            }
-            _ => {
-                let percentage_or_end = format
-                    .iter()
-                    .position(|&c| c == b'%')
-                    .unwrap_or(format.len());
-                let format_chunk = std::str::from_utf8(&format[..percentage_or_end]).unwrap();
-                formatted_str.push_str(format_chunk);
-                format = &format[percentage_or_end..];
-            }
-        }
-    }
-
-    formatted_str
-}
-
-fn get_log_section(interned_string_info: &InternedStringInfo, str_ptr: u32) -> &LogSection {
-    let log_section = interned_string_info
-        .log_sections
-        .iter()
-        .find(|&x| str_ptr >= x.start && str_ptr < x.end);
-
-    match log_section {
-        Some(section) => section,
-        None => &LogSection {
-            name: "Unknown",
-            color: color::Rgb(255u8, 0u8, 0u8),
-            start: 0u32,
-            end: 0u32,
-        },
-    }
-}
-
-fn parse_received_message(interned_string_info: &InternedStringInfo, mut message: &[u8]) {
-    let timestamp = u64::from_le_bytes(
-        message[..std::mem::size_of::<u64>()]
-            .try_into()
-            .expect("Not enough data received for timestamp"),
-    ) as f64
-        / interned_string_info.timestamp_freq;
-    message = &message[std::mem::size_of::<u64>()..];
-
-    let str_ptr = u32::from_le_bytes(
-        message[..std::mem::size_of::<u32>()]
-            .try_into()
-            .expect("Not enough data received for format string pointer"),
-    );
-    message = &message[std::mem::size_of::<u32>()..];
-
-    let mappings = &interned_string_info.strings[str_ptr as usize..];
-    let (file_name, line_number, format) = recover_format_string(mappings);
-    let formatted_str = format_string(format, message);
-    let log_section = get_log_section(interned_string_info, str_ptr);
-    println!(
-        "{timestamp:<12.6} {color}{level:<11}{reset_color}: {msg}",
-        timestamp = timestamp,
-        color = color::Fg(log_section.color),
-        level = log_section.name,
-        reset_color = color::Fg(color::Reset),
-        msg = formatted_str
-    );
-    println!(
-        "{color}└── File: {file_name}, Line number: {line_number}{reset}",
-        color = color::Fg(color::LightBlack),
-        file_name = String::from_utf8_lossy(file_name),
-        line_number = String::from_utf8_lossy(line_number),
-        reset = color::Fg(color::Reset)
-    );
-}
-
 #[derive(Debug, StructOpt)]
 #[structopt(name = "deferred-logger")]
 struct Opts {
@@ -265,6 +56,23 @@ struct Opts {
     timestamp_freq: Option<f64>,
 }
 
+fn handle_log(elf_metadata: &ElfMetadata, buffer: &[u8]) {
+    let log = parse_received_message(elf_metadata, buffer);
+    println!(
+        "{timestamp:<12.6} {level:<11}: {msg}",
+        timestamp = log.timestamp,
+        level = log.level.to_string(),
+        msg = log.message
+    );
+    println!(
+        "{color}└── File: {file_name}, Line number: {line_number}{reset}",
+        color = color::Fg(color::LightBlack),
+        file_name = log.file_name,
+        line_number = log.line_number,
+        reset = color::Fg(color::Reset)
+    );
+}
+
 fn main() {
     let opts = Opts::from_args();
 
@@ -278,7 +86,7 @@ fn main() {
 
     let elf_name = opts.elf.unwrap();
     let timestamp_freq = opts.timestamp_freq.unwrap();
-    let interned_string_info = parse_elf_file(&elf_name, timestamp_freq);
+    let elf_metadata = ElfMetadata::parse_elf_file(&elf_name, timestamp_freq).unwrap();
 
     let probes = Probe::list_all();
     if probes.len() > 1 {
@@ -306,7 +114,7 @@ fn main() {
                     match decoder.feed(*data_byte) {
                         Ok(Some(msg_len)) => {
                             drop(decoder);
-                            parse_received_message(&interned_string_info, &dec_buf[..msg_len]);
+                            handle_log(&elf_metadata, &dec_buf[..msg_len]);
                             decoder = CobsDecoder::new(&mut dec_buf[..]);
                         }
                         Err(decoded_len) => {
