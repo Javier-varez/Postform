@@ -1,6 +1,6 @@
 
-#include "rtt/raw_writer.h"
-#include "rtt/rtt_manager.h"
+#include "postform/rtt/raw_writer.h"
+#include "postform/rtt/rtt_manager.h"
 
 Rtt::RawWriter::RawWriter() : m_state(State::Finished) { }
 

@@ -3,8 +3,8 @@
 #ifndef RTT_LOGGER_H_
 #define RTT_LOGGER_H_
 
-#include "logger.h"
-#include "rtt/rtt_manager.h"
+#include "postform/logger.h"
+#include "postform/rtt/rtt_manager.h"
 
 class RttLogger: public Logger<RttLogger> {
  public:

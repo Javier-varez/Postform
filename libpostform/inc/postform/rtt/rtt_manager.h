@@ -5,9 +5,9 @@
 #include <atomic>
 #include <cstdint>
 
-#include "rtt/rtt.h"
-#include "rtt/raw_writer.h"
-#include "rtt/cobs_writer.h"
+#include "postform/rtt/rtt.h"
+#include "postform/rtt/raw_writer.h"
+#include "postform/rtt/cobs_writer.h"
 
 namespace Rtt {
 class Manager {
