@@ -1,6 +1,8 @@
 
 #include "postform/rtt_logger.h"
 
+namespace Postform {
+
 RttLogger::RttLogger() :
   Logger<RttLogger>(),
   m_manager(Rtt::Manager::getInstance()) {}
@@ -22,3 +24,5 @@ void RttLogger::appendString(const char* str) {
 void RttLogger::finishMessage() {
   m_writer.commit();
 }
+
+}  // namespace Postform

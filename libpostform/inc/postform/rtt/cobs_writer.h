@@ -6,6 +6,7 @@
 
 #include "postform/rtt/rtt.h"
 
+namespace Postform {
 namespace Rtt {
 class Manager;
 
@@ -69,5 +70,6 @@ class CobsWriter {
 };
 
 }  // namespace Rtt
+}  // namespace Postform
 
 #endif  // RTT_COBS_WRITER_H_

@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cstring>
 
+namespace Postform {
 namespace Rtt {
 
 enum class Flags: uint32_t {
@@ -57,5 +58,6 @@ struct ControlBlock {
 };
 
 }  // namespace Rtt
+}  // namespace Postform
 
 #endif  // RTT_RTT_H_

@@ -3,6 +3,8 @@
 
 #include "postform/utils.h"
 
+namespace Postform {
+
 static constexpr std::uint32_t UP_BUFFER_SIZE = 1024;
 static constexpr std::uint32_t DOWN_BUFFER_SIZE = 16;
 static UNINIT std::uint8_t s_up_buffer[UP_BUFFER_SIZE];
@@ -27,3 +29,5 @@ Rtt::CobsWriter Rtt::Manager::getCobsWriter() {
   }
   return CobsWriter {};
 }
+
+}  // namespace Postform

@@ -2,6 +2,8 @@
 #include "postform/rtt/cobs_writer.h"
 #include "postform/rtt/rtt_manager.h"
 
+namespace Postform {
+
 Rtt::CobsWriter::CobsWriter(Rtt::Manager* manager, Rtt::Channel* channel) :
   m_manager(manager),
   m_channel(channel),
@@ -78,3 +80,5 @@ void Rtt::CobsWriter::commit() {
     m_manager = nullptr;
   }
 }
+
+}  // namespace Postform
