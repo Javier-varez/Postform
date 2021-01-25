@@ -29,7 +29,8 @@ LOCAL_LDFLAGS := \
     -Llibopencm3/lib \
     -lopencm3_stm32f1
 LOCAL_LINKER_FILE := \
-    $(LOCAL_DIR)/gcc.ld
+    $(LOCAL_DIR)/gcc.ld \
+    $(LOCAL_DIR)/../libpostform/postform.ld
 LOCAL_SRC := \
     $(LOCAL_DIR)/src/startup.cpp \
     $(LOCAL_DIR)/src/hal/systick.cpp \
