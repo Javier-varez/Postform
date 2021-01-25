@@ -6,10 +6,9 @@
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
 
-#include "rtt_logger.h"
-#include "hal/systick.h"
+#include "postform/rtt_logger.h"
 
-#include "utils.h"
+#include "hal/systick.h"
 
 void configureUart() {
   rcc_periph_clock_enable(rcc_periph_clken::RCC_GPIOA);
@@ -29,7 +28,12 @@ void configureUart() {
   usart_enable(USART2);
 }
 
-CLINKAGE int _write([[maybe_unused]] int fd, const char *ptr, int len) {
+uint64_t postformTimestamp() {
+  SysTick& systick = SysTick::getInstance();
+  return systick.getTickCount();
+}
+
+extern "C" int _write([[maybe_unused]] int fd, const char *ptr, int len) {
   for (int i = 0; i < len; i++) {
     usart_send_blocking(USART2, ptr[i]);
   }

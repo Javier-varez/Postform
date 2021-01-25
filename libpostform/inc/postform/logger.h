@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <cstring>
-#include <hal/systick.h>
 
 struct InternedString {
   const char* str;
@@ -17,6 +16,8 @@ enum class LogLevel {
   OFF
 };
 
+uint64_t postformTimestamp();
+
 template<class Derived>
 class Logger {
  public:
@@ -24,7 +25,7 @@ class Logger {
   inline void log(LogLevel level, T ...args) {
     if (level < m_level) return;
 
-    m_derived.startMessage(m_systick.getTickCount());
+    m_derived.startMessage(postformTimestamp());
     sendRemainingArguments(args...);
     m_derived.finishMessage();
   }
@@ -37,7 +38,6 @@ class Logger {
  private:
   LogLevel m_level = LogLevel::DEBUG;
   Derived& m_derived = static_cast<Derived&>(*this);
-  SysTick& m_systick = SysTick::getInstance();
 
   template<typename T>
   inline void sendArgument(const T argument) {

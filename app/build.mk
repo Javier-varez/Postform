@@ -32,15 +32,12 @@ LOCAL_LINKER_FILE := \
     $(LOCAL_DIR)/gcc.ld
 LOCAL_SRC := \
     $(LOCAL_DIR)/src/startup.cpp \
-    $(LOCAL_DIR)/src/rtt_logger.cpp \
-    $(LOCAL_DIR)/src/rtt/rtt_manager.cpp \
-    $(LOCAL_DIR)/src/rtt/raw_writer.cpp \
-    $(LOCAL_DIR)/src/rtt/cobs_writer.cpp \
     $(LOCAL_DIR)/src/hal/systick.cpp \
     $(LOCAL_DIR)/src/main.cpp
 LOCAL_ARM_ARCHITECTURE := v7-m
 LOCAL_ARM_FPU := nofp
 LOCAL_COMPILER := arm_clang
+LOCAL_STATIC_LIBS := libpostform
 include $(BUILD_BINARY)
 
 $(LOCAL_TARGET): libopencm3/lib/libopencm3_stm32f1.a

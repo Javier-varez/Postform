@@ -1,6 +1,6 @@
 
-#include "rtt/cobs_writer.h"
-#include "rtt/rtt_manager.h"
+#include "postform/rtt/cobs_writer.h"
+#include "postform/rtt/rtt_manager.h"
 
 Rtt::CobsWriter::CobsWriter(Rtt::Manager* manager, Rtt::Channel* channel) :
   m_manager(manager),
