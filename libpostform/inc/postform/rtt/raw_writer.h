@@ -5,6 +5,7 @@
 #include <cstdint>
 #include "postform/rtt/rtt.h"
 
+namespace Postform {
 namespace Rtt {
 class Manager;
 
@@ -41,5 +42,6 @@ class RawWriter {
 };
 
 }  // namespace Rtt
+}  // namespace Postform
 
 #endif  // RTT_RAW_WRITER_H_

@@ -2,6 +2,8 @@
 #include "postform/rtt/raw_writer.h"
 #include "postform/rtt/rtt_manager.h"
 
+namespace Postform {
+
 Rtt::RawWriter::RawWriter() : m_state(State::Finished) { }
 
 Rtt::RawWriter::RawWriter(Rtt::Manager* manager, Rtt::Channel* channel) :
@@ -95,3 +97,5 @@ uint32_t Rtt::RawWriter::getMaxContiguous() const {
     return channel_size - m_write_ptr;
   }
 }
+
+}  // namespace Postform

@@ -28,9 +28,11 @@ void configureUart() {
   usart_enable(USART2);
 }
 
-uint64_t postformTimestamp() {
+namespace Postform {
+uint64_t getGlobalTimestamp() {
   SysTick& systick = SysTick::getInstance();
   return systick.getTickCount();
+}
 }
 
 extern "C" int _write([[maybe_unused]] int fd, const char *ptr, int len) {
@@ -44,13 +46,13 @@ int main() {
   rcc_clock_setup_pll(&rcc_hse_configs[RCC_CLOCK_HSE8_72MHZ]);
   configureUart();
 
-  RttLogger logger;
+  Postform::RttLogger logger;
   SysTick& systick = SysTick::getInstance();
 
   const uint32_t systick_clk_hz = 72'000'000;
   systick.init(systick_clk_hz);
 
-  logger.setLevel(LogLevel::INFO);
+  logger.setLevel(Postform::LogLevel::INFO);
 
   uint32_t iteration = 0;
   while (true) {

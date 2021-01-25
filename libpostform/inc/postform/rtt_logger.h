@@ -6,6 +6,8 @@
 #include "postform/logger.h"
 #include "postform/rtt/rtt_manager.h"
 
+namespace Postform {
+
 class RttLogger: public Logger<RttLogger> {
  public:
   RttLogger();
@@ -21,5 +23,7 @@ class RttLogger: public Logger<RttLogger> {
 
   friend Logger<RttLogger>;
 };
+
+}  // namespace Postform
 
 #endif

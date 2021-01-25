@@ -9,6 +9,7 @@
 #include "postform/rtt/raw_writer.h"
 #include "postform/rtt/cobs_writer.h"
 
+namespace Postform {
 namespace Rtt {
 class Manager {
  public:
@@ -36,5 +37,6 @@ class Manager {
   friend class CobsWriter;
 };
 }  // namespace Rtt
+}  // namespace Postform
 
 #endif  // RTT_RTT_MANAGER_H_

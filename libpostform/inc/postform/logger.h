@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <cstring>
 
+namespace Postform {
+
 struct InternedString {
   const char* str;
 };
@@ -16,7 +18,7 @@ enum class LogLevel {
   OFF
 };
 
-uint64_t postformTimestamp();
+uint64_t getGlobalTimestamp();
 
 template<class Derived>
 class Logger {
@@ -25,7 +27,7 @@ class Logger {
   inline void log(LogLevel level, T ...args) {
     if (level < m_level) return;
 
-    m_derived.startMessage(postformTimestamp());
+    m_derived.startMessage(getGlobalTimestamp());
     sendRemainingArguments(args...);
     m_derived.finishMessage();
   }
@@ -60,6 +62,8 @@ class Logger {
   }
 };
 
+}  // namespace Postform
+
 template<char... N>
 struct InternedDebugString {
   __attribute__((section(".interned_strings.debug"))) static constexpr char string[] { N... };
@@ -93,23 +97,23 @@ template<char... N>
 constexpr char InternedErrorString<N...>::string[];
 
 template<typename T, T... C>
-InternedString operator ""_intern_debug() {
-  return InternedString { decltype(InternedDebugString<C..., T{}>{})::string };
+Postform::InternedString operator ""_intern_debug() {
+  return Postform::InternedString { decltype(InternedDebugString<C..., T{}>{})::string };
 }
 
 template<typename T, T... C>
-InternedString operator ""_intern_info() {
-  return InternedString { decltype(InternedInfoString<C..., T{}>{})::string };
+Postform::InternedString operator ""_intern_info() {
+  return Postform::InternedString { decltype(InternedInfoString<C..., T{}>{})::string };
 }
 
 template<typename T, T... C>
-InternedString operator ""_intern_warning() {
-  return InternedString { decltype(InternedWarningString<C..., T{}>{})::string };
+Postform::InternedString operator ""_intern_warning() {
+  return Postform::InternedString { decltype(InternedWarningString<C..., T{}>{})::string };
 }
 
 template<typename T, T... C>
-InternedString operator ""_intern_error() {
-  return InternedString { decltype(InternedErrorString<C..., T{}>{})::string };
+Postform::InternedString operator ""_intern_error() {
+  return Postform::InternedString { decltype(InternedErrorString<C..., T{}>{})::string };
 }
 
 #define __STRINGIFY(X) #X
@@ -121,10 +125,9 @@ InternedString operator ""_intern_error() {
     (logger)->log(level, __FILE__ "@" __EXPAND_AND_STRINGIFY(__LINE__) "@" fmt ## intern_mode, ## __VA_ARGS__); \
   }
 
-#define LOG_DEBUG(logger, fmt, ...) __LOG(LogLevel::DEBUG, _intern_debug, logger, fmt, ## __VA_ARGS__)
-#define LOG_INFO(logger, fmt, ...) __LOG(LogLevel::INFO, _intern_info, logger, fmt, ## __VA_ARGS__)
-#define LOG_WARNING(logger, fmt, ...) __LOG(LogLevel::WARNING, _intern_warning, logger, fmt, ## __VA_ARGS__)
-#define LOG_ERROR(logger, fmt, ...) __LOG(LogLevel::ERROR, _intern_error, logger, fmt, ## __VA_ARGS__)
-
+#define LOG_DEBUG(logger, fmt, ...) __LOG(Postform::LogLevel::DEBUG, _intern_debug, logger, fmt, ## __VA_ARGS__)
+#define LOG_INFO(logger, fmt, ...) __LOG(Postform::LogLevel::INFO, _intern_info, logger, fmt, ## __VA_ARGS__)
+#define LOG_WARNING(logger, fmt, ...) __LOG(Postform::LogLevel::WARNING, _intern_warning, logger, fmt, ## __VA_ARGS__)
+#define LOG_ERROR(logger, fmt, ...) __LOG(Postform::LogLevel::ERROR, _intern_error, logger, fmt, ## __VA_ARGS__)
 
 #endif  // LOGGER_H_
