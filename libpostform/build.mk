@@ -28,4 +28,6 @@ LOCAL_COMPILER := arm_clang
 LOCAL_ARFLAGS := -rcs
 LOCAL_EXPORTED_DIRS := \
 	$(LOCAL_DIR)/inc
+LOCAL_LINKER_FILE := \
+    $(LOCAL_DIR)/postform.ld
 include $(BUILD_STATIC_LIB)
