@@ -1,6 +1,6 @@
 
-#ifndef RTT_RTT_MANAGER_H_
-#define RTT_RTT_MANAGER_H_
+#ifndef POSTFORM_RTT_RTT_MANAGER_H_
+#define POSTFORM_RTT_RTT_MANAGER_H_
 
 #include <atomic>
 #include <cstdint>
@@ -39,4 +39,4 @@ class Manager {
 }  // namespace Rtt
 }  // namespace Postform
 
-#endif  // RTT_RTT_MANAGER_H_
+#endif  // POSTFORM_RTT_RTT_MANAGER_H_

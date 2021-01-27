@@ -32,6 +32,7 @@ LOCAL_LINKER_FILE := \
     $(LOCAL_DIR)/gcc.ld
 LOCAL_SRC := \
     $(LOCAL_DIR)/src/startup.cpp \
+    $(LOCAL_DIR)/src/postform_config.cpp \
     $(LOCAL_DIR)/src/hal/systick.cpp \
     $(LOCAL_DIR)/src/main.cpp
 LOCAL_ARM_ARCHITECTURE := v7-m

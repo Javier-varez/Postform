@@ -1,5 +1,5 @@
 use cobs::CobsDecoder;
-use postform_host::{download_firmware, parse_received_message, run_core, ElfMetadata};
+use postform_host::{download_firmware, run_core, ElfMetadata, LogLevel};
 use probe_rs::config::registry;
 use probe_rs::Probe;
 use probe_rs_rtt::Rtt;
@@ -7,6 +7,8 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use structopt::StructOpt;
 use termion::color;
+
+use color_eyre::eyre::Result;
 
 fn print_probes() {
     let probes = Probe::list_all();
@@ -51,47 +53,70 @@ struct Opts {
     /// Path to an ELF firmware file.
     #[structopt(name = "ELF", parse(from_os_str), required_unless_one(&["list-chips", "list-probes"]))]
     elf: Option<PathBuf>,
+}
 
-    #[structopt(long, required_unless_one(&["list-chips", "list-probes"]))]
-    timestamp_freq: Option<f64>,
+fn color_for_level(level: LogLevel) -> String {
+    match level {
+        LogLevel::Debug => String::from(color::Green.fg_str()),
+        LogLevel::Info => String::from(color::Yellow.fg_str()),
+        LogLevel::Warning => color::Rgb(255u8, 0xA5u8, 0u8).fg_string(),
+        LogLevel::Error => String::from(color::Red.fg_str()),
+        LogLevel::Unknown => color::Rgb(255u8, 0u8, 0u8).fg_string(),
+    }
 }
 
 fn handle_log(elf_metadata: &ElfMetadata, buffer: &[u8]) {
-    let log = parse_received_message(elf_metadata, buffer);
-    println!(
-        "{timestamp:<12.6} {level:<11}: {msg}",
-        timestamp = log.timestamp,
-        level = log.level.to_string(),
-        msg = log.message
-    );
-    println!(
-        "{color}└── File: {file_name}, Line number: {line_number}{reset}",
-        color = color::Fg(color::LightBlack),
-        file_name = log.file_name,
-        line_number = log.line_number,
-        reset = color::Fg(color::Reset)
-    );
+    match elf_metadata.parse(buffer) {
+        Ok(log) => {
+            println!(
+                "{timestamp:<12.6} {color}{level:<11}{reset_color}: {msg}",
+                timestamp = log.timestamp,
+                color = color_for_level(log.level),
+                level = log.level.to_string(),
+                reset_color = color::Fg(color::Reset),
+                msg = log.message
+            );
+            println!(
+                "{color}└── File: {file_name}, Line number: {line_number}{reset}",
+                color = color::Fg(color::LightBlack),
+                file_name = log.file_name,
+                line_number = log.line_number,
+                reset = color::Fg(color::Reset)
+            );
+        }
+        Err(error) => {
+            println!(
+                "{color}Error parsing log:{reset_color} {error}.",
+                color = color::Fg(color::Red),
+                error = error,
+                reset_color = color::Fg(color::Reset)
+            );
+        }
+    }
 }
 
-fn main() {
+fn main() -> Result<()> {
+    color_eyre::install()?;
+
     let opts = Opts::from_args();
 
     if opts.list_probes {
-        return print_probes();
+        print_probes();
+        return Ok(());
     }
 
     if opts.list_chips {
-        return print_chips();
+        print_chips();
+        return Ok(());
     }
 
     let elf_name = opts.elf.unwrap();
-    let timestamp_freq = opts.timestamp_freq.unwrap();
-    let elf_metadata = ElfMetadata::parse_elf_file(&elf_name, timestamp_freq).unwrap();
+    let elf_metadata = ElfMetadata::from_elf_file(&elf_name)?;
 
     let probes = Probe::list_all();
     if probes.len() > 1 {
         println!("More than one probe conected! {:?}", probes);
-        return;
+        return Ok(());
     }
     let probe = probes[0].open().unwrap();
 
@@ -121,7 +146,7 @@ fn main() {
                             drop(decoder);
                             println!("Cobs decoding failed after {} bytes", decoded_len);
                             println!("Decoded buffer: {:?}", &dec_buf[..decoded_len]);
-                            return;
+                            return Ok(());
                         }
                         Ok(None) => {}
                     }
@@ -129,4 +154,5 @@ fn main() {
             }
         }
     }
+    Ok(())
 }

@@ -1,2 +1,2 @@
 [alias]
-r = "run -- --chip STM32F103C8 --timestamp-freq 72000000 ../build/targets/format"
+r = "run -- --chip STM32F103C8 ../build/targets/format"

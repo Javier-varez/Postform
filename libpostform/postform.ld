@@ -1,3 +1,4 @@
+EXTERN(_postform_config);
 
 SECTIONS
 {
@@ -15,5 +16,10 @@ SECTIONS
         __InternedErrorStart = .;
         *(.interned_strings.error)
         __InternedErrorEnd = .;
+    }
+
+    .postform_config 0 (INFO):
+    {
+        *(.postform_config)
     }
 }
