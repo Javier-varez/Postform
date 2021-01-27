@@ -1,5 +1,5 @@
-#ifndef LOGGER_H_
-#define LOGGER_H_
+#ifndef POSTFORM_LOGGER_H_
+#define POSTFORM_LOGGER_H_
 
 #include <cstdint>
 #include <cstring>
@@ -130,4 +130,4 @@ Postform::InternedString operator ""_intern_error() {
 #define LOG_WARNING(logger, fmt, ...) __LOG(Postform::LogLevel::WARNING, _intern_warning, logger, fmt, ## __VA_ARGS__)
 #define LOG_ERROR(logger, fmt, ...) __LOG(Postform::LogLevel::ERROR, _intern_error, logger, fmt, ## __VA_ARGS__)
 
-#endif  // LOGGER_H_
+#endif  // POSTFORM_LOGGER_H_

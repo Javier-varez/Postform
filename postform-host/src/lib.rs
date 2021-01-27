@@ -8,8 +8,7 @@ use std::time::Duration;
 
 mod postform;
 
-pub use postform::parse_received_message;
-pub use postform::ElfMetadata;
+pub use postform::{ElfMetadata, Error, LogLevel};
 
 /// Loads an ELF file at the given path to a running session
 pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &PathBuf) {

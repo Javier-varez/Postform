@@ -1,6 +1,6 @@
 
-#ifndef RTT_RTT_H_
-#define RTT_RTT_H_
+#ifndef POSTFORM_RTT_RTT_H_
+#define POSTFORM_RTT_RTT_H_
 
 #include <atomic>
 #include <cstdint>

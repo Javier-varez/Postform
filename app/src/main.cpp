@@ -28,13 +28,6 @@ void configureUart() {
   usart_enable(USART2);
 }
 
-namespace Postform {
-uint64_t getGlobalTimestamp() {
-  SysTick& systick = SysTick::getInstance();
-  return systick.getTickCount();
-}
-}
-
 extern "C" int _write([[maybe_unused]] int fd, const char *ptr, int len) {
   for (int i = 0; i < len; i++) {
     usart_send_blocking(USART2, ptr[i]);

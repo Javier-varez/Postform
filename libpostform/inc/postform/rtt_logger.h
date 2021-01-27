@@ -1,7 +1,6 @@
 
-
-#ifndef RTT_LOGGER_H_
-#define RTT_LOGGER_H_
+#ifndef POSTFORM_RTT_LOGGER_H_
+#define POSTFORM_RTT_LOGGER_H_
 
 #include "postform/logger.h"
 #include "postform/rtt/rtt_manager.h"
@@ -26,4 +25,4 @@ class RttLogger: public Logger<RttLogger> {
 
 }  // namespace Postform
 
-#endif
+#endif  // POSTFORM_RTT_LOGGER_H_

@@ -1,6 +1,6 @@
 
-#ifndef RTT_RAW_WRITER_H_
-#define RTT_RAW_WRITER_H_
+#ifndef POSTFORM_RTT_RAW_WRITER_H_
+#define POSTFORM_RTT_RAW_WRITER_H_
 
 #include <cstdint>
 #include "postform/rtt/rtt.h"
@@ -44,4 +44,4 @@ class RawWriter {
 }  // namespace Rtt
 }  // namespace Postform
 
-#endif  // RTT_RAW_WRITER_H_
+#endif  // POSTFORM_RTT_RAW_WRITER_H_

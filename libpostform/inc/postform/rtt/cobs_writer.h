@@ -1,6 +1,6 @@
 
-#ifndef RTT_COBS_WRITER_H_
-#define RTT_COBS_WRITER_H_
+#ifndef POSTFORM_RTT_COBS_WRITER_H_
+#define POSTFORM_RTT_COBS_WRITER_H_
 
 #include <cstdint>
 
@@ -72,4 +72,4 @@ class CobsWriter {
 }  // namespace Rtt
 }  // namespace Postform
 
-#endif  // RTT_COBS_WRITER_H_
+#endif  // POSTFORM_RTT_COBS_WRITER_H_
