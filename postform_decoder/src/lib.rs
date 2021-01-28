@@ -87,6 +87,22 @@ pub struct Log {
 /// log section markers.
 ///
 /// An instance of ElfMetadata is required in order to parse any logs received from the target.
+///
+/// ```
+/// use std::path::PathBuf;
+/// use postform_decoder::ElfMetadata;
+/// fn postform_example(file: &PathBuf) {
+///     let elf_metadata = ElfMetadata::from_elf_file(file).unwrap();
+///
+///     // Get postform messages from the device
+///     // This is just an example buffer, assume it comes from the target device
+///     let message = [0u8; 12];
+///
+///     // Parse the logs using the elf metadata
+///     let log = elf_metadata.parse(&message).unwrap();
+///     println!("{}: {}", log.timestamp, log.message);
+/// }
+/// ```
 pub struct ElfMetadata {
     timestamp_freq: f64,
     strings: Vec<u8>,
@@ -134,7 +150,7 @@ impl ElfMetadata {
         })
     }
 
-    fn recover_interned_string(&self, str_buffer: &[u8]) -> Result<(String, u32, String), Error> {
+    fn recover_interned_string(str_buffer: &[u8]) -> Result<(String, u32, String), Error> {
         let end_of_string = str_buffer
             .iter()
             .position(|&c| c == b'\0')
@@ -160,7 +176,8 @@ impl ElfMetadata {
         Ok((file_name, line_number, format))
     }
 
-    fn format_string(mut format: String, mut arguments: &[u8]) -> Result<String, Error> {
+    fn format_string(format: &str, mut arguments: &[u8]) -> Result<String, Error> {
+        let mut format = String::from(format);
         let mut formatted_str = String::new();
         loop {
             let format_spec_pos = match format.find('%') {
@@ -226,8 +243,8 @@ impl ElfMetadata {
         message = &message[std::mem::size_of::<u32>()..];
 
         let mappings = &self.strings[str_ptr as usize..];
-        let (file_name, line_number, format_str) = self.recover_interned_string(mappings)?;
-        let formatted_str = Self::format_string(format_str, message)?;
+        let (file_name, line_number, format_str) = Self::recover_interned_string(mappings)?;
+        let formatted_str = Self::format_string(&format_str, message)?;
         let log_section = self.get_log_section(str_ptr);
 
         Ok(Log {
@@ -268,3 +285,41 @@ const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 3] = [
         Ok(&buffer[std::mem::size_of::<u32>()..])
     }),
 ];
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_recover_interned_string() {
+        let buffer = b"test/my_file.cpp@1234@This is my log message\0other data";
+        let (file_name, line, msg) = ElfMetadata::recover_interned_string(buffer).unwrap();
+        assert_eq!(file_name, "test/my_file.cpp");
+        assert_eq!(line, 1234u32);
+        assert_eq!(msg, "This is my log message");
+    }
+
+    #[test]
+    fn test_format_string_signed_integer() {
+        let format = "This is the log message %d and some data after";
+        let args = (-4_000_230i32).to_le_bytes();
+        let log = ElfMetadata::format_string(format, &args).unwrap();
+        assert_eq!(log, "This is the log message -4000230 and some data after");
+    }
+
+    #[test]
+    fn test_format_string_unsigned_integer() {
+        let format = "This is the log message %u";
+        let args = 4_000_230u32.to_le_bytes();
+        let log = ElfMetadata::format_string(format, &args).unwrap();
+        assert_eq!(log, "This is the log message 4000230");
+    }
+
+    #[test]
+    fn test_format_string_string_argument() {
+        let format = "This is the log message %s";
+        let args = b"And another string goes here\0 some other data";
+        let log = ElfMetadata::format_string(format, args).unwrap();
+        assert_eq!(log, "This is the log message And another string goes here");
+    }
+}

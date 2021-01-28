@@ -53,3 +53,22 @@ jobs:
       with:
         command: check
 
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: 'true'
+    - name: Install libusb and libftdi
+      run: |
+        sudo apt update
+        sudo apt install -y libusb-1.0-0-dev libftdi1-dev
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - name: Run cargo test
+      uses: actions-rs/cargo@v1
+      with:
+        command: test
