@@ -2,6 +2,13 @@
 name = "postform_rtt"
 version = "0.1.0"
 authors = ["Javier Alvarez <javier.alvarez@allthingsembedded.net>"]
+description = "Decodes Rtt logs for Postform, an efficient logging framework for mcu's"
+license = "MIT OR Apache-2.0"
+homepage = "https://github.com/Javier-varez/Postform"
+repository = "https://github.com/Javier-varez/Postform"
+categories = ["embedded", "logger"]
+keywords = ["embedded", "log", "logger"]
+readme = "../README.md"
 edition = "2018"
 
 [dependencies]
