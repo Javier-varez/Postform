@@ -1,3 +1,3 @@
 [workspace]
-members = ["postform-host"]
+members = ["postform_rtt", "postform_decoder"]
 

@@ -1,7 +1,7 @@
 use cobs::CobsDecoder;
 use color_eyre::eyre::Result;
 use object::read::{File as ElfFile, Object, ObjectSymbol};
-use postform_host::{ElfMetadata, LogLevel};
+use postform_decoder::{ElfMetadata, LogLevel};
 use probe_rs::{
     config::registry,
     flashing::{download_file, FileDownloadError, Format},

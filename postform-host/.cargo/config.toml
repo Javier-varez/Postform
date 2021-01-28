@@ -1,2 +1,0 @@
-[alias]
-r = "run -- --chip STM32F103C8 ../build/targets/format"
