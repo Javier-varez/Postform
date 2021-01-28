@@ -2,9 +2,14 @@
 name = "postform_decoder"
 version = "0.1.0"
 authors = ["Javier Alvarez <javier.alvarez@allthingsembedded.net>"]
+description = "Decoder for the Postform logging framework, an efficient logging framework for mcu's"
+license = "MIT OR Apache-2.0"
+homepage = "https://github.com/Javier-varez/Postform"
+repository = "https://github.com/Javier-varez/Postform"
+categories = ["embedded"]
+keywords = ["embedded", "log", "logger"]
+readme = "../README.md"
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 object = "0.22"
