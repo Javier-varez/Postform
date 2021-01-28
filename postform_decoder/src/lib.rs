@@ -79,7 +79,7 @@ pub struct Log {
     pub level: LogLevel,
     pub message: String,
     pub file_name: String,
-    pub line_number: String,
+    pub line_number: u32,
 }
 
 /// The ElfMetadata struct encapsulates all log metadata contained in the target ELF file.
@@ -134,86 +134,61 @@ impl ElfMetadata {
         })
     }
 
-    fn recover_interned_string<'a>(
-        &self,
-        str_buffer: &'a [u8],
-    ) -> Result<(&'a [u8], &'a [u8], &'a [u8]), Error> {
+    fn recover_interned_string(&self, str_buffer: &[u8]) -> Result<(String, u32, String), Error> {
         let end_of_string = str_buffer
             .iter()
             .position(|&c| c == b'\0')
             .ok_or(Error::InvalidFormatString)?;
-        let mut str_buffer = &str_buffer[..end_of_string];
+        let str_buffer = &str_buffer[..end_of_string];
 
         let at_pos = str_buffer
             .iter()
             .position(|&c| c == b'@')
             .ok_or(Error::InvalidFormatString)?;
-        let file_name = &str_buffer[..at_pos];
-        str_buffer = &str_buffer[at_pos + 1..];
+        let file_name = String::from_utf8_lossy(&str_buffer[..at_pos]).to_string();
+        let str_buffer = &str_buffer[at_pos + 1..];
 
         let at_pos = str_buffer
             .iter()
             .position(|&c| c == b'@')
             .ok_or(Error::InvalidFormatString)?;
-        let line_number = &str_buffer[..at_pos];
-        let format = &str_buffer[at_pos + 1..];
+        let line_number = String::from_utf8_lossy(&str_buffer[..at_pos])
+            .parse()
+            .or(Err(Error::InvalidFormatString))?;
+        let format = String::from_utf8_lossy(&str_buffer[at_pos + 1..]).to_string();
 
         Ok((file_name, line_number, format))
     }
 
-    fn format_string(&self, format: &[u8], arguments: &[u8]) -> Result<String, Error> {
+    fn format_string(mut format: String, mut arguments: &[u8]) -> Result<String, Error> {
         let mut formatted_str = String::new();
-        let mut format = format;
-        let mut arguments = arguments;
-        while !format.is_empty() {
-            match format[0] {
-                b'%' => {
-                    match format[1] {
-                        b's' => {
-                            let nul_range_end = arguments
-                                .iter()
-                                .position(|&c| c == b'\0')
-                                .unwrap_or(arguments.len());
-
-                            let res = std::str::from_utf8(&arguments[..nul_range_end]).unwrap();
-                            formatted_str.push_str(res);
-                            arguments = &arguments[nul_range_end + 1..];
-                        }
-                        b'd' => {
-                            let integer_val = i32::from_le_bytes(
-                                arguments.try_into().or(Err(Error::MissingLogArgument))?,
-                            );
-                            let str = format!("{}", integer_val);
-                            formatted_str.push_str(&str);
-                            arguments = &arguments[std::mem::size_of::<i32>()..];
-                        }
-                        b'u' => {
-                            let integer_val = u32::from_le_bytes(
-                                arguments.try_into().or(Err(Error::MissingLogArgument))?,
-                            );
-                            let str = format!("{}", integer_val);
-                            formatted_str.push_str(&str);
-                            arguments = &arguments[std::mem::size_of::<u32>()..];
-                        }
-                        _ => {
-                            return Err(Error::InvalidFormatSpecifier(format[1] as char));
-                        }
-                    }
-                    format = &format[2..];
+        loop {
+            let format_spec_pos = match format.find('%') {
+                Some(pos) => pos,
+                None => {
+                    // Insert what's left of the format string and return;
+                    formatted_str.push_str(&format);
+                    return Ok(formatted_str);
                 }
-                _ => {
-                    let percentage_or_end = format
-                        .iter()
-                        .position(|&c| c == b'%')
-                        .unwrap_or(format.len());
-                    let format_chunk = std::str::from_utf8(&format[..percentage_or_end]).unwrap();
-                    formatted_str.push_str(format_chunk);
-                    format = &format[percentage_or_end..];
+            };
+
+            // Push characters until the %
+            format
+                .chars()
+                .take(format_spec_pos)
+                .for_each(|c| formatted_str.push(c));
+            // Advance the format string
+            format = format.chars().skip(format_spec_pos).collect();
+
+            for (format_spec, handler) in &FORMAT_SPEC_TABLE {
+                if format.starts_with(format_spec) {
+                    arguments = handler(&mut formatted_str, arguments)?;
+                    // Advance the format string past the format specifier
+                    format = format.chars().skip(format_spec.len()).collect();
+                    break;
                 }
             }
         }
-
-        Ok(formatted_str)
     }
 
     fn get_log_section(&self, str_ptr: u64) -> &LogSection {
@@ -252,15 +227,44 @@ impl ElfMetadata {
 
         let mappings = &self.strings[str_ptr as usize..];
         let (file_name, line_number, format_str) = self.recover_interned_string(mappings)?;
-        let formatted_str = self.format_string(format_str, message)?;
+        let formatted_str = Self::format_string(format_str, message)?;
         let log_section = self.get_log_section(str_ptr);
 
         Ok(Log {
             timestamp,
             level: log_section.level,
             message: formatted_str,
-            file_name: String::from_utf8_lossy(file_name).to_string(),
-            line_number: String::from_utf8_lossy(line_number).to_string(),
+            file_name,
+            line_number,
         })
     }
 }
+
+type FormatSpecHandler = for<'a> fn(&mut String, &'a [u8]) -> Result<&'a [u8], Error>;
+
+const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 3] = [
+    ("%s", |out_str, buffer| {
+        let nul_range_end = buffer
+            .iter()
+            .position(|&c| c == b'\0')
+            .unwrap_or(buffer.len());
+
+        let res =
+            std::str::from_utf8(&buffer[..nul_range_end]).or(Err(Error::MissingLogArgument))?;
+        out_str.push_str(res);
+
+        Ok(&buffer[nul_range_end + 1..])
+    }),
+    ("%d", |out_str, buffer| {
+        let integer_val = i32::from_le_bytes(buffer.try_into().or(Err(Error::MissingLogArgument))?);
+        let str = format!("{}", integer_val);
+        out_str.push_str(&str);
+        Ok(&buffer[std::mem::size_of::<i32>()..])
+    }),
+    ("%u", |out_str, buffer| {
+        let integer_val = u32::from_le_bytes(buffer.try_into().or(Err(Error::MissingLogArgument))?);
+        let str = format!("{}", integer_val);
+        out_str.push_str(&str);
+        Ok(&buffer[std::mem::size_of::<u32>()..])
+    }),
+];

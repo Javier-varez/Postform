@@ -1,17 +1,16 @@
 [package]
-name = "postform-host"
+name = "postform_rtt"
 version = "0.1.0"
 authors = ["Javier Alvarez <javier.alvarez@allthingsembedded.net>"]
 edition = "2018"
 
 [dependencies]
+postform_decoder = { path="../postform_decoder", version="0.1" }
+object = "0.22"
 probe-rs = "0.9"
 probe-rs-rtt = "0.4"
 structopt = "0.3"
-object = "0.22"
 termion = "1.5"
 cobs = "0.1"
-strum_macros = "0.20"
 thiserror = "1.0"
 color-eyre = "0.5"
-byteorder = "1.4.2"
