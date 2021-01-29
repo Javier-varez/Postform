@@ -4,3 +4,4 @@ build
 postform-host/target
 .vscode
 target
+libpostform/docs
