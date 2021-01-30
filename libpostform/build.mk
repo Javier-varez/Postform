@@ -15,13 +15,16 @@ LOCAL_CFLAGS := \
     -fdata-sections
 LOCAL_CXXFLAGS := \
     $(LOCAL_CFLAGS) \
+    -std=gnu++17 \
     -fno-exceptions \
     -fno-rtti
 LOCAL_SRC := \
     $(LOCAL_DIR)/src/rtt_logger.cpp \
     $(LOCAL_DIR)/src/rtt/rtt_manager.cpp \
     $(LOCAL_DIR)/src/rtt/raw_writer.cpp \
-    $(LOCAL_DIR)/src/rtt/cobs_writer.cpp
+    $(LOCAL_DIR)/src/rtt/cobs_writer.cpp \
+    $(LOCAL_DIR)/src/format_validator.cpp \
+    $(LOCAL_DIR)/src/macros.cpp
 LOCAL_ARM_ARCHITECTURE := v7-m
 LOCAL_ARM_FPU := nofp
 LOCAL_COMPILER := arm_clang

@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <cstring>
 
+#include "postform/format_validator.h"
+
 namespace Postform {
 
 /**
@@ -82,15 +84,6 @@ class Logger {
     sendRemainingArguments(args...);
     m_derived.finishMessage();
   }
-
-  /**
-   * @brief validator for a format string.
-   *
-   * Doesn't require an implementation, since it is only
-   * used for the format string validation.
-   */
-  inline void printfFmtValidator([[maybe_unused]] const char* fmt, ...)
-    __attribute__((format(printf, 2, 3))) { }
 
   /**
    * @brief Sets the log level for the logger.
@@ -228,7 +221,7 @@ Postform::InternedString operator ""_intern_error() {
 
 #define __LOG(level, intern_mode, logger, fmt, ...) \
   { \
-    (logger)->printfFmtValidator(fmt, ## __VA_ARGS__); \
+    POSTFORM_ASSERT_FORMAT(fmt, ## __VA_ARGS__); \
     (logger)->log(level, __FILE__ "@" __EXPAND_AND_STRINGIFY(__LINE__) "@" fmt ## intern_mode, ## __VA_ARGS__); \
   }
 

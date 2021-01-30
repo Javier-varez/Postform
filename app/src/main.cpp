@@ -45,13 +45,13 @@ int main() {
   const uint32_t systick_clk_hz = 72'000'000;
   systick.init(systick_clk_hz);
 
-  logger.setLevel(Postform::LogLevel::INFO);
+  logger.setLevel(Postform::LogLevel::DEBUG);
 
   uint32_t iteration = 0;
   while (true) {
     // All the logs here together act as the worst case for the decoder. Without proper framing
     // they would be confused from the host. If they all show that means that the COBS framing works
-    LOG_DEBUG(&logger, "Iteration number: %d", iteration);
+    LOG_DEBUG(&logger, "Iteration number: %u", iteration);
     LOG_DEBUG(&logger, "Is this %s or what?!", "nice");
     LOG_INFO(&logger, "I am %d years old...", 28);
     LOG_WARNING(&logger, "Third string! With multiple %s and more numbers: %d", "args", -1124);

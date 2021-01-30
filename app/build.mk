@@ -19,6 +19,7 @@ LOCAL_CFLAGS := \
     -Wno-gnu-string-literal-operator-template
 LOCAL_CXXFLAGS := \
     $(LOCAL_CFLAGS) \
+    -std=gnu++17 \
     -fno-exceptions \
     -fno-rtti \
     -ffunction-sections \
