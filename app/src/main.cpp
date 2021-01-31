@@ -59,9 +59,7 @@ int main() {
     char char_array[] = "123";
     LOG_ERROR(&logger, "This is my char array: %s", char_array);
 
-    // This log check what happens when we send something larger than 1024 bytes (buffer size)
-    // It's also great to test the dummy zeroes, as it doesn't have any zeroes.
-    LOG_DEBUG(&logger, "%s", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+    constexpr auto interned_string = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
                              "Proin congue, libero vitae condimentum egestas, tortor metus "
                              "condimentum augue, in pretium dolor purus quis lectus. Aenean "
                              "nunc sapien, eleifend quis convallis ut, venenatis quis mauris. "
@@ -84,7 +82,10 @@ int main() {
                              "laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend "
                              "metus. Curabitur malesuada condimentum augue ut molestie. Vivamus "
                              "pellentesque purus sed velit placerat ultricies. In ut erat diam. "
-                             "Suspendisse potenti.");
+                             "Suspendisse potenti."_intern;
+
+    LOG_DEBUG(&logger, "Now if I wanted to print a really long text I can use %%k: %k",
+              interned_string);
     systick.delay(SysTick::TICKS_PER_SECOND);
     iteration++;
   }
