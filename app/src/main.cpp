@@ -56,6 +56,8 @@ int main() {
     LOG_INFO(&logger, "I am %d years old...", 28);
     LOG_WARNING(&logger, "Third string! With multiple %s and more numbers: %d", "args", -1124);
     LOG_ERROR(&logger, "Oh boy, error %d just happened", 234556);
+    char char_array[] = "123";
+    LOG_ERROR(&logger, "This is my char array: %s", char_array);
 
     // This log check what happens when we send something larger than 1024 bytes (buffer size)
     // It's also great to test the dummy zeroes, as it doesn't have any zeroes.

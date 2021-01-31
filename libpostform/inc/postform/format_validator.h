@@ -8,62 +8,133 @@
 
 #include "postform/macros.h"
 #include "postform/utils.h"
+#include "postform/types.h"
 
 namespace Postform {
+
+struct SizeSpecHandler {
+    const char* size_spec;
+    bool (*matcher)(std::size_t size);
+};
+
+constexpr static SizeSpecHandler default_size_handler {
+    "",
+    [](std::size_t size [[maybe_unused]]) { return true; }
+};
+
+constexpr static std::array<SizeSpecHandler, 5> integer_size_handlers = {
+    SizeSpecHandler {
+        "",
+        [](std::size_t size) { return size == sizeof(int); }
+    },
+    SizeSpecHandler {
+        "l",
+        [](std::size_t size) { return size == sizeof(long int); }
+    },
+    SizeSpecHandler {
+        "ll",
+        [](std::size_t size) { return size == sizeof(long long int); }
+    },
+    SizeSpecHandler {
+        "hh",
+        [](std::size_t size) { return size == sizeof(char); }
+    },
+    SizeSpecHandler {
+        "h",
+        [](std::size_t size) { return size == sizeof(short); }
+    },
+};
+
+struct SizeSpecHandlers {
+    const SizeSpecHandler* handlers = &default_size_handler;
+    uint32_t num = 1;
+};
+
+struct FormatSpecHandler {
+    const SizeSpecHandlers size_handlers;
+    const char* format_spec;
+    bool (*matcher)();
+};
+
 template<class T>
 [[nodiscard]] constexpr static bool formatValidatorSingleArgument(const char* fmt,
                                                                   [[maybe_unused]] T arg,
                                                                   std::size_t* position) {
-    struct FormatSpecHandler {
-        const char* format_spec;
-        bool (*matcher)();
-    };
 
     // This array needs to be defined inside the template in order to have visibility of T.
-    constexpr std::array<FormatSpecHandler, 5> format_spec_handlers = {
+    constexpr std::array<FormatSpecHandler, 8> format_spec_handlers = {
         FormatSpecHandler {
-            "%s",
+            SizeSpecHandlers {},
+            "s",
             []() { return std::is_convertible_v<T, const char*>; }
         },
         FormatSpecHandler {
-            "%d",
+            SizeSpecHandlers { integer_size_handlers.data(), integer_size_handlers.size() },
+            "d",
             []() { return std::is_integral_v<T> && std::is_signed_v<T>; }
         },
         FormatSpecHandler {
-            "%u",
+            SizeSpecHandlers { integer_size_handlers.data(), integer_size_handlers.size() },
+            "i",
+            []() { return std::is_integral_v<T> && std::is_signed_v<T>; }
+        },
+        FormatSpecHandler {
+            SizeSpecHandlers { integer_size_handlers.data(), integer_size_handlers.size() },
+            "u",
             []() { return std::is_integral_v<T> && std::is_unsigned_v<T>; }
         },
         FormatSpecHandler {
-            "%x",
+            SizeSpecHandlers { integer_size_handlers.data(), integer_size_handlers.size() },
+            "o",
             []() { return std::is_integral_v<T>; }
         },
         FormatSpecHandler {
-            "%p",
-            []() { return std::is_pointer_v<T>; }
+            SizeSpecHandlers { integer_size_handlers.data(), integer_size_handlers.size() },
+            "x",
+            []() { return std::is_integral_v<T>; }
+        },
+        FormatSpecHandler {
+            SizeSpecHandlers {},
+            "p",
+            []() { return std::is_convertible_v<T, void*>; }
+        },
+        FormatSpecHandler {
+            SizeSpecHandlers {},
+            "k",
+            []() { return std::is_same_v<T, Postform::InternedString>; }
         },
     };
 
     /// Common code for handling all supported format_specifiers
     std::size_t i = 0;
     while (fmt[i] != '\0') {
-        for (const auto format_spec_handler : format_spec_handlers) {
-            if (strStartsWith(&fmt[i], format_spec_handler.format_spec)) {
-                *position = i + stringLength(format_spec_handler.format_spec);
-                return format_spec_handler.matcher();
+        if (fmt[i++] == '%') {
+            if (fmt[i] == '%') {
+                i++;
+                continue;
             }
-        }
 
-        // Handle escaped percentage sign
-        if (strStartsWith(&fmt[i], "%%")) {
-            i += 2;
-        } else if (strStartsWith(&fmt[i], "%")) {
+            for (const auto& format_spec_handler : format_spec_handlers) {
+                for (uint32_t size_index = 0; size_index < format_spec_handler.size_handlers.num; size_index++) {
+                    const SizeSpecHandler* size_handler = &format_spec_handler.size_handlers.handlers[size_index];
+                    if (!strStartsWith(&fmt[i], size_handler->size_spec)) {
+                        continue;
+                    }
+
+                    auto size_handler_spec_size = stringLength(size_handler->size_spec);
+
+                    if (strStartsWith(&fmt[i + size_handler_spec_size], format_spec_handler.format_spec)) {
+                        if (position != nullptr) *position = i + size_handler_spec_size + stringLength(format_spec_handler.format_spec);
+                        return format_spec_handler.matcher() && size_handler->matcher(sizeof(T));
+                    }
+                }
+            }
+
             // some other unhandled format specifier was found!
             return false;
-        } else {
-            i++;
         }
     }
-    *position = i;
+    if (position != nullptr) *position = i;
     return false;
 }
 
@@ -91,7 +162,7 @@ template<class T, class ...U>
 
 template<class T>
 struct ConstexprStaticInstance {
-    constexpr static std::remove_reference_t<T> value {};
+    constexpr static std::decay_t<T> value {};
 };
 }  // namespace Postform
 

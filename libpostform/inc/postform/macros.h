@@ -2,6 +2,9 @@
 #ifndef POSTFORM_MACROS_H_
 #define POSTFORM_MACROS_H_
 
+#define __POSTFORM_STRINGIFY(X) #X
+#define __POSTFORM_EXPAND_AND_STRINGIFY(X) __POSTFORM_STRINGIFY(X)
+
 //! Gets the 16th element passed to it
 #define POSTFORM_INTERNAL_INTERNAL_16TH(_1, _2, _3, _4, _5, _6, _7, _8, _9, \
                                         _10, _11, _12, _13, _14, _15, _16,  \
