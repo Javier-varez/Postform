@@ -30,16 +30,17 @@ LOCAL_LDFLAGS := \
     -Llibopencm3/lib \
     -lopencm3_stm32f1
 LOCAL_LINKER_FILE := \
-    $(LOCAL_DIR)/gcc.ld
+    $(LOCAL_DIR)/memory.ld
 LOCAL_SRC := \
-    $(LOCAL_DIR)/src/startup.cpp \
     $(LOCAL_DIR)/src/postform_config.cpp \
     $(LOCAL_DIR)/src/hal/systick.cpp \
     $(LOCAL_DIR)/src/main.cpp
 LOCAL_ARM_ARCHITECTURE := v7-m
 LOCAL_ARM_FPU := nofp
 LOCAL_COMPILER := arm_clang
-LOCAL_STATIC_LIBS := libpostform
+LOCAL_STATIC_LIBS := \
+    libcortex_m_startup \
+    libpostform
 include $(BUILD_BINARY)
 
 $(LOCAL_TARGET): libopencm3/lib/libopencm3_stm32f1.a
