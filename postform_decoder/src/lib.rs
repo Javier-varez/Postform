@@ -150,7 +150,8 @@ impl ElfMetadata {
         })
     }
 
-    fn recover_interned_string(str_buffer: &[u8]) -> Result<(String, u32, String), Error> {
+    fn recover_interned_string(&self, str_ptr: usize) -> Result<(String, u32, String), Error> {
+        let str_buffer = &self.strings[str_ptr..];
         let end_of_string = str_buffer
             .iter()
             .position(|&c| c == b'\0')
@@ -176,7 +177,16 @@ impl ElfMetadata {
         Ok((file_name, line_number, format))
     }
 
-    fn format_string(format: &str, mut arguments: &[u8]) -> Result<String, Error> {
+    fn recover_user_interned_string(&self, str_ptr: usize) -> Result<String, Error> {
+        let str_buffer = &self.strings[str_ptr..];
+        let end_of_string = str_buffer
+            .iter()
+            .position(|&c| c == b'\0')
+            .ok_or(Error::InvalidFormatString)?;
+        Ok(String::from_utf8_lossy(&str_buffer[..end_of_string]).to_string())
+    }
+
+    fn format_string(&self, format: &str, mut arguments: &[u8]) -> Result<String, Error> {
         let mut format = String::from(format);
         let mut formatted_str = String::new();
         loop {
@@ -199,7 +209,7 @@ impl ElfMetadata {
 
             for (format_spec, handler) in &FORMAT_SPEC_TABLE {
                 if format.starts_with(format_spec) {
-                    arguments = handler(&mut formatted_str, arguments)?;
+                    arguments = handler(&self, &mut formatted_str, arguments)?;
                     // Advance the format string past the format specifier
                     format = format.chars().skip(format_spec.len()).collect();
                     break;
@@ -242,9 +252,9 @@ impl ElfMetadata {
         ) as u64;
         message = &message[std::mem::size_of::<u32>()..];
 
-        let mappings = &self.strings[str_ptr as usize..];
-        let (file_name, line_number, format_str) = Self::recover_interned_string(mappings)?;
-        let formatted_str = Self::format_string(&format_str, message)?;
+        let (file_name, line_number, format_str) =
+            self.recover_interned_string(str_ptr as usize)?;
+        let formatted_str = self.format_string(&format_str, message)?;
         let log_section = self.get_log_section(str_ptr);
 
         Ok(Log {
@@ -257,10 +267,10 @@ impl ElfMetadata {
     }
 }
 
-type FormatSpecHandler = for<'a> fn(&mut String, &'a [u8]) -> Result<&'a [u8], Error>;
+type FormatSpecHandler = for<'a> fn(&ElfMetadata, &mut String, &'a [u8]) -> Result<&'a [u8], Error>;
 
-const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 3] = [
-    ("%s", |out_str, buffer| {
+const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 5] = [
+    ("%s", |_elf_metadata, out_str, buffer| {
         let nul_range_end = buffer
             .iter()
             .position(|&c| c == b'\0')
@@ -272,17 +282,28 @@ const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 3] = [
 
         Ok(&buffer[nul_range_end + 1..])
     }),
-    ("%d", |out_str, buffer| {
+    ("%d", |_elf_metadata, out_str, buffer| {
         let integer_val = i32::from_le_bytes(buffer.try_into().or(Err(Error::MissingLogArgument))?);
         let str = format!("{}", integer_val);
         out_str.push_str(&str);
         Ok(&buffer[std::mem::size_of::<i32>()..])
     }),
-    ("%u", |out_str, buffer| {
+    ("%u", |_elf_metadata, out_str, buffer| {
         let integer_val = u32::from_le_bytes(buffer.try_into().or(Err(Error::MissingLogArgument))?);
         let str = format!("{}", integer_val);
         out_str.push_str(&str);
         Ok(&buffer[std::mem::size_of::<u32>()..])
+    }),
+    ("%k", |elf_metadata, out_str, buffer| {
+        let str_ptr =
+            u32::from_le_bytes(buffer.try_into().or(Err(Error::MissingLogArgument))?) as usize;
+        let interned_string = elf_metadata.recover_user_interned_string(str_ptr)?;
+        out_str.push_str(&interned_string);
+        Ok(&buffer[std::mem::size_of::<u32>()..])
+    }),
+    ("%%", |_elf_metadata, out_str, buffer| {
+        out_str.push('%');
+        Ok(buffer)
     }),
 ];
 
@@ -290,36 +311,47 @@ const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 3] = [
 mod tests {
     use super::*;
 
+    fn create_elf_metadata() -> ElfMetadata {
+        ElfMetadata {
+            timestamp_freq: 1_000f64,
+            strings: b"test/my_file.cpp@1234@This is my log message\0test/my_file2.cpp@12343@This is my second log message\0".into_iter().map(|c| c.clone()).collect(),
+            log_sections: vec![],
+        }
+    }
+
     #[test]
     fn test_recover_interned_string() {
-        let buffer = b"test/my_file.cpp@1234@This is my log message\0other data";
-        let (file_name, line, msg) = ElfMetadata::recover_interned_string(buffer).unwrap();
-        assert_eq!(file_name, "test/my_file.cpp");
-        assert_eq!(line, 1234u32);
-        assert_eq!(msg, "This is my log message");
+        let elf_metadata = create_elf_metadata();
+        let (file_name, line, msg) = elf_metadata.recover_interned_string(45usize).unwrap();
+        assert_eq!(file_name, "test/my_file2.cpp");
+        assert_eq!(line, 12343u32);
+        assert_eq!(msg, "This is my second log message");
     }
 
     #[test]
     fn test_format_string_signed_integer() {
+        let elf_metadata = create_elf_metadata();
         let format = "This is the log message %d and some data after";
         let args = (-4_000_230i32).to_le_bytes();
-        let log = ElfMetadata::format_string(format, &args).unwrap();
+        let log = elf_metadata.format_string(format, &args).unwrap();
         assert_eq!(log, "This is the log message -4000230 and some data after");
     }
 
     #[test]
     fn test_format_string_unsigned_integer() {
+        let elf_metadata = create_elf_metadata();
         let format = "This is the log message %u";
         let args = 4_000_230u32.to_le_bytes();
-        let log = ElfMetadata::format_string(format, &args).unwrap();
+        let log = elf_metadata.format_string(format, &args).unwrap();
         assert_eq!(log, "This is the log message 4000230");
     }
 
     #[test]
     fn test_format_string_string_argument() {
+        let elf_metadata = create_elf_metadata();
         let format = "This is the log message %s";
         let args = b"And another string goes here\0 some other data";
-        let log = ElfMetadata::format_string(format, args).unwrap();
+        let log = elf_metadata.format_string(format, args).unwrap();
         assert_eq!(log, "This is the log message And another string goes here");
     }
 }
