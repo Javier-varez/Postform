@@ -1,4 +1,5 @@
 LOCAL_DIR := $(call current-dir)
+POSTFORM_TOP_DIR := $(LOCAL_DIR)/..
 
 include $(CLEAR_VARS)
 LOCAL_NAME := format
@@ -11,7 +12,7 @@ LOCAL_CFLAGS := \
     -Os \
     -g3 \
     -I$(LOCAL_DIR)/inc \
-    -Ilibopencm3/include \
+    -I$(POSTFORM_TOP_DIR)/libopencm3/include \
     -DSTM32F1 \
     -Wall \
     -Werror \
@@ -27,7 +28,7 @@ LOCAL_CXXFLAGS := \
 LOCAL_LDFLAGS := \
     -Wl,--gc-sections \
     -lnosys \
-    -Llibopencm3/lib \
+    -L$(POSTFORM_TOP_DIR)/libopencm3/lib \
     -lopencm3_stm32f1
 LOCAL_LINKER_FILE := \
     $(LOCAL_DIR)/memory.ld
@@ -43,14 +44,14 @@ LOCAL_STATIC_LIBS := \
     libpostform
 include $(BUILD_BINARY)
 
-$(LOCAL_TARGET): libopencm3/lib/libopencm3_stm32f1.a
+$(LOCAL_TARGET): $(POSTFORM_TOP_DIR)/libopencm3/lib/libopencm3_stm32f1.a
 
-libopencm3/lib/libopencm3_stm32f1.a:
+$(POSTFORM_TOP_DIR)/libopencm3/lib/libopencm3_stm32f1.a:
 	$(call print-build-header, libopencm3, MAKE $(notdir $@))
-	$(SILENT)$(MAKE) -C libopencm3 TARGETS=stm32/f1 > /dev/null
+	$(SILENT)$(MAKE) -C $(POSTFORM_TOP_DIR)/libopencm3 TARGETS=stm32/f1 > /dev/null
 
 clean_libopencm3:
-	$(SILENT)$(MAKE) -C libopencm3 clean > /dev/null
+	$(SILENT)$(MAKE) -C $(POSTFORM_TOP_DIR)/libopencm3 clean > /dev/null
 .PHONY: clean_libopencm3
 
 clean: clean_libopencm3

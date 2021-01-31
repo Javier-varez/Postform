@@ -1,9 +1,3 @@
-[submodule "buildsystem"]
-	path = buildsystem
-	url = git@github.com:Javier-varez/buildsystem.git
 [submodule "libopencm3"]
 	path = libopencm3
 	url = https://github.com/libopencm3/libopencm3.git
-[submodule "cortex-m_startup"]
-	path = cortex-m_startup
-	url = git@github.com:Javier-varez/cortex-m_startup.git

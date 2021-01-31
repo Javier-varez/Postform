@@ -4,6 +4,10 @@ POSTFORM_COMMIT_ID := $(shell cd $(LOCAL_DIR) && git describe)
 
 include $(CLEAR_VARS)
 LOCAL_NAME := postform
+TARGET_CFLAGS := \
+    -mcpu=cortex-m3 \
+    -mfloat-abi=soft \
+    -mthumb
 LOCAL_CFLAGS := \
     $(TARGET_CFLAGS) \
     -I$(LOCAL_DIR)/inc \
