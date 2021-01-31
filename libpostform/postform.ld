@@ -16,10 +16,16 @@ SECTIONS
         __InternedErrorStart = .;
         *(.interned_strings.error)
         __InternedErrorEnd = .;
+        *(.interned_strings.user)
     }
 
     .postform_config 0 (INFO):
     {
         *(.postform_config)
+    }
+
+    .postform_platform_descriptors 0 (INFO):
+    {
+        *(.postform_platform_descriptors)
     }
 }
