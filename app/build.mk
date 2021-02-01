@@ -12,7 +12,6 @@ LOCAL_CFLAGS := \
     -Os \
     -g3 \
     -I$(LOCAL_DIR)/inc \
-    -I$(POSTFORM_TOP_DIR)/libopencm3/include \
     -DSTM32F1 \
     -Wall \
     -Werror \
@@ -27,9 +26,7 @@ LOCAL_CXXFLAGS := \
     -fdata-sections
 LOCAL_LDFLAGS := \
     -Wl,--gc-sections \
-    -lnosys \
-    -L$(POSTFORM_TOP_DIR)/libopencm3/lib \
-    -lopencm3_stm32f1
+    -lnosys
 LOCAL_LINKER_FILE := \
     $(LOCAL_DIR)/memory.ld
 LOCAL_SRC := \
@@ -40,18 +37,7 @@ LOCAL_ARM_ARCHITECTURE := v7-m
 LOCAL_ARM_FPU := nofp
 LOCAL_COMPILER := arm_clang
 LOCAL_STATIC_LIBS := \
+    libopencm3_stm32f1 \
     libcortex_m_startup \
     libpostform
 include $(BUILD_BINARY)
-
-$(LOCAL_TARGET): $(POSTFORM_TOP_DIR)/libopencm3/lib/libopencm3_stm32f1.a
-
-$(POSTFORM_TOP_DIR)/libopencm3/lib/libopencm3_stm32f1.a:
-	$(call print-build-header, libopencm3, MAKE $(notdir $@))
-	$(SILENT)$(MAKE) -C $(POSTFORM_TOP_DIR)/libopencm3 TARGETS=stm32/f1 > /dev/null
-
-clean_libopencm3:
-	$(SILENT)$(MAKE) -C $(POSTFORM_TOP_DIR)/libopencm3 clean > /dev/null
-.PHONY: clean_libopencm3
-
-clean: clean_libopencm3
