@@ -7,7 +7,7 @@ use probe_rs::{
     flashing::{download_file, Format},
     Probe, Session,
 };
-use probe_rs_rtt::Rtt;
+use probe_rs_rtt::{Rtt, ScanRegion};
 use std::{
     fs,
     path::PathBuf,
@@ -138,6 +138,18 @@ fn handle_log(elf_metadata: &ElfMetadata, buffer: &[u8]) {
     }
 }
 
+fn attach_rtt(session: Arc<Mutex<Session>>, elf_path: &PathBuf) -> Result<Rtt> {
+    let file_contents = fs::read(elf_path)?;
+    let elf_file = ElfFile::parse(&file_contents[..])?;
+    let seggger_rtt = elf_file
+        .symbols()
+        .find(|s| s.name().unwrap() == "_SEGGER_RTT")
+        .ok_or(RttError::MissingSymbol("_SEGGER_RTT"))?;
+    let scan_region = ScanRegion::Exact(seggger_rtt.address() as u32);
+    println!("Attaching RTT to address 0x{:x}", seggger_rtt.address());
+    Ok(Rtt::attach_region(session, &scan_region)?)
+}
+
 fn main() -> Result<()> {
     color_eyre::install()?;
 
@@ -167,9 +179,7 @@ fn main() -> Result<()> {
         let session = Arc::new(Mutex::new(probe.attach(chip)?));
         download_firmware(&session, &elf_name)?;
 
-        let mut rtt = Rtt::attach(session.clone())?;
-        println!("Rtt connected");
-
+        let mut rtt = attach_rtt(session.clone(), &elf_name)?;
         run_core(session)?;
 
         if let Some(log_channel) = rtt.up_channels().take(0) {
