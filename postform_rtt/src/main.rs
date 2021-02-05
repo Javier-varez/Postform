@@ -4,7 +4,7 @@ use object::read::{File as ElfFile, Object, ObjectSymbol};
 use postform_decoder::{ElfMetadata, LogLevel};
 use probe_rs::{
     config::registry,
-    flashing::{download_file, FileDownloadError, Format},
+    flashing::{download_file, Format},
     Probe, Session,
 };
 use probe_rs_rtt::Rtt;
@@ -62,46 +62,40 @@ struct Opts {
     elf: Option<PathBuf>,
 }
 
-pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &PathBuf) {
+#[derive(Debug, thiserror::Error)]
+enum RttError {
+    #[error("Missing symbol {0}")]
+    MissingSymbol(&'static str),
+}
+
+pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &PathBuf) -> Result<()> {
     let mut mutex_guard = session.lock().unwrap();
     println!("Loading FW to target");
-    if let Err(error) = download_file(&mut mutex_guard, &elf_path, Format::Elf) {
-        match error {
-            FileDownloadError::Elf(_) => {
-                println!("Error with elf file");
-            }
-            FileDownloadError::Flash(_) => {
-                println!("Error flashing the device");
-            }
-            _ => {
-                println!("Other error downloading FW");
-            }
-        }
-        return;
-    }
+    download_file(&mut mutex_guard, &elf_path, Format::Elf)?;
 
-    let file_contents = fs::read(elf_path).unwrap();
-    let elf_file = ElfFile::parse(&file_contents[..]).unwrap();
+    let file_contents = fs::read(elf_path)?;
+    let elf_file = ElfFile::parse(&file_contents[..])?;
     let main = elf_file
         .symbols()
         .find(|s| s.name().unwrap() == "main")
-        .expect("main symbol not found!");
+        .ok_or(RttError::MissingSymbol("main"))?;
 
     let mut core = mutex_guard.core(0).unwrap();
-    let _ = core.reset_and_halt(Duration::from_millis(10)).unwrap();
-    core.set_hw_breakpoint(main.address() as u32)
-        .expect("Unable to set breakpoint in main");
-    core.run().unwrap();
-    core.wait_for_core_halted(Duration::from_secs(1))
-        .expect("Didn't halt on main");
+    let _ = core.reset_and_halt(Duration::from_millis(10))?;
+    core.set_hw_breakpoint(main.address() as u32)?;
+    core.run()?;
+    core.wait_for_core_halted(Duration::from_secs(1))?;
     println!("Download complete!");
+
+    Ok(())
 }
 
-pub fn run_core(session: Arc<Mutex<Session>>) {
+pub fn run_core(session: Arc<Mutex<Session>>) -> Result<()> {
     let mut mutex_guard = session.lock().unwrap();
-    let mut core = mutex_guard.core(0).unwrap();
-    core.clear_all_hw_breakpoints().unwrap();
-    core.run().unwrap();
+    let mut core = mutex_guard.core(0)?;
+    core.clear_all_hw_breakpoints()?;
+    core.run()?;
+    Ok(())
 }
 
 fn color_for_level(level: LogLevel) -> String {
@@ -167,23 +161,23 @@ fn main() -> Result<()> {
         println!("More than one probe conected! {:?}", probes);
         return Ok(());
     }
-    let probe = probes[0].open().unwrap();
+    let probe = probes[0].open()?;
 
     if let Some(chip) = opts.chip {
-        let session = Arc::new(Mutex::new(probe.attach(chip).unwrap()));
-        download_firmware(&session, &elf_name);
+        let session = Arc::new(Mutex::new(probe.attach(chip)?));
+        download_firmware(&session, &elf_name)?;
 
-        let mut rtt = Rtt::attach(session.clone()).unwrap();
+        let mut rtt = Rtt::attach(session.clone())?;
         println!("Rtt connected");
 
-        run_core(session);
+        run_core(session)?;
 
         if let Some(log_channel) = rtt.up_channels().take(0) {
             let mut dec_buf = [0u8; 4096];
             let mut buf = [0u8; 4096];
             let mut decoder = CobsDecoder::new(&mut dec_buf);
             loop {
-                let count = log_channel.read(&mut buf[..]).unwrap();
+                let count = log_channel.read(&mut buf[..])?;
                 for data_byte in buf.iter().take(count) {
                     match decoder.feed(*data_byte) {
                         Ok(Some(msg_len)) => {
