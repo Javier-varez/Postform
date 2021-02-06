@@ -5,3 +5,4 @@ postform-host/target
 .vscode
 target
 libpostform/docs
+.cache

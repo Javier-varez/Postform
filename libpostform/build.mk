@@ -19,7 +19,6 @@ LOCAL_CXXFLAGS := \
     -fno-exceptions \
     -fno-rtti
 LOCAL_SRC := \
-    $(LOCAL_DIR)/src/rtt_logger.cpp \
     $(LOCAL_DIR)/src/rtt/rtt_manager.cpp \
     $(LOCAL_DIR)/src/rtt/raw_writer.cpp \
     $(LOCAL_DIR)/src/rtt/cobs_writer.cpp \
