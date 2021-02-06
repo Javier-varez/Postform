@@ -58,7 +58,7 @@ extern uint64_t getGlobalTimestamp();
  * void finishMessage();
  * ```
  */
-template<class Derived>
+template<class Derived, class Writer>
 class Logger {
  public:
 
@@ -71,9 +71,12 @@ class Logger {
   void log(LogLevel level, T ...args) {
     if (level < m_level) return;
 
-    m_derived.startMessage(getGlobalTimestamp());
-    sendRemainingArguments(args...);
-    m_derived.finishMessage();
+    uint64_t timestamp = getGlobalTimestamp();
+
+    Writer writer = static_cast<Derived&>(*this).getWriter();
+    writer.write(reinterpret_cast<const uint8_t*>(&timestamp), sizeof(timestamp));
+    sendRemainingArguments(writer, args...);
+    writer.commit();
   }
 
   /**
@@ -86,32 +89,33 @@ class Logger {
 
  private:
   LogLevel m_level = LogLevel::DEBUG;
-  Derived& m_derived = static_cast<Derived&>(*this);
 
   template<typename T>
-  void sendArgument(const T argument) {
-    m_derived.appendData(reinterpret_cast<const uint8_t*>(&argument), sizeof(T));
+  void sendArgument(Writer& writer, const T argument) {
+    writer.write(reinterpret_cast<const uint8_t*>(&argument), sizeof(T));
   }
 
   template<>
-  void sendArgument<const char*>(const char* argument) {
-    m_derived.appendString(argument);
+  void sendArgument<const char*>(Writer& writer, const char* argument) {
+    const auto length = strlen(argument) + 1;
+    writer.write(reinterpret_cast<const uint8_t*>(argument), length);
   }
 
   template<>
-  void sendArgument<char*>(char* argument) {
-    m_derived.appendString(argument);
+  void sendArgument<char*>(Writer& writer, char* argument) {
+    const auto length = strlen(argument) + 1;
+    writer.write(reinterpret_cast<const uint8_t*>(argument), length);
   }
 
   template<typename T>
-  void sendRemainingArguments(const T first_arg) {
-    sendArgument(first_arg);
+  void sendRemainingArguments(Writer& writer, const T first_arg) {
+    sendArgument(writer, first_arg);
   }
 
   template<typename T, typename ... Types>
-  void sendRemainingArguments(const T first_arg, Types... args) {
-    sendArgument(first_arg);
-    sendRemainingArguments(args...);
+  void sendRemainingArguments(Writer& writer, const T first_arg, Types... args) {
+    sendArgument(writer, first_arg);
+    sendRemainingArguments(writer, args...);
   }
 };
 
