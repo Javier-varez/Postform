@@ -1,6 +1,7 @@
 #ifndef POSTFORM_LOGGER_H_
 #define POSTFORM_LOGGER_H_
 
+#include <atomic>
 #include <cstdint>
 #include <cstring>
 
@@ -69,7 +70,7 @@ class Logger {
    */
   template<typename ... T>
   void log(LogLevel level, T ...args) {
-    if (level < m_level) return;
+    if (level < m_level.load()) return;
 
     uint64_t timestamp = getGlobalTimestamp();
 
@@ -85,10 +86,10 @@ class Logger {
    * Logs with levels above or equal the selected one are printed.
    * Others are ignored.
    */
-  void setLevel(LogLevel level) { m_level = level; }
+  void setLevel(LogLevel level) { m_level.store(level); }
 
  private:
-  LogLevel m_level = LogLevel::DEBUG;
+  std::atomic<LogLevel> m_level = LogLevel::DEBUG;
 
   template<typename T>
   void sendArgument(Writer& writer, const T argument) {
