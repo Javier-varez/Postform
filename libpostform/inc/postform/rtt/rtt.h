@@ -18,9 +18,9 @@ struct Channel {
   const char* const name { nullptr };
   std::uint8_t* const buffer = nullptr;
   const std::uint32_t size { 0 };
-  std::uint32_t write { 0 };
+  std::atomic<std::uint32_t> write { 0 };
   std::atomic<std::uint32_t> read { 0 };
-  Flags flags { Flags::NO_BLOCK_TRIM };
+  std::atomic<Flags> flags { Flags::NO_BLOCK_TRIM };
 
   Channel(const char* name, std::uint8_t* buffer, std::uint32_t size) :
     name(name), buffer(buffer), size(size) { }

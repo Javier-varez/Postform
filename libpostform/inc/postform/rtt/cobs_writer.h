@@ -34,10 +34,13 @@ class CobsWriter {
   CobsWriter(Manager* rtt, Channel* channel);
 
   inline void blockUntilNotFull() {
+    if (m_channel->flags != Rtt::Flags::BLOCK_IF_FULL) {
+      return;
+    }
     const uint32_t next_write_ptr = nextWritePtr();
     if (m_channel->read == next_write_ptr) {
-      m_channel->write = m_marker_ptr;
-      while (m_channel->read == next_write_ptr) { }
+      m_channel->write.store(m_marker_ptr);
+      while (m_channel->read.load() == next_write_ptr) { }
     }
   }
 

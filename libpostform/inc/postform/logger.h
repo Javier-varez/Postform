@@ -53,10 +53,7 @@ extern uint64_t getGlobalTimestamp();
  * following methods:
  *
  * ```
- * void startMessage(uint64_t timestamp);
- * void appendData(const uint8_t* data, uint32_t length);
- * void appendString(const char* string);
- * void finishMessage();
+ * Writer getWriter();
  * ```
  */
 template<class Derived, class Writer>
