@@ -5,7 +5,7 @@ use postform_decoder::{ElfMetadata, LogLevel};
 use probe_rs::{
     config::registry,
     flashing::{download_file, Format},
-    Probe, Session,
+    MemoryInterface, Probe, Session,
 };
 use probe_rs_rtt::{Rtt, ScanRegion};
 use std::{
@@ -60,6 +60,9 @@ struct Opts {
     /// Path to an ELF firmware file.
     #[structopt(name = "ELF", parse(from_os_str), required_unless_one(&["list-chips", "list-probes"]))]
     elf: Option<PathBuf>,
+
+    #[structopt(long, short)]
+    attach: bool,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -86,6 +89,22 @@ pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &PathBuf) -> R
     core.run()?;
     core.wait_for_core_halted(Duration::from_secs(1))?;
     println!("Download complete!");
+
+    Ok(())
+}
+
+#[derive(Debug)]
+enum RttMode {
+    NonBlocking = 1,
+    Blocking = 2,
+}
+
+fn configure_rrt_mode(session: &Arc<Mutex<Session>>, rtt_addr: u64, mode: RttMode) -> Result<()> {
+    let mut session_lock = session.lock().unwrap();
+    let mut core = session_lock.core(0)?;
+    let mode_flags_addr = rtt_addr as u32 + 44u32;
+    println!("Setting mode to {:?}", mode);
+    core.write_word_32(mode_flags_addr, mode as u32)?;
 
     Ok(())
 }
@@ -138,15 +157,13 @@ fn handle_log(elf_metadata: &ElfMetadata, buffer: &[u8]) {
     }
 }
 
-fn attach_rtt(session: Arc<Mutex<Session>>, elf_path: &PathBuf) -> Result<Rtt> {
-    let file_contents = fs::read(elf_path)?;
-    let elf_file = ElfFile::parse(&file_contents[..])?;
-    let seggger_rtt = elf_file
+fn attach_rtt(session: Arc<Mutex<Session>>, elf_file: &ElfFile) -> Result<Rtt> {
+    let segger_rtt = elf_file
         .symbols()
         .find(|s| s.name().unwrap() == "_SEGGER_RTT")
         .ok_or(RttError::MissingSymbol("_SEGGER_RTT"))?;
-    let scan_region = ScanRegion::Exact(seggger_rtt.address() as u32);
-    println!("Attaching RTT to address 0x{:x}", seggger_rtt.address());
+    println!("Attaching RTT to address 0x{:x}", segger_rtt.address());
+    let scan_region = ScanRegion::Exact(segger_rtt.address() as u32);
     Ok(Rtt::attach_region(session, &scan_region)?)
 }
 
@@ -177,9 +194,30 @@ fn main() -> Result<()> {
 
     if let Some(chip) = opts.chip {
         let session = Arc::new(Mutex::new(probe.attach(chip)?));
-        download_firmware(&session, &elf_name)?;
 
-        let mut rtt = attach_rtt(session.clone(), &elf_name)?;
+        let elf_contents = fs::read(elf_name.clone())?;
+        let elf_file = ElfFile::parse(&elf_contents)?;
+        let segger_rtt = elf_file
+            .symbols()
+            .find(|s| s.name().unwrap() == "_SEGGER_RTT")
+            .ok_or(RttError::MissingSymbol("_SEGGER_RTT"))?;
+        let segger_rtt_addr = segger_rtt.address();
+
+        {
+            let session = session.clone();
+            ctrlc::set_handler(move || {
+                println!("Exiting application");
+                configure_rrt_mode(&session, segger_rtt_addr, RttMode::NonBlocking)
+                    .expect("Error setting NonBlocking mode");
+                std::process::exit(0);
+            })?;
+        }
+        if !opts.attach {
+            download_firmware(&session, &elf_name)?;
+        }
+        configure_rrt_mode(&session, segger_rtt_addr, RttMode::Blocking)?;
+
+        let mut rtt = attach_rtt(session.clone(), &elf_file)?;
         run_core(session)?;
 
         if let Some(log_channel) = rtt.up_channels().take(0) {
@@ -199,7 +237,7 @@ fn main() -> Result<()> {
                             drop(decoder);
                             println!("Cobs decoding failed after {} bytes", decoded_len);
                             println!("Decoded buffer: {:?}", &dec_buf[..decoded_len]);
-                            return Ok(());
+                            decoder = CobsDecoder::new(&mut dec_buf[..]);
                         }
                         Ok(None) => {}
                     }
