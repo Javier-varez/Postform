@@ -1,7 +1,7 @@
 use cobs::CobsDecoder;
 use color_eyre::eyre::Result;
 use object::read::{File as ElfFile, Object, ObjectSymbol};
-use postform_decoder::{ElfMetadata, LogLevel};
+use postform_decoder::{ElfMetadata, LogLevel, POSTFORM_VERSION};
 use probe_rs::{
     config::registry,
     flashing::{download_file, Format},
@@ -42,6 +42,12 @@ fn print_chips() {
     }
 }
 
+fn print_version() {
+    // version from Cargo.toml e.g. "0.1.4"
+    println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+    println!("supported Postform version: {}", POSTFORM_VERSION);
+}
+
 #[derive(Debug, StructOpt)]
 #[structopt()]
 struct Opts {
@@ -54,15 +60,18 @@ struct Opts {
     list_probes: bool,
 
     /// The chip.
-    #[structopt(long, required_unless_one(&["list-chips", "list-probes"]), env = "PROBE_RUN_CHIP")]
+    #[structopt(long, required_unless_one(&["list-chips", "list-probes", "version"]), env = "PROBE_RUN_CHIP")]
     chip: Option<String>,
 
     /// Path to an ELF firmware file.
-    #[structopt(name = "ELF", parse(from_os_str), required_unless_one(&["list-chips", "list-probes"]))]
+    #[structopt(name = "ELF", parse(from_os_str), required_unless_one(&["list-chips", "list-probes", "version"]))]
     elf: Option<PathBuf>,
 
     #[structopt(long, short)]
     attach: bool,
+
+    #[structopt(long, short = "V")]
+    version: bool,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -179,6 +188,11 @@ fn main() -> Result<()> {
 
     if opts.list_chips {
         print_chips();
+        return Ok(());
+    }
+
+    if opts.version {
+        print_version();
         return Ok(());
     }
 

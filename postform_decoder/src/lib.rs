@@ -2,6 +2,8 @@ use byteorder::{LittleEndian, ReadBytesExt};
 use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
 use std::{convert::TryInto, fs, path::PathBuf};
 
+include!(concat!(env!("OUT_DIR"), "/version.rs"));
+
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("Postform IO error")]
