@@ -1,5 +1,6 @@
 
 #include "postform/utils.h"
+#include "postform/macros.h"
 
 struct PostformPlaformDescription {
     uint32_t char_size = sizeof(char);
@@ -11,3 +12,11 @@ struct PostformPlaformDescription {
 
 CLINKAGE __attribute__((section(".postform_platform_descriptors")))
 const PostformPlaformDescription _postform_platform_description;
+
+CLINKAGE __attribute__((section(".postform_version")))
+volatile const char _postform_version[] = __POSTFORM_EXPAND_AND_STRINGIFY(POSTFORM_COMMIT_ID);
+
+namespace Postform {
+  volatile uint32_t dummy;
+}  // namespace Postform
+

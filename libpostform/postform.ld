@@ -21,11 +21,16 @@ SECTIONS
 
     .postform_config 0 (INFO):
     {
-        *(.postform_config)
+        KEEP(*(.postform_config))
     }
 
     .postform_platform_descriptors 0 (INFO):
     {
-        *(.postform_platform_descriptors)
+        KEEP(*(.postform_platform_descriptors))
+    }
+
+    .postform_version 0 (INFO):
+    {
+        KEEP(*(.postform_version))
     }
 }
