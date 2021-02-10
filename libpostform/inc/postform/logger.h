@@ -44,6 +44,7 @@ enum class LogLevel {
  * ```
  */
 extern uint64_t getGlobalTimestamp();
+extern volatile uint32_t dummy;
 
 /**
  * @brief Base logger class used by Postform.
@@ -59,6 +60,7 @@ extern uint64_t getGlobalTimestamp();
 template<class Derived, class Writer>
 class Logger {
  public:
+  Logger() { (void)dummy; }
 
   /**
    * @brief writes a log to the transport

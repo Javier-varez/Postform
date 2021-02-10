@@ -1,17 +1,20 @@
 LOCAL_DIR := $(call current-dir)
 
+POSTFORM_COMMIT_ID := $(shell cd $(LOCAL_DIR) && git describe)
+
 include $(CLEAR_VARS)
 LOCAL_NAME := postform
 LOCAL_CFLAGS := \
     $(TARGET_CFLAGS) \
     -I$(LOCAL_DIR)/inc \
+    -DPOSTFORM_COMMIT_ID=$(POSTFORM_COMMIT_ID) \
     -Os \
     -g3 \
     -Wall \
     -Werror \
     -Wextra \
     -Wno-gnu-string-literal-operator-template \
-	-ffunction-sections \
+    -ffunction-sections \
     -fdata-sections
 LOCAL_CXXFLAGS := \
     $(LOCAL_CFLAGS) \
@@ -30,7 +33,7 @@ LOCAL_ARM_FPU := nofp
 LOCAL_COMPILER := arm_clang
 LOCAL_ARFLAGS := -rcs
 LOCAL_EXPORTED_DIRS := \
-	$(LOCAL_DIR)/inc
+    $(LOCAL_DIR)/inc
 LOCAL_LINKER_FILE := \
     $(LOCAL_DIR)/postform.ld
 include $(BUILD_STATIC_LIB)

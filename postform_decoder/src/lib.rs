@@ -22,6 +22,10 @@ pub enum Error {
     MissingInternedStrings,
     #[error("No postform configuration found")]
     MissingPostformConfiguration,
+    #[error("Missing Postform version")]
+    MissingPostformVersion,
+    #[error("Mismatched Postform versions. Firmware: {0}, Host: {1}")]
+    MismatchedPostformVersions(String, String),
     #[error("Log Level not found")]
     LevelNotFound,
     #[error("Invalid format string")]
@@ -116,6 +120,24 @@ impl ElfMetadata {
     pub fn from_elf_file(elf_path: &PathBuf) -> Result<Self, Error> {
         let file_contents = fs::read(elf_path)?;
         let elf_file = ElfFile::parse(&file_contents[..])?;
+
+        let postform_version = elf_file
+            .section_by_name(".postform_version")
+            .ok_or(Error::MissingPostformVersion)?
+            .data()?;
+
+        let postform_version = String::from_utf8_lossy(
+            &postform_version[..postform_version
+                .iter()
+                .position(|&c| c == b'\0')
+                .unwrap_or(postform_version.len())],
+        );
+        if postform_version != POSTFORM_VERSION {
+            return Err(Error::MismatchedPostformVersions(
+                postform_version.to_string(),
+                POSTFORM_VERSION.to_string(),
+            ));
+        }
         let interned_strings = elf_file
             .section_by_name(".interned_strings")
             .ok_or(Error::MissingInternedStrings)?
