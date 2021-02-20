@@ -74,10 +74,11 @@ You can get `clang` using the apt repositories:
 sudo apt install clang
 ```
 
-`Postform` relies on a custom build system based on a non-recursive set of makefile templates. It is included as a submodule in the `Postform` repository. You can find a link to it [here](https://github.com/Javier-varez/buildsystem). Since it relies on make you need to install `make` on your system with:
+`Postform` relies on a custom build system based on a non-recursive set of makefile templates. It is included as a submodule in the `Postform` repository. You can find a link to it [here](https://github.com/Javier-varez/buildsystem). The dependencies for the buildsystem are:
 
 ```bash
 apt install make
+apt install bear
 ```
 
 For the `STM32` code `Postform` uses the abstraction layer provided by [libopencm3](https://github.com/libopencm3/libopencm3). It is also bundled as a submodule for the project.
@@ -86,10 +87,22 @@ All the Rust code for the host has its dependencies indicated in the `Cargo.toml
 
 ## Getting the Source
 
-This project is [hosted on GitHub](https://github.com/Javier-varez/Postform). You can clone this project directly using this command:
+This project is [hosted on GitHub](https://github.com/Javier-varez/Postform). We use [Google Repo](https://gerrit.googlesource.com/git-repo/) to manage multiple repositories. You can get repo by running:
 
 ```bash
-git clone https://github.com/Javier-varez/Postform.git
+mkdir -p ~/.bin
+PATH="${HOME}/.bin:${PATH}"
+curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
+chmod a+rx ~/.bin/repo
+```
+
+And then download the repository with:
+
+```bash
+mkdir postform_repo
+cd postform_repo
+repo init -u https://github.com/Javier-varez/manifest -g postform
+repo sync -c -d -j$(nproc)
 ```
 
 ## Building
