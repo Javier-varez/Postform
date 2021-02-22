@@ -12,16 +12,11 @@
   - [Dependencies](#dependencies)
   - [Getting the Source](#getting-the-source)
   - [Building](#building)
-  - [Running Tests](#running-tests)
-    - [Other Tests](#other-tests)
-  - [Installation](#installation)
   - [Usage](#usage)
 - [Release Process](#release-process)
   - [Versioning](#versioning)
-  - [Payload](#payload)
 - [How to Get Help](#how-to-get-help)
 - [Contributing](#contributing)
-- [Further Reading](#further-reading)
 - [License](#license)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgments)
@@ -118,7 +113,7 @@ The target will be available in `build/targets`.
 
 ### Building the Rust code
 
-Change directory to the `postform-host` directory and run:
+Change directory to the `postform` directory and run:
 
 ```bash
 cargo build
@@ -126,14 +121,14 @@ cargo build
 
 ## Usage
 
-In order to run the demo simply navigate to `postform-host` and run `cargo r`.
+In order to run the demo simply navigate to `postform-rtt` and run `cargo r`.
 
-The postform-host binary will load the firmware into the `STM32F103C8` device and start listening for logs. You should see a similar output to:
+The postform-rtt binary will load the firmware into the `STM32F103C8` device and start listening for logs. You should see a similar output to:
 
 ```bash
 $ cargo r
     Finished dev [unoptimized + debuginfo] target(s) in 0.02s
-     Running `target/debug/postform-host --chip STM32F103C8 --timestamp-freq 72000000 ../build/targets/format`
+     Running `trtt/debug/postform_rtt --chip STM32F103C8 ../build/targets/format`
 Loading FW to target
 Download complete!
 Rtt connected
@@ -147,8 +142,6 @@ Rtt connected
 **[Back to top](#table-of-contents)**
 
 # Release Process
-
-Talk about the release process. How are releases made? What cadence? How to get new releases?
 
 ## Versioning
 
