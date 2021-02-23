@@ -1,5 +1,4 @@
 LOCAL_DIR := $(call current-dir)
-POSTFORM_TOP_DIR := $(LOCAL_DIR)/..
 
 include $(CLEAR_VARS)
 LOCAL_NAME := format
@@ -7,8 +6,7 @@ TARGET_CFLAGS := \
     -mcpu=cortex-m3 \
     -mfloat-abi=soft \
     -mthumb
-LOCAL_CFLAGS := \
-    $(TARGET_CFLAGS) \
+POSTFORM_CFLAGS := \
     -Os \
     -g3 \
     -I$(LOCAL_DIR)/inc \
@@ -17,13 +15,18 @@ LOCAL_CFLAGS := \
     -Werror \
     -Wextra \
     -Wno-gnu-string-literal-operator-template
-LOCAL_CXXFLAGS := \
-    $(LOCAL_CFLAGS) \
+POSTFORM_CXXFLAGS := \
     -std=gnu++17 \
     -fno-exceptions \
     -fno-rtti \
     -ffunction-sections \
     -fdata-sections
+LOCAL_CFLAGS := \
+    $(TARGET_CFLAGS) \
+    $(POSTFORM_CFLAGS)
+LOCAL_CXXFLAGS := \
+    $(LOCAL_CFLAGS) \
+    $(POSTFORM_CXXFLAGS)
 LOCAL_LDFLAGS := \
     -Wl,--gc-sections \
     -lnosys
@@ -40,4 +43,15 @@ LOCAL_STATIC_LIBS := \
     libopencm3_stm32f1 \
     libcortex_m_startup \
     libpostform
+include $(BUILD_BINARY)
+
+include $(CLEAR_VARS)
+LOCAL_NAME := format_host
+LOCAL_CFLAGS := $(POSTFORM_CFLAGS)
+LOCAL_CXXFLAGS := \
+    $(LOCAL_CFLAGS) \
+    $(POSTFORM_CXXFLAGS)
+LOCAL_SRC := $(LOCAL_DIR)/src/host_main.cpp
+LOCAL_STATIC_LIBS := libpostform_host
+LOCAL_LINKER_FILE := $(LOCAL_DIR)/host_ld.x
 include $(BUILD_BINARY)
