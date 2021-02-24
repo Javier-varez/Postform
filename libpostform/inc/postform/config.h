@@ -4,18 +4,7 @@
 #include <cstdint>
 
 #include "postform/utils.h"
-
-namespace Postform {
-/**
- * @brief Postform configuration structure.
- *
- * An instance of the configuration must be present in the
- * ".postform_config" with the symbol name _postform_config.
- */
-struct Config {
-  const uint32_t timestamp_frequency;
-};
-}  // namespace Postform
+#include "postform/shared_types.hpp"
 
 /**
  * @brief Declares a postform configuration in your application
@@ -27,7 +16,7 @@ struct Config {
  * linker error.
  */
 #define DECLARE_POSTFORM_CONFIG(content) \
-  CLINKAGE __attribute__((section(".postform_config"))) \
+  CLINKAGE __attribute__((section(".postform_config"), used)) \
   const Postform::Config _postform_config { content }
 
 
