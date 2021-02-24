@@ -11,6 +11,9 @@ keywords = ["embedded", "log", "logger"]
 readme = "../README.md"
 edition = "2018"
 
+[build-dependencies]
+bindgen = "0.57"
+
 [dependencies]
 object = "0.22"
 strum_macros = "0.20"

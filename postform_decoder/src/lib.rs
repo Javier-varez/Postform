@@ -1,5 +1,8 @@
+mod shared_types;
+
 use byteorder::{LittleEndian, ReadBytesExt};
 use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
+use shared_types::Postform_PlatformDescription as PostformPlatformDescription;
 use std::{convert::TryInto, fs, path::PathBuf};
 
 include!(concat!(env!("OUT_DIR"), "/version.rs"));
@@ -22,6 +25,8 @@ pub enum Error {
     MissingInternedStrings,
     #[error("No postform configuration found")]
     MissingPostformConfiguration,
+    #[error("No postform platform description found")]
+    MissingPostformPlatformDescription,
     #[error("Missing Postform version")]
     MissingPostformVersion,
     #[error("Mismatched Postform versions. Firmware: {0}, Host: {1}")]
@@ -113,6 +118,7 @@ pub struct ElfMetadata {
     timestamp_freq: f64,
     strings: Vec<u8>,
     log_sections: Vec<LogSection>,
+    platform_descriptors: PostformPlatformDescription,
 }
 
 impl ElfMetadata {
@@ -147,6 +153,20 @@ impl ElfMetadata {
             .ok_or(Error::MissingPostformConfiguration)?
             .data()?
             .read_u32::<LittleEndian>()? as f64;
+        let postform_platform_descriptors_data = elf_file
+            .section_by_name(".postform_platform_descriptors")
+            .ok_or(Error::MissingPostformPlatformDescription)?
+            .data()?;
+        let mut postform_platform_descriptors =
+            std::mem::MaybeUninit::<PostformPlatformDescription>::uninit();
+        unsafe {
+            std::ptr::copy_nonoverlapping(
+                postform_platform_descriptors_data.as_ptr(),
+                postform_platform_descriptors.as_mut_ptr() as *mut u8,
+                std::mem::size_of::<PostformPlatformDescription>(),
+            );
+        };
+        let postform_platform_descriptors = unsafe { postform_platform_descriptors.assume_init() };
 
         let levels = [
             LogLevel::Debug,
@@ -171,6 +191,7 @@ impl ElfMetadata {
             timestamp_freq,
             strings: interned_strings.into(),
             log_sections: sections,
+            platform_descriptors: postform_platform_descriptors,
         })
     }
 
@@ -258,6 +279,28 @@ impl ElfMetadata {
         }
     }
 
+    fn get_str_ptr<'a>(&self, message: &'a [u8]) -> Result<(u64, &'a [u8]), Error> {
+        if self.platform_descriptors.ptr_size as usize == std::mem::size_of::<u32>() {
+            Ok((
+                u32::from_le_bytes(
+                    message[..std::mem::size_of::<u32>()]
+                        .try_into()
+                        .or(Err(Error::InvalidLogMessage))?,
+                ) as u64,
+                &message[std::mem::size_of::<u32>()..],
+            ))
+        } else {
+            Ok((
+                usize::from_le_bytes(
+                    message[..std::mem::size_of::<usize>()]
+                        .try_into()
+                        .or(Err(Error::InvalidLogMessage))?,
+                ) as u64,
+                &message[std::mem::size_of::<usize>()..],
+            ))
+        }
+    }
+
     /// Parses a Postform message from the passed buffer.
     /// If the buffer is invalid it may return an error.
     pub fn parse(&self, mut message: &[u8]) -> Result<Log, Error> {
@@ -269,12 +312,9 @@ impl ElfMetadata {
             / self.timestamp_freq;
         message = &message[std::mem::size_of::<u64>()..];
 
-        let str_ptr = u32::from_le_bytes(
-            message[..std::mem::size_of::<u32>()]
-                .try_into()
-                .or(Err(Error::InvalidLogMessage))?,
-        ) as u64;
-        message = &message[std::mem::size_of::<u32>()..];
+        let str_ptr_data = self.get_str_ptr(message)?;
+        let str_ptr = str_ptr_data.0;
+        message = str_ptr_data.1;
 
         let (file_name, line_number, format_str) =
             self.recover_interned_string(str_ptr as usize)?;
@@ -319,11 +359,10 @@ const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 5] = [
         Ok(&buffer[std::mem::size_of::<u32>()..])
     }),
     ("%k", |elf_metadata, out_str, buffer| {
-        let str_ptr =
-            u32::from_le_bytes(buffer.try_into().or(Err(Error::MissingLogArgument))?) as usize;
-        let interned_string = elf_metadata.recover_user_interned_string(str_ptr)?;
+        let str_ptr_data = elf_metadata.get_str_ptr(buffer)?;
+        let interned_string = elf_metadata.recover_user_interned_string(str_ptr_data.0 as usize)?;
         out_str.push_str(&interned_string);
-        Ok(&buffer[std::mem::size_of::<u32>()..])
+        Ok(str_ptr_data.1)
     }),
     ("%%", |_elf_metadata, out_str, buffer| {
         out_str.push('%');
@@ -340,6 +379,14 @@ mod tests {
             timestamp_freq: 1_000f64,
             strings: b"test/my_file.cpp@1234@This is my log message\0test/my_file2.cpp@12343@This is my second log message\0".into_iter().map(|c| c.clone()).collect(),
             log_sections: vec![],
+            platform_descriptors: PostformPlatformDescription {
+                char_size: 1,
+                short_size: 2,
+                int_size: 4,
+                long_int_size: 8,
+                long_long_int_size: 8,
+                ptr_size: 8
+            }
         }
     }
 
