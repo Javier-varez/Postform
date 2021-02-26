@@ -41,6 +41,8 @@ pub enum Error {
     MissingLogArgument,
     #[error("Invalid format specifier: '{0}'")]
     InvalidFormatSpecifier(char),
+    #[error("Platform descriptors are not valid: '{0:?}'")]
+    InvalidPlatformDescriptors(PostformPlatformDescription),
 }
 
 /// Available log levels of Postform.
@@ -101,7 +103,7 @@ pub struct Log {
 ///
 /// ```
 /// use std::path::PathBuf;
-/// use postform_decoder::ElfMetadata;
+/// use postform_decoder::{Decoder, ElfMetadata};
 /// fn postform_example(file: &PathBuf) {
 ///     let elf_metadata = ElfMetadata::from_elf_file(file).unwrap();
 ///
@@ -110,7 +112,8 @@ pub struct Log {
 ///     let message = [0u8; 12];
 ///
 ///     // Parse the logs using the elf metadata
-///     let log = elf_metadata.parse(&message).unwrap();
+///     let mut decoder = Decoder::new(&elf_metadata);
+///     let log = decoder.decode(&message).unwrap();
 ///     println!("{}: {}", log.timestamp, log.message);
 /// }
 /// ```
@@ -166,6 +169,9 @@ impl ElfMetadata {
                 std::mem::size_of::<PostformPlatformDescription>(),
             );
         };
+
+        // SAFETY: At this point, the platform descriptors should be correctly initialized, since
+        // it has been copied from the ELF section.
         let postform_platform_descriptors = unsafe { postform_platform_descriptors.assume_init() };
 
         let levels = [
@@ -195,8 +201,102 @@ impl ElfMetadata {
         })
     }
 
+    fn get_log_section(&self, str_ptr: u64) -> &LogSection {
+        let log_section = self
+            .log_sections
+            .iter()
+            .find(|&x| str_ptr >= x.start && str_ptr < x.end);
+
+        match log_section {
+            Some(section) => section,
+            None => &LogSection {
+                level: LogLevel::Unknown,
+                start: 0u64,
+                end: 0u64,
+            },
+        }
+    }
+}
+
+type FormatSpecHandler = for<'a> fn(&Decoder, &mut String, &'a [u8]) -> Result<&'a [u8], Error>;
+
+const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 5] = [
+    ("%s", |_decoder, out_str, buffer| {
+        let nul_range_end = buffer
+            .iter()
+            .position(|&c| c == b'\0')
+            .unwrap_or(buffer.len());
+
+        let res =
+            std::str::from_utf8(&buffer[..nul_range_end]).or(Err(Error::MissingLogArgument))?;
+        out_str.push_str(res);
+
+        Ok(&buffer[nul_range_end + 1..])
+    }),
+    ("%d", |_decoder, out_str, buffer| {
+        let integer_val = i32::from_le_bytes(buffer.try_into().or(Err(Error::MissingLogArgument))?);
+        let str = format!("{}", integer_val);
+        out_str.push_str(&str);
+        Ok(&buffer[std::mem::size_of::<i32>()..])
+    }),
+    ("%u", |_decoder, out_str, buffer| {
+        let integer_val = u32::from_le_bytes(buffer.try_into().or(Err(Error::MissingLogArgument))?);
+        let str = format!("{}", integer_val);
+        out_str.push_str(&str);
+        Ok(&buffer[std::mem::size_of::<u32>()..])
+    }),
+    ("%k", |decoder, out_str, buffer| {
+        let str_ptr_data = decoder.get_str_ptr(buffer)?;
+        let interned_string = decoder.recover_user_interned_string(str_ptr_data.0 as usize)?;
+        out_str.push_str(&interned_string);
+        Ok(str_ptr_data.1)
+    }),
+    ("%%", |_elf_metadata, out_str, buffer| {
+        out_str.push('%');
+        Ok(buffer)
+    }),
+];
+
+pub struct Decoder<'a> {
+    elf_metadata: &'a ElfMetadata,
+}
+
+impl<'a> Decoder<'a> {
+    pub fn new(elf_metadata: &'a ElfMetadata) -> Self {
+        Decoder { elf_metadata }
+    }
+
+    /// Parses a Postform message from the passed buffer.
+    /// If the buffer is invalid it may return an error.
+    pub fn decode(&mut self, mut buffer: &[u8]) -> Result<Log, Error> {
+        let timestamp = u64::from_le_bytes(
+            buffer[..std::mem::size_of::<u64>()]
+                .try_into()
+                .or(Err(Error::InvalidLogMessage))?,
+        ) as f64
+            / self.elf_metadata.timestamp_freq;
+        buffer = &buffer[std::mem::size_of::<u64>()..];
+
+        let str_ptr_data = self.get_str_ptr(buffer)?;
+        let str_ptr = str_ptr_data.0;
+        buffer = str_ptr_data.1;
+
+        let (file_name, line_number, format_str) =
+            self.recover_interned_string(str_ptr as usize)?;
+        let formatted_str = self.format_string(&format_str, buffer)?;
+        let log_section = self.elf_metadata.get_log_section(str_ptr);
+
+        Ok(Log {
+            timestamp,
+            level: log_section.level,
+            message: formatted_str,
+            file_name,
+            line_number,
+        })
+    }
+
     fn recover_interned_string(&self, str_ptr: usize) -> Result<(String, u32, String), Error> {
-        let str_buffer = &self.strings[str_ptr..];
+        let str_buffer = &self.elf_metadata.strings[str_ptr..];
         let end_of_string = str_buffer
             .iter()
             .position(|&c| c == b'\0')
@@ -223,7 +323,7 @@ impl ElfMetadata {
     }
 
     fn recover_user_interned_string(&self, str_ptr: usize) -> Result<String, Error> {
-        let str_buffer = &self.strings[str_ptr..];
+        let str_buffer = &self.elf_metadata.strings[str_ptr..];
         let end_of_string = str_buffer
             .iter()
             .position(|&c| c == b'\0')
@@ -263,24 +363,8 @@ impl ElfMetadata {
         }
     }
 
-    fn get_log_section(&self, str_ptr: u64) -> &LogSection {
-        let log_section = self
-            .log_sections
-            .iter()
-            .find(|&x| str_ptr >= x.start && str_ptr < x.end);
-
-        match log_section {
-            Some(section) => section,
-            None => &LogSection {
-                level: LogLevel::Unknown,
-                start: 0u64,
-                end: 0u64,
-            },
-        }
-    }
-
-    fn get_str_ptr<'a>(&self, message: &'a [u8]) -> Result<(u64, &'a [u8]), Error> {
-        if self.platform_descriptors.ptr_size as usize == std::mem::size_of::<u32>() {
+    fn get_str_ptr<'b>(&self, message: &'b [u8]) -> Result<(u64, &'b [u8]), Error> {
+        if self.elf_metadata.platform_descriptors.ptr_size as usize == std::mem::size_of::<u32>() {
             Ok((
                 u32::from_le_bytes(
                     message[..std::mem::size_of::<u32>()]
@@ -300,75 +384,7 @@ impl ElfMetadata {
             ))
         }
     }
-
-    /// Parses a Postform message from the passed buffer.
-    /// If the buffer is invalid it may return an error.
-    pub fn parse(&self, mut message: &[u8]) -> Result<Log, Error> {
-        let timestamp = u64::from_le_bytes(
-            message[..std::mem::size_of::<u64>()]
-                .try_into()
-                .or(Err(Error::InvalidLogMessage))?,
-        ) as f64
-            / self.timestamp_freq;
-        message = &message[std::mem::size_of::<u64>()..];
-
-        let str_ptr_data = self.get_str_ptr(message)?;
-        let str_ptr = str_ptr_data.0;
-        message = str_ptr_data.1;
-
-        let (file_name, line_number, format_str) =
-            self.recover_interned_string(str_ptr as usize)?;
-        let formatted_str = self.format_string(&format_str, message)?;
-        let log_section = self.get_log_section(str_ptr);
-
-        Ok(Log {
-            timestamp,
-            level: log_section.level,
-            message: formatted_str,
-            file_name,
-            line_number,
-        })
-    }
 }
-
-type FormatSpecHandler = for<'a> fn(&ElfMetadata, &mut String, &'a [u8]) -> Result<&'a [u8], Error>;
-
-const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 5] = [
-    ("%s", |_elf_metadata, out_str, buffer| {
-        let nul_range_end = buffer
-            .iter()
-            .position(|&c| c == b'\0')
-            .unwrap_or(buffer.len());
-
-        let res =
-            std::str::from_utf8(&buffer[..nul_range_end]).or(Err(Error::MissingLogArgument))?;
-        out_str.push_str(res);
-
-        Ok(&buffer[nul_range_end + 1..])
-    }),
-    ("%d", |_elf_metadata, out_str, buffer| {
-        let integer_val = i32::from_le_bytes(buffer.try_into().or(Err(Error::MissingLogArgument))?);
-        let str = format!("{}", integer_val);
-        out_str.push_str(&str);
-        Ok(&buffer[std::mem::size_of::<i32>()..])
-    }),
-    ("%u", |_elf_metadata, out_str, buffer| {
-        let integer_val = u32::from_le_bytes(buffer.try_into().or(Err(Error::MissingLogArgument))?);
-        let str = format!("{}", integer_val);
-        out_str.push_str(&str);
-        Ok(&buffer[std::mem::size_of::<u32>()..])
-    }),
-    ("%k", |elf_metadata, out_str, buffer| {
-        let str_ptr_data = elf_metadata.get_str_ptr(buffer)?;
-        let interned_string = elf_metadata.recover_user_interned_string(str_ptr_data.0 as usize)?;
-        out_str.push_str(&interned_string);
-        Ok(str_ptr_data.1)
-    }),
-    ("%%", |_elf_metadata, out_str, buffer| {
-        out_str.push('%');
-        Ok(buffer)
-    }),
-];
 
 #[cfg(test)]
 mod tests {
@@ -393,7 +409,8 @@ mod tests {
     #[test]
     fn test_recover_interned_string() {
         let elf_metadata = create_elf_metadata();
-        let (file_name, line, msg) = elf_metadata.recover_interned_string(45usize).unwrap();
+        let decoder = Decoder::new(&elf_metadata);
+        let (file_name, line, msg) = decoder.recover_interned_string(45usize).unwrap();
         assert_eq!(file_name, "test/my_file2.cpp");
         assert_eq!(line, 12343u32);
         assert_eq!(msg, "This is my second log message");
@@ -402,27 +419,30 @@ mod tests {
     #[test]
     fn test_format_string_signed_integer() {
         let elf_metadata = create_elf_metadata();
+        let decoder = Decoder::new(&elf_metadata);
         let format = "This is the log message %d and some data after";
         let args = (-4_000_230i32).to_le_bytes();
-        let log = elf_metadata.format_string(format, &args).unwrap();
+        let log = decoder.format_string(format, &args).unwrap();
         assert_eq!(log, "This is the log message -4000230 and some data after");
     }
 
     #[test]
     fn test_format_string_unsigned_integer() {
         let elf_metadata = create_elf_metadata();
+        let decoder = Decoder::new(&elf_metadata);
         let format = "This is the log message %u";
         let args = 4_000_230u32.to_le_bytes();
-        let log = elf_metadata.format_string(format, &args).unwrap();
+        let log = decoder.format_string(format, &args).unwrap();
         assert_eq!(log, "This is the log message 4000230");
     }
 
     #[test]
     fn test_format_string_string_argument() {
         let elf_metadata = create_elf_metadata();
+        let decoder = Decoder::new(&elf_metadata);
         let format = "This is the log message %s";
         let args = b"And another string goes here\0 some other data";
-        let log = elf_metadata.format_string(format, args).unwrap();
+        let log = decoder.format_string(format, args).unwrap();
         assert_eq!(log, "This is the log message And another string goes here");
     }
 }
