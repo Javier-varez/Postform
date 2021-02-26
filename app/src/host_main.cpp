@@ -1,7 +1,9 @@
 
+#include <atomic>
+#include <cstdio>
+
 #include "postform/file_logger.h"
 #include "postform/config.h"
-#include <atomic>
 
 namespace Postform {
 uint64_t getGlobalTimestamp() {
@@ -14,8 +16,13 @@ DECLARE_POSTFORM_CONFIG(
   .timestamp_frequency = 1
 );
 
-int main() {
-  Postform::FileLogger logger { std::string { "test.log" } };
+int main(int argc, const char* argv[]) {
+  if (argc != 2) {
+    printf("Expected 2 arguments!\n");
+    return -1;
+  }
+
+  Postform::FileLogger logger { std::string { argv[1] } };
 
   uint32_t iteration = 0;
   for (uint32_t i = 0; i < 10; i++) {
