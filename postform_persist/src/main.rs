@@ -1,5 +1,5 @@
 use color_eyre::eyre::Result;
-use postform_decoder::{ElfMetadata, LogLevel, POSTFORM_VERSION};
+use postform_decoder::{Decoder, ElfMetadata, LogLevel, POSTFORM_VERSION};
 use std::convert::TryInto;
 use std::io::prelude::*;
 use std::{fs, path::PathBuf};
@@ -38,7 +38,8 @@ fn color_for_level(level: LogLevel) -> String {
 }
 
 fn handle_log(elf_metadata: &ElfMetadata, buffer: &[u8]) {
-    match elf_metadata.parse(buffer) {
+    let mut decoder = Decoder::new(&elf_metadata);
+    match decoder.decode(buffer) {
         Ok(log) => {
             println!(
                 "{timestamp:<12.6} {color}{level:<11}{reset_color}: {msg}",

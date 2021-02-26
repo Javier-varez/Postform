@@ -1,7 +1,7 @@
 use cobs::CobsDecoder;
 use color_eyre::eyre::Result;
 use object::read::{File as ElfFile, Object, ObjectSymbol};
-use postform_decoder::{ElfMetadata, LogLevel, POSTFORM_VERSION};
+use postform_decoder::{Decoder, ElfMetadata, LogLevel, POSTFORM_VERSION};
 use probe_rs::{
     config::registry,
     flashing::{download_file, Format},
@@ -137,7 +137,8 @@ fn color_for_level(level: LogLevel) -> String {
 }
 
 fn handle_log(elf_metadata: &ElfMetadata, buffer: &[u8]) {
-    match elf_metadata.parse(buffer) {
+    let mut decoder = Decoder::new(&elf_metadata);
+    match decoder.decode(buffer) {
         Ok(log) => {
             println!(
                 "{timestamp:<12.6} {color}{level:<11}{reset_color}: {msg}",
