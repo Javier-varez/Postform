@@ -1,0 +1,150 @@
+0.000000     [38;5;2mDebug      [39m: Iteration number: 0
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
+1.000000     [38;5;2mDebug      [39m: Is this nice or what?!
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
+2.000000     [38;5;3mInfo       [39m: I am 28 years old...
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 33[39m
+3.000000     [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
+4.000000     [38;5;1mError      [39m: Oh boy, error 234556 just happened
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
+5.000000     [38;5;1mError      [39m: This is my char array: 123
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
+6.000000     [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 65[39m
+7.000000     [38;5;2mDebug      [39m: Iteration number: 1
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
+8.000000     [38;5;2mDebug      [39m: Is this nice or what?!
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
+9.000000     [38;5;3mInfo       [39m: I am 28 years old...
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 33[39m
+10.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
+11.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
+12.000000    [38;5;1mError      [39m: This is my char array: 123
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
+13.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 65[39m
+14.000000    [38;5;2mDebug      [39m: Iteration number: 2
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
+15.000000    [38;5;2mDebug      [39m: Is this nice or what?!
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
+16.000000    [38;5;3mInfo       [39m: I am 28 years old...
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 33[39m
+17.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
+18.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
+19.000000    [38;5;1mError      [39m: This is my char array: 123
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
+20.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 65[39m
+21.000000    [38;5;2mDebug      [39m: Iteration number: 3
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
+22.000000    [38;5;2mDebug      [39m: Is this nice or what?!
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
+23.000000    [38;5;3mInfo       [39m: I am 28 years old...
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 33[39m
+24.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
+25.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
+26.000000    [38;5;1mError      [39m: This is my char array: 123
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
+27.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 65[39m
+28.000000    [38;5;2mDebug      [39m: Iteration number: 4
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
+29.000000    [38;5;2mDebug      [39m: Is this nice or what?!
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
+30.000000    [38;5;3mInfo       [39m: I am 28 years old...
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 33[39m
+31.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
+32.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
+33.000000    [38;5;1mError      [39m: This is my char array: 123
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
+34.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 65[39m
+35.000000    [38;5;2mDebug      [39m: Iteration number: 5
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
+36.000000    [38;5;2mDebug      [39m: Is this nice or what?!
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
+37.000000    [38;5;3mInfo       [39m: I am 28 years old...
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 33[39m
+38.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
+39.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
+40.000000    [38;5;1mError      [39m: This is my char array: 123
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
+41.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 65[39m
+42.000000    [38;5;2mDebug      [39m: Iteration number: 6
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
+43.000000    [38;5;2mDebug      [39m: Is this nice or what?!
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
+44.000000    [38;5;3mInfo       [39m: I am 28 years old...
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 33[39m
+45.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
+46.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
+47.000000    [38;5;1mError      [39m: This is my char array: 123
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
+48.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 65[39m
+49.000000    [38;5;2mDebug      [39m: Iteration number: 7
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
+50.000000    [38;5;2mDebug      [39m: Is this nice or what?!
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
+51.000000    [38;5;3mInfo       [39m: I am 28 years old...
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 33[39m
+52.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
+53.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
+54.000000    [38;5;1mError      [39m: This is my char array: 123
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
+55.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 65[39m
+56.000000    [38;5;2mDebug      [39m: Iteration number: 8
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
+57.000000    [38;5;2mDebug      [39m: Is this nice or what?!
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
+58.000000    [38;5;3mInfo       [39m: I am 28 years old...
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 33[39m
+59.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
+60.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
+61.000000    [38;5;1mError      [39m: This is my char array: 123
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
+62.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 65[39m
+63.000000    [38;5;2mDebug      [39m: Iteration number: 9
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
+64.000000    [38;5;2mDebug      [39m: Is this nice or what?!
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
+65.000000    [38;5;3mInfo       [39m: I am 28 years old...
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 33[39m
+66.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
+67.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
+68.000000    [38;5;1mError      [39m: This is my char array: 123
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
+69.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
+[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 65[39m
