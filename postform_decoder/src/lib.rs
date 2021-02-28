@@ -7,6 +7,7 @@ use std::{fs, path::PathBuf};
 
 include!(concat!(env!("OUT_DIR"), "/version.rs"));
 
+/// Error type for Postform Decoder.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("Postform IO error")]
@@ -414,11 +415,13 @@ const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 24] = [
     }),
 ];
 
+/// Decodes Postform logs from the ElfMetadata and a buffer.
 pub struct Decoder<'a> {
     elf_metadata: &'a ElfMetadata,
 }
 
 impl<'a> Decoder<'a> {
+    /// Creates a new Decoder that uses the borrowed ElfMetadata.
     pub fn new(elf_metadata: &'a ElfMetadata) -> Self {
         Decoder { elf_metadata }
     }
