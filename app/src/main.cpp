@@ -58,6 +58,31 @@ int main() {
     LOG_ERROR(&logger, "Oh boy, error %d just happened", 234556);
     char char_array[] = "123";
     LOG_ERROR(&logger, "This is my char array: %s", char_array);
+    LOG_ERROR(&logger, "different unsigned sizes: %hhu, %hu, %u, %lu, %llu",
+        static_cast<unsigned char>(123),
+        static_cast<unsigned short>(43212),
+        static_cast<unsigned int>(123123123),
+        static_cast<unsigned long>(123123123),
+        static_cast<unsigned long long>(123123123));
+    LOG_ERROR(&logger, "different signed sizes: %hhd, %hd, %d, %ld, %lld",
+        static_cast<signed char>(-123),
+        static_cast<short>(-13212),
+        static_cast<int>(-123123123),
+        static_cast<long>(-123123123),
+        static_cast<long long>(-123123123));
+    LOG_ERROR(&logger, "different octal sizes: %hho, %ho, %o, %lo, %llo",
+        static_cast<unsigned char>(0123),
+        static_cast<unsigned short>(0123),
+        static_cast<unsigned int>(0123123),
+        static_cast<unsigned long>(0123123123),
+        static_cast<unsigned long long>(0123123123));
+    LOG_ERROR(&logger, "different hex sizes: %hhx, %hx, %x, %lx, %llx",
+        static_cast<unsigned char>(0xf3),
+        static_cast<unsigned short>(0x1321),
+        static_cast<unsigned int>(0x12341235),
+        static_cast<unsigned long>(0x12341234),
+        static_cast<unsigned long long>(0x1234567812345678));
+    LOG_ERROR(&logger, "Pointer %p", reinterpret_cast<void*>(0x12341234));
 
     constexpr auto interned_string = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
                              "Proin congue, libero vitae condimentum egestas, tortor metus "
