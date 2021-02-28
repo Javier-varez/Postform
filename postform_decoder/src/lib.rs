@@ -217,34 +217,7 @@ impl ElfMetadata {
         }
     }
 
-    fn recover_interned_string(&self, str_ptr: usize) -> Result<(String, u32, String), Error> {
-        let str_buffer = &self.strings[str_ptr..];
-        let end_of_string = str_buffer
-            .iter()
-            .position(|&c| c == b'\0')
-            .ok_or(Error::InvalidFormatString)?;
-        let str_buffer = &str_buffer[..end_of_string];
-
-        let at_pos = str_buffer
-            .iter()
-            .position(|&c| c == b'@')
-            .ok_or(Error::InvalidFormatString)?;
-        let file_name = String::from_utf8_lossy(&str_buffer[..at_pos]).to_string();
-        let str_buffer = &str_buffer[at_pos + 1..];
-
-        let at_pos = str_buffer
-            .iter()
-            .position(|&c| c == b'@')
-            .ok_or(Error::InvalidFormatString)?;
-        let line_number = String::from_utf8_lossy(&str_buffer[..at_pos])
-            .parse()
-            .or(Err(Error::InvalidFormatString))?;
-        let format = String::from_utf8_lossy(&str_buffer[at_pos + 1..]).to_string();
-
-        Ok((file_name, line_number, format))
-    }
-
-    fn recover_user_interned_string(&self, str_ptr: usize) -> Result<String, Error> {
+    fn recover_interned_string(&self, str_ptr: usize) -> Result<String, Error> {
         let str_buffer = &self.strings[str_ptr..];
         let end_of_string = str_buffer
             .iter()
@@ -256,7 +229,80 @@ impl ElfMetadata {
 
 type FormatSpecHandler = for<'a> fn(&Decoder, &mut String, &'_ mut &'a [u8]) -> Result<(), Error>;
 
-const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 5] = [
+fn decode_unsigned(size: u32, message: &'_ mut &'_ [u8]) -> Result<u64, Error> {
+    match size {
+        1 => message.read_u8().map(|x| x as u64),
+        2 => message.read_u16::<LittleEndian>().map(|x| x as u64),
+        4 => message.read_u32::<LittleEndian>().map(|x| x as u64),
+        8 => message.read_u64::<LittleEndian>().map(|x| x as u64),
+        _ => panic!("Invalid size: {}", size),
+    }
+    .or(Err(Error::InvalidLogMessage))
+}
+
+fn decode_signed(size: u32, message: &'_ mut &'_ [u8]) -> Result<i64, Error> {
+    match size {
+        1 => message.read_i8().map(|x| x as i64),
+        2 => message.read_i16::<LittleEndian>().map(|x| x as i64),
+        4 => message.read_i32::<LittleEndian>().map(|x| x as i64),
+        8 => message.read_i64::<LittleEndian>().map(|x| x as i64),
+        _ => panic!("Invalid size: {}", size),
+    }
+    .or(Err(Error::InvalidLogMessage))
+}
+
+fn format_unsigned<'a>(
+    size: u32,
+    out_str: &mut String,
+    buffer: &'_ mut &'a [u8],
+) -> Result<(), Error> {
+    let integer_val = decode_unsigned(size, buffer)?;
+    let integer_str = format!("{}", integer_val);
+    out_str.push_str(&integer_str);
+    Ok(())
+}
+
+fn format_signed<'a>(
+    size: u32,
+    out_str: &mut String,
+    buffer: &'_ mut &'a [u8],
+) -> Result<(), Error> {
+    let integer_val = decode_signed(size, buffer)?;
+    let integer_str = format!("{}", integer_val);
+    out_str.push_str(&integer_str);
+    Ok(())
+}
+
+fn format_octal<'a>(
+    size: u32,
+    out_str: &mut String,
+    buffer: &'_ mut &'a [u8],
+) -> Result<(), Error> {
+    let integer_val = decode_unsigned(size, buffer)?;
+    let integer_str = format!("{:o}", integer_val);
+    out_str.push_str(&integer_str);
+    Ok(())
+}
+
+fn format_hex<'a>(size: u32, out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+    let integer_val = decode_unsigned(size, buffer)?;
+    let integer_str = format!("{:x}", integer_val);
+    out_str.push_str(&integer_str);
+    Ok(())
+}
+
+fn format_pointer<'a>(
+    size: u32,
+    out_str: &mut String,
+    buffer: &'_ mut &'a [u8],
+) -> Result<(), Error> {
+    let integer_val = decode_unsigned(size, buffer)?;
+    let integer_str = format!("0x{:x}", integer_val);
+    out_str.push_str(&integer_str);
+    Ok(())
+}
+
+const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 24] = [
     ("%s", |_, out_str, buffer| {
         let nul_range_end = buffer
             .iter()
@@ -269,23 +315,96 @@ const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 5] = [
         out_str.push_str(res);
         Ok(())
     }),
-    ("%d", |_, out_str, buffer| {
-        let integer_val = buffer.read_i32::<LittleEndian>()?;
-        let integer_str = format!("{}", integer_val);
-        out_str.push_str(&integer_str);
-        Ok(())
+    ("%hhd", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_signed(platform_descriptors.char_size, out_str, buffer)
     }),
-    ("%u", |_, out_str, buffer| {
-        let integer_val = buffer.read_u32::<LittleEndian>()?;
-        let integer_str = format!("{}", integer_val);
-        out_str.push_str(&integer_str);
-        Ok(())
+    ("%hd", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_signed(platform_descriptors.short_size, out_str, buffer)
+    }),
+    ("%d", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_signed(platform_descriptors.int_size, out_str, buffer)
+    }),
+    ("%ld", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_signed(platform_descriptors.long_int_size, out_str, buffer)
+    }),
+    ("%lld", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_signed(platform_descriptors.long_long_int_size, out_str, buffer)
+    }),
+    ("%hhu", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_unsigned(platform_descriptors.char_size, out_str, buffer)
+    }),
+    ("%hu", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_unsigned(platform_descriptors.short_size, out_str, buffer)
+    }),
+    ("%u", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_unsigned(platform_descriptors.int_size, out_str, buffer)
+    }),
+    ("%lu", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_unsigned(platform_descriptors.long_int_size, out_str, buffer)
+    }),
+    ("%llu", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_unsigned(platform_descriptors.long_long_int_size, out_str, buffer)
+    }),
+    ("%hho", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_octal(platform_descriptors.char_size, out_str, buffer)
+    }),
+    ("%ho", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_octal(platform_descriptors.short_size, out_str, buffer)
+    }),
+    ("%o", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_octal(platform_descriptors.int_size, out_str, buffer)
+    }),
+    ("%lo", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_octal(platform_descriptors.long_int_size, out_str, buffer)
+    }),
+    ("%llo", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_octal(platform_descriptors.long_long_int_size, out_str, buffer)
+    }),
+    ("%hhx", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_hex(platform_descriptors.char_size, out_str, buffer)
+    }),
+    ("%hx", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_hex(platform_descriptors.short_size, out_str, buffer)
+    }),
+    ("%x", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_hex(platform_descriptors.int_size, out_str, buffer)
+    }),
+    ("%lx", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_hex(platform_descriptors.long_int_size, out_str, buffer)
+    }),
+    ("%llx", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_hex(platform_descriptors.long_long_int_size, out_str, buffer)
+    }),
+    ("%p", |decoder, out_str, buffer| {
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        format_pointer(platform_descriptors.ptr_size, out_str, buffer)
     }),
     ("%k", |decoder, out_str, buffer| {
-        let str_ptr = decoder.decode_pointer(buffer)?;
+        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
+        let str_ptr = decode_unsigned(platform_descriptors.ptr_size, buffer)? as usize;
         let interned_string = decoder
             .elf_metadata
-            .recover_user_interned_string(str_ptr as usize)?;
+            .recover_interned_string(str_ptr as usize)?;
         out_str.push_str(&interned_string);
         Ok(())
     }),
@@ -310,11 +429,11 @@ impl<'a> Decoder<'a> {
         let timestamp =
             buffer.read_u64::<byteorder::LittleEndian>()? as f64 / self.elf_metadata.timestamp_freq;
 
-        let str_ptr = self.decode_pointer(&mut buffer)?;
+        let platform_descriptors = &self.elf_metadata.platform_descriptors;
+        let str_ptr = decode_unsigned(platform_descriptors.ptr_size, &mut buffer)? as usize;
 
-        let (file_name, line_number, format_str) = self
-            .elf_metadata
-            .recover_interned_string(str_ptr as usize)?;
+        let format_string = self.elf_metadata.recover_interned_string(str_ptr)?;
+        let (file_name, line_number, format_str) = self.decode_format_string(format_string)?;
         let formatted_str = self.format_string(&format_str, buffer)?;
         let log_section = self.elf_metadata.get_log_section(str_ptr);
 
@@ -325,6 +444,23 @@ impl<'a> Decoder<'a> {
             file_name,
             line_number,
         })
+    }
+
+    fn decode_format_string(
+        &self,
+        interned_string: String,
+    ) -> Result<(String, u32, String), Error> {
+        let mut splits = interned_string.split('@');
+
+        let file_name = splits.next().ok_or(Error::InvalidFormatString)?.to_owned();
+        let line_number = splits
+            .next()
+            .ok_or(Error::InvalidFormatString)?
+            .parse()
+            .or(Err(Error::InvalidFormatString))?;
+        let format = splits.next().ok_or(Error::InvalidFormatString)?.to_owned();
+
+        Ok((file_name, line_number, format))
     }
 
     fn format_string(&self, format: &str, mut arguments: &[u8]) -> Result<String, Error> {
@@ -358,20 +494,6 @@ impl<'a> Decoder<'a> {
             }
         }
     }
-
-    fn decode_pointer<'b>(&self, message: &'_ mut &'b [u8]) -> Result<usize, Error> {
-        match self.elf_metadata.platform_descriptors.ptr_size {
-            1 => message.read_u8().map(|x| x as usize),
-            2 => message.read_u16::<LittleEndian>().map(|x| x as usize),
-            4 => message.read_u32::<LittleEndian>().map(|x| x as usize),
-            8 => message.read_u64::<LittleEndian>().map(|x| x as usize),
-            _ => panic!(
-                "Invalid platform pointer size: {}",
-                self.elf_metadata.platform_descriptors.ptr_size
-            ),
-        }
-        .or(Err(Error::InvalidLogMessage))
-    }
 }
 
 #[cfg(test)]
@@ -397,7 +519,10 @@ mod tests {
     #[test]
     fn test_recover_interned_string() {
         let elf_metadata = create_elf_metadata();
-        let (file_name, line, msg) = elf_metadata.recover_interned_string(45usize).unwrap();
+        let format_string = elf_metadata.recover_interned_string(45usize).unwrap();
+        let (file_name, line, msg) = Decoder::new(&elf_metadata)
+            .decode_format_string(format_string)
+            .unwrap();
         assert_eq!(file_name, "test/my_file2.cpp");
         assert_eq!(line, 12343u32);
         assert_eq!(msg, "This is my second log message");
