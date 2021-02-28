@@ -69,14 +69,14 @@ You can get `clang` using the apt repositories:
 sudo apt install clang
 ```
 
-`Postform` relies on a custom build system based on a non-recursive set of makefile templates. It is included as a submodule in the `Postform` repository. You can find a link to it [here](https://github.com/Javier-varez/buildsystem). The dependencies for the buildsystem are:
+`Postform` relies on a custom build system based on a non-recursive set of makefile templates. You can find a link to it [here](https://github.com/Javier-varez/buildsystem). The dependencies for the buildsystem are:
 
 ```bash
 apt install make
 apt install bear
 ```
 
-For the `STM32` code `Postform` uses the abstraction layer provided by [libopencm3](https://github.com/libopencm3/libopencm3). It is also bundled as a submodule for the project.
+For the `STM32` code `Postform` uses the abstraction layer provided by [libopencm3](https://github.com/libopencm3/libopencm3).
 
 All the Rust code for the host has its dependencies indicated in the `Cargo.toml` file.
 
