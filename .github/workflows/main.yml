@@ -136,3 +136,21 @@ jobs:
       run: ./binaries/postform_persist binaries/format_host host.log > actual_log.txt
     - name: Compare translated logs
       run: diff expected_log.txt actual_log.txt
+
+  build_docs:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: 'true'
+    - name: Build docs
+      uses: mattnotmitt/doxygen-action@v1
+      with:
+          working-directory: 'libpostform/'
+          doxyfile-path: 'Doxyfile'
+    - name: Archive docs
+      uses: actions/upload-artifact@v2
+      with:
+        name: libpostform_docs
+        path: libpostform/docs
