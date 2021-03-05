@@ -7,6 +7,7 @@
 
 #include "postform/format_validator.h"
 #include "postform/types.h"
+#include "postform/args.h"
 
 namespace Postform {
 
@@ -68,15 +69,47 @@ class Logger {
    * @param args arguments to serialize in the log
    */
   template<typename ... T>
-  void log(LogLevel level, T ...args) {
+  inline void log(LogLevel level, T ...args) {
     if (level < m_level.load()) return;
+    const auto arg_array = build_args(args...);
+    vlog(arg_array.data(), arg_array.size());
+  }
 
+  void vlog(const Argument* arguments, std::size_t nargs) {
     uint64_t timestamp = getGlobalTimestamp();
 
     Writer writer = static_cast<Derived&>(*this).getWriter();
     writer.write(reinterpret_cast<const uint8_t*>(&timestamp), sizeof(timestamp));
-    sendRemainingArguments(writer, args...);
-    writer.commit();
+    for (std::size_t i = 0; i < nargs; i++) {
+      switch (arguments[i].type) {
+        case Argument::Type::STRING_POINTER:
+          writer.write(reinterpret_cast<const uint8_t*>(arguments[i].str_ptr),
+                       strlen(arguments[i].str_ptr) + 1);
+          break;
+        case Argument::Type::UNSIGNED_INTEGER: {
+          writer.write(reinterpret_cast<const uint8_t*>(&arguments[i].unsigned_long_long),
+                       arguments[i].size);
+          break;
+        }
+        case Argument::Type::SIGNED_INTEGER: {
+          writer.write(reinterpret_cast<const uint8_t*>(&arguments[i].signed_long_long),
+                       arguments[i].size);
+          break;
+        }
+        case Argument::Type::INTERNED_STRING: {
+          uint8_t data[sizeof(InternedString)];
+          memcpy(data, &arguments[i].interned_string, sizeof(InternedString));
+          writer.write(data, sizeof(data));
+          break;
+        }
+        case Argument::Type::VOID_PTR: {
+          uint8_t data[sizeof(const void*)];
+          memcpy(data, &arguments[i].void_ptr, sizeof(const void*));
+          writer.write(data, sizeof(data));
+          break;
+        }
+      }
+    }
   }
 
   /**
@@ -89,34 +122,6 @@ class Logger {
 
  private:
   std::atomic<LogLevel> m_level = LogLevel::DEBUG;
-
-  template<typename T>
-  void sendArgument(Writer& writer, const T argument) {
-    writer.write(reinterpret_cast<const uint8_t*>(&argument), sizeof(T));
-  }
-
-  template<>
-  void sendArgument<const char*>(Writer& writer, const char* argument) {
-    const auto length = strlen(argument) + 1;
-    writer.write(reinterpret_cast<const uint8_t*>(argument), length);
-  }
-
-  template<>
-  void sendArgument<char*>(Writer& writer, char* argument) {
-    const auto length = strlen(argument) + 1;
-    writer.write(reinterpret_cast<const uint8_t*>(argument), length);
-  }
-
-  template<typename T>
-  void sendRemainingArguments(Writer& writer, const T first_arg) {
-    sendArgument(writer, first_arg);
-  }
-
-  template<typename T, typename ... Types>
-  void sendRemainingArguments(Writer& writer, const T first_arg, Types... args) {
-    sendArgument(writer, first_arg);
-    sendRemainingArguments(writer, args...);
-  }
 };
 
 /**
