@@ -26,11 +26,11 @@ class Manager {
 
   Manager() = default;
   void releaseWriter() {
-    m_taken.store(false);
+    m_taken.store(false, std::memory_order_release);
   }
 
   bool takeWriter() {
-    return !m_taken.exchange(true);
+    return !m_taken.exchange(true, std::memory_order_acq_rel);
   }
 
   friend class RawWriter;

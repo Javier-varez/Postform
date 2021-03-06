@@ -57,7 +57,7 @@ void Rtt::RawWriter::write(const uint8_t* data, uint32_t size) {
       // Currently this only implements the blocking TX mode. We may need to add support
       // for other modes in the future.
       // We write the current buffer as is and then wait for more memory to be available
-      m_channel->write = m_write_ptr;
+      m_channel->write.store(m_write_ptr, std::memory_order_release);
       continue;
     }
 
@@ -79,14 +79,14 @@ void Rtt::RawWriter::write(const uint8_t* data, uint32_t size) {
 void Rtt::RawWriter::commit() {
   if (m_state == State::Writable) {
     // Update the write pointer and mark the writer as done
-    m_channel->write = m_write_ptr;
+    m_channel->write.store(m_write_ptr, std::memory_order_release);
     m_state = State::Finished;
     if (m_manager) m_manager->releaseWriter();
   }
 }
 
 uint32_t Rtt::RawWriter::getMaxContiguous() const {
-  uint32_t read = m_channel->read;
+  uint32_t read = m_channel->read.load(std::memory_order_acquire);
   uint32_t channel_size = m_channel->size;
 
   if (read == 0) {
