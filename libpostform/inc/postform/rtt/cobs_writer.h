@@ -2,6 +2,7 @@
 #ifndef POSTFORM_RTT_COBS_WRITER_H_
 #define POSTFORM_RTT_COBS_WRITER_H_
 
+#include <atomic>
 #include <cstdint>
 
 #include "postform/rtt/rtt.h"
@@ -34,13 +35,13 @@ class CobsWriter {
   CobsWriter(Manager* rtt, Channel* channel);
 
   inline void blockUntilNotFull() {
-    if (m_channel->flags != Rtt::Flags::BLOCK_IF_FULL) {
+    if (m_channel->flags.load(std::memory_order_relaxed) != Rtt::Flags::BLOCK_IF_FULL) {
       return;
     }
     const uint32_t next_write_ptr = nextWritePtr();
-    if (m_channel->read == next_write_ptr) {
-      m_channel->write.store(m_marker_ptr);
-      while (m_channel->read.load() == next_write_ptr) { }
+    if (m_channel->read.load(std::memory_order_acquire) == next_write_ptr) {
+      m_channel->write.store(m_marker_ptr, std::memory_order_release);
+      while (m_channel->read.load(std::memory_order_relaxed) == next_write_ptr) { }
     }
   }
 

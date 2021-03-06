@@ -8,7 +8,7 @@
 namespace Postform {
 uint64_t getGlobalTimestamp() {
   static std::atomic_uint64_t count;
-  return count.fetch_add(1);
+  return count.fetch_add(1, std::memory_order_relaxed);
 }
 }  // namespace Postform
 

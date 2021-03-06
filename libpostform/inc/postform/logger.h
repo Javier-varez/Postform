@@ -70,7 +70,7 @@ class Logger {
    */
   template<typename ... T>
   inline void log(LogLevel level, T ...args) {
-    if (level < m_level.load()) return;
+    if (level < m_level.load(std::memory_order_relaxed)) return;
     const auto arg_array = build_args(args...);
     vlog(arg_array.data(), arg_array.size());
   }
@@ -118,7 +118,7 @@ class Logger {
    * Logs with levels above or equal the selected one are printed.
    * Others are ignored.
    */
-  void setLevel(LogLevel level) { m_level.store(level); }
+  void setLevel(LogLevel level) { m_level.store(level, std::memory_order_relaxed); }
 
  private:
   std::atomic<LogLevel> m_level = LogLevel::DEBUG;
