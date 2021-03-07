@@ -171,6 +171,8 @@ class Logger {
 
     writer->write(buffer, number_of_bytes);
   }
+
+  friend class LoggerTest;
 };
 
 /**

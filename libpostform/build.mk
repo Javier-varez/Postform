@@ -70,3 +70,15 @@ LOCAL_LINKER_FILE := \
     $(LOCAL_DIR)/postform.ld
 include $(BUILD_STATIC_LIB)
 
+include $(CLEAR_VARS)
+LOCAL_NAME := postform_tests
+LOCAL_CFLAGS := \
+    $(POSTFORM_CFLAGS)
+LOCAL_CXXFLAGS := \
+    $(LOCAL_CFLAGS) \
+    $(POSTFORM_CXXFLAGS)
+LOCAL_SRC := \
+    $(POSTFORM_SRC) \
+    $(LOCAL_DIR)/test/logger_test.cpp
+include $(BUILD_HOST_TEST)
+
