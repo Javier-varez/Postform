@@ -19,4 +19,5 @@ You don't necessarily have to contribute just with pull requests. Any other kind
     * Global variables that are not marked as static shall have a `g_` prefix.
     * Static global variables use `s_` as a prefix.
     * Use `camelCase` instead of `PascalCase` for methods.
+  * C++ code should be formatted with clang-format version 10.
 

@@ -109,6 +109,22 @@ jobs:
         name: manifest
         path: manifest.xml
 
+  clang_format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: Javier-varez/google-repo-action@v0.3
+      with:
+        manifest-url: 'Javier-varez/manifest'
+        manifest-group: 'postform'
+        checkout-deps: true
+    - name: clang-format lint
+      uses: DoozyX/clang-format-lint-action@v0.11
+      with:
+        source: 'postform'
+        clangFormatVersion: 10
+
   system_test:
     runs-on: ubuntu-latest
     needs: [ cargo_build, libpostform_build ]

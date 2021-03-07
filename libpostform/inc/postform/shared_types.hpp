@@ -18,4 +18,3 @@ struct Config {
 }  // namespace Postform
 
 #endif  // POSTFORM_SHARED_TYPES_H_
-
