@@ -1,6 +1,6 @@
 
-#include "postform/config.h"
 #include "hal/systick.h"
+#include "postform/config.h"
 
 namespace Postform {
 uint64_t getGlobalTimestamp() {
@@ -9,6 +9,4 @@ uint64_t getGlobalTimestamp() {
 }
 }  // namespace Postform
 
-DECLARE_POSTFORM_CONFIG(
-  .timestamp_frequency = 72'000'000
-);
+DECLARE_POSTFORM_CONFIG(.timestamp_frequency = 72'000'000);

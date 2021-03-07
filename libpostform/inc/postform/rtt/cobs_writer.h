@@ -13,7 +13,7 @@ class Manager;
 
 class CobsWriter {
  public:
-  void write(const uint8_t *data, uint32_t size);
+  void write(const uint8_t* data, uint32_t size);
   void commit();
 
   CobsWriter() = default;
@@ -35,13 +35,16 @@ class CobsWriter {
   CobsWriter(Manager* rtt, Channel* channel);
 
   inline void blockUntilNotFull() {
-    if (m_channel->flags.load(std::memory_order_relaxed) != Rtt::Flags::BLOCK_IF_FULL) {
+    if (m_channel->flags.load(std::memory_order_relaxed) !=
+        Rtt::Flags::BLOCK_IF_FULL) {
       return;
     }
     const uint32_t next_write_ptr = nextWritePtr();
     if (m_channel->read.load(std::memory_order_acquire) == next_write_ptr) {
       m_channel->write.store(m_marker_ptr, std::memory_order_release);
-      while (m_channel->read.load(std::memory_order_relaxed) == next_write_ptr) { }
+      while (m_channel->read.load(std::memory_order_relaxed) ==
+             next_write_ptr) {
+      }
     }
   }
 

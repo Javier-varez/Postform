@@ -1,19 +1,16 @@
 
 #include "postform/rtt/raw_writer.h"
+
 #include "postform/rtt/rtt_manager.h"
 
 namespace Postform {
 
-Rtt::RawWriter::RawWriter() : m_state(State::Finished) { }
+Rtt::RawWriter::RawWriter() : m_state(State::Finished) {}
 
-Rtt::RawWriter::RawWriter(Rtt::Manager* manager, Rtt::Channel* channel) :
-  m_manager(manager),
-  m_channel(channel),
-  m_write_ptr(channel->write) { }
+Rtt::RawWriter::RawWriter(Rtt::Manager* manager, Rtt::Channel* channel)
+    : m_manager(manager), m_channel(channel), m_write_ptr(channel->write) {}
 
-Rtt::RawWriter::~RawWriter() {
-  commit();
-}
+Rtt::RawWriter::~RawWriter() { commit(); }
 
 Rtt::RawWriter::RawWriter(RawWriter&& other) {
   m_manager = other.m_manager;
@@ -49,14 +46,14 @@ void Rtt::RawWriter::write(const uint8_t* data, uint32_t size) {
     return;
   }
 
-  while(size != 0) {
+  while (size != 0) {
     uint32_t max_contiguous = getMaxContiguous();
     uint32_t count = size > max_contiguous ? max_contiguous : size;
 
     if (count == 0) {
-      // Currently this only implements the blocking TX mode. We may need to add support
-      // for other modes in the future.
-      // We write the current buffer as is and then wait for more memory to be available
+      // Currently this only implements the blocking TX mode. We may need to add
+      // support for other modes in the future. We write the current buffer as
+      // is and then wait for more memory to be available
       m_channel->write.store(m_write_ptr, std::memory_order_release);
       continue;
     }

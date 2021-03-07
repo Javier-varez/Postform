@@ -10,23 +10,24 @@
 // Constexpr utilities
 
 namespace Postform {
-[[nodiscard]] constexpr static bool strStartsWith(const char* str, const char* pattern) {
-    std::size_t i = 0;
-    while (pattern[i] != '\0') {
-        if (str[i] != pattern[i]) {
-            return false;
-        }
-        i++;
+[[nodiscard]] constexpr static bool strStartsWith(const char* str,
+                                                  const char* pattern) {
+  std::size_t i = 0;
+  while (pattern[i] != '\0') {
+    if (str[i] != pattern[i]) {
+      return false;
     }
-    return true;
+    i++;
+  }
+  return true;
 }
 
 [[nodiscard]] constexpr std::size_t stringLength(const char* str) {
-    std::size_t length = 0;
-    while (str[length] != '\0') {
-        length++;
-    }
-    return length;
+  std::size_t length = 0;
+  while (str[length] != '\0') {
+    length++;
+  }
+  return length;
 }
 }  // namespace Postform
 

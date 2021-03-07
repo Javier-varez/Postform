@@ -8,7 +8,7 @@
 
 namespace Postform {
 
-class RttLogger: public Logger<RttLogger, Rtt::CobsWriter> {
+class RttLogger : public Logger<RttLogger, Rtt::CobsWriter> {
  public:
   RttLogger() = default;
 

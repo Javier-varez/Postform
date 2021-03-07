@@ -7,13 +7,14 @@ static_assert(POSTFORM_VALIDATE_FORMAT("%s", ""));
 static_assert(POSTFORM_VALIDATE_FORMAT("%d", 2));
 static_assert(!POSTFORM_VALIDATE_FORMAT("%d", (const char*)123ull));
 static_assert(!POSTFORM_VALIDATE_FORMAT("%s", 123ull));
-static_assert(POSTFORM_VALIDATE_FORMAT("%s %llu %llu, %s", (const char*)123ull, 1ull, 1ull, ""));
-static_assert(POSTFORM_VALIDATE_FORMAT("%s %s %lld, %llu", "", (const char*)123ull, 2ll, 12ull));
+static_assert(POSTFORM_VALIDATE_FORMAT("%s %llu %llu, %s", (const char*)123ull,
+                                       1ull, 1ull, ""));
+static_assert(POSTFORM_VALIDATE_FORMAT("%s %s %lld, %llu", "",
+                                       (const char*)123ull, 2ll, 12ull));
 static_assert(POSTFORM_VALIDATE_FORMAT("fsdgfds%%"));
 static_assert(!POSTFORM_VALIDATE_FORMAT("fsdgfds%s"));
 static_assert(!POSTFORM_VALIDATE_FORMAT("fsdgfds%a"));
 static_assert(POSTFORM_VALIDATE_FORMAT("%x", 12));
-
 
 static_assert(POSTFORM_VALIDATE_FORMAT("%d", -123));
 

@@ -7,9 +7,9 @@
 #include <cstring>
 #include <type_traits>
 
+#include "postform/args.h"
 #include "postform/format_validator.h"
 #include "postform/types.h"
-#include "postform/args.h"
 
 namespace Postform {
 
@@ -60,7 +60,7 @@ extern volatile uint32_t dummy;
  * Writer getWriter();
  * ```
  */
-template<class Derived, class Writer>
+template <class Derived, class Writer>
 class Logger {
  public:
   Logger() { (void)dummy; }
@@ -70,8 +70,8 @@ class Logger {
    * @param level level of the current log.
    * @param args arguments to serialize in the log
    */
-  template<typename ... T>
-  inline void log(LogLevel level, T ...args) {
+  template <typename... T>
+  inline void log(LogLevel level, T... args) {
     if (level < m_level.load(std::memory_order_relaxed)) return;
     const auto arg_array = build_args(args...);
     vlog(arg_array.data(), arg_array.size());
@@ -83,7 +83,9 @@ class Logger {
    * Logs with levels above or equal the selected one are printed.
    * Others are ignored.
    */
-  void setLevel(LogLevel level) { m_level.store(level, std::memory_order_relaxed); }
+  void setLevel(LogLevel level) {
+    m_level.store(level, std::memory_order_relaxed);
+  }
 
  private:
   std::atomic<LogLevel> m_level = LogLevel::DEBUG;
@@ -114,7 +116,8 @@ class Logger {
           break;
         }
         case Argument::Type::INTERNED_STRING: {
-          auto ptr = reinterpret_cast<uintptr_t>(arguments[i].interned_string.str);
+          auto ptr =
+              reinterpret_cast<uintptr_t>(arguments[i].interned_string.str);
           writeLeb128(&writer, ptr);
           break;
         }
@@ -127,7 +130,9 @@ class Logger {
     }
   }
 
-  template<class T, std::enable_if_t<std::is_integral_v<T> && std::is_unsigned_v<T>, bool> = true>
+  template <class T,
+            std::enable_if_t<std::is_integral_v<T> && std::is_unsigned_v<T>,
+                             bool> = true>
   void writeLeb128(Writer* writer, T value) {
     constexpr std::size_t MAX_BUF_SIZE = (sizeof(T) * 8 + 6) / 7;
     uint8_t buffer[MAX_BUF_SIZE];
@@ -145,7 +150,9 @@ class Logger {
     writer->write(buffer, number_of_bytes);
   }
 
-  template<class T, std::enable_if_t<std::is_integral_v<T> && std::is_signed_v<T>, bool> = true>
+  template <class T,
+            std::enable_if_t<std::is_integral_v<T> && std::is_signed_v<T>,
+                             bool> = true>
   void writeLeb128(Writer* writer, T value) {
     constexpr std::size_t MAX_BUF_SIZE = (sizeof(T) * 8 + 6) / 7;
     const bool negative = value < 0;
@@ -157,7 +164,7 @@ class Logger {
       buffer[number_of_bytes] = value & 0x7f;
       value >>= 7;
       if (negative) {
-        value |= T{ 0x7f } << (sizeof(T) * 8 - 7);
+        value |= T{0x7f} << (sizeof(T) * 8 - 7);
       }
       if ((value == -1) && (buffer[number_of_bytes] & 0x40)) {
         done = true;
@@ -179,149 +186,176 @@ class Logger {
  * @brief Struct template representing an interned debug string.
  *
  * Instantiates a string constant in the ".interned_strings.debug" section.
- * This section is not used in runtime, only used as debug information for Postform
+ * This section is not used in runtime, only used as debug information for
+ * Postform
  */
-template<char... N>
+template <char... N>
 struct InternedDebugString {
-  __attribute__((section(".interned_strings.debug"))) static constexpr char string[] { N... };
+  __attribute__((
+      section(".interned_strings.debug"))) static constexpr char string[]{N...};
 };
 
-template<char... N>
+template <char... N>
 constexpr char InternedDebugString<N...>::string[];
 
 /**
  * @brief Struct template representing an interned info string.
  *
  * Instantiates a string constant in the ".interned_strings.info" section.
- * This section is not used in runtime, only used as debug information for Postform
+ * This section is not used in runtime, only used as debug information for
+ * Postform
  */
-template<char... N>
+template <char... N>
 struct InternedInfoString {
-  __attribute__((section(".interned_strings.info"))) static constexpr char string[] { N... };
+  __attribute__((
+      section(".interned_strings.info"))) static constexpr char string[]{N...};
 };
 
-template<char... N>
+template <char... N>
 constexpr char InternedInfoString<N...>::string[];
 
 /**
  * @brief Struct template representing an interned warning string.
  *
  * Instantiates a string constant in the ".interned_strings.warning" section.
- * This section is not used in runtime, only used as debug information for Postform
+ * This section is not used in runtime, only used as debug information for
+ * Postform
  */
-template<char... N>
+template <char... N>
 struct InternedWarningString {
-  __attribute__((section(".interned_strings.warning"))) static constexpr char string[] { N... };
+  __attribute__((section(
+      ".interned_strings.warning"))) static constexpr char string[]{N...};
 };
 
-template<char... N>
+template <char... N>
 constexpr char InternedWarningString<N...>::string[];
 
 /**
  * @brief Struct template representing an interned error string.
  *
  * Instantiates a string constant in the ".interned_strings.error" section.
- * This section is not used in runtime, only used as debug information for Postform
+ * This section is not used in runtime, only used as debug information for
+ * Postform
  */
-template<char... N>
+template <char... N>
 struct InternedErrorString {
-  __attribute__((section(".interned_strings.error"))) static constexpr char string[] { N... };
+  __attribute__((
+      section(".interned_strings.error"))) static constexpr char string[]{N...};
 };
 
-template<char... N>
+template <char... N>
 constexpr char InternedErrorString<N...>::string[];
 
 /**
  * @brief Struct template representing an interned user string.
  *
  * Instantiates a string constant in the ".interned_strings.user" section.
- * This section is not used in runtime, only used as debug information for Postform
+ * This section is not used in runtime, only used as debug information for
+ * Postform
  */
-template<char... N>
+template <char... N>
 struct InternedUserString {
-  __attribute__((section(".interned_strings.user"))) static constexpr char string[] { N... };
+  __attribute__((
+      section(".interned_strings.user"))) static constexpr char string[]{N...};
 };
 
-template<char... N>
+template <char... N>
 constexpr char InternedUserString<N...>::string[];
 
 }  // namespace Postform
 
 /**
- * @brief variadic template user defined literal to declare a debug interned string.
+ * @brief variadic template user defined literal to declare a debug interned
+ * string.
  *
  * This is currently only supported by clang.
  */
-template<typename T, T... chars>
-constexpr Postform::InternedString operator ""_intern_debug() {
-  return Postform::InternedString { Postform::InternedDebugString<chars..., '\0'>::string };
+template <typename T, T... chars>
+constexpr Postform::InternedString operator""_intern_debug() {
+  return Postform::InternedString{
+      Postform::InternedDebugString<chars..., '\0'>::string};
 }
 
 /**
- * @brief variadic template user defined literal to declare a info interned string.
+ * @brief variadic template user defined literal to declare a info interned
+ * string.
  *
  * This is currently only supported by clang.
  */
-template<typename T, T... chars>
-constexpr Postform::InternedString operator ""_intern_info() {
-  return Postform::InternedString { Postform::InternedInfoString<chars..., '\0'>::string };
+template <typename T, T... chars>
+constexpr Postform::InternedString operator""_intern_info() {
+  return Postform::InternedString{
+      Postform::InternedInfoString<chars..., '\0'>::string};
 }
 
 /**
- * @brief variadic template user defined literal to declare a warning interned string.
+ * @brief variadic template user defined literal to declare a warning interned
+ * string.
  *
  * This is currently only supported by clang.
  */
-template<typename T, T... chars>
-constexpr Postform::InternedString operator ""_intern_warning() {
-  return Postform::InternedString { Postform::InternedWarningString<chars..., '\0'>::string };
+template <typename T, T... chars>
+constexpr Postform::InternedString operator""_intern_warning() {
+  return Postform::InternedString{
+      Postform::InternedWarningString<chars..., '\0'>::string};
 }
 
 /**
- * @brief variadic template user defined literal to declare a error interned string.
+ * @brief variadic template user defined literal to declare a error interned
+ * string.
  *
  * This is currently only supported by clang.
  */
-template<typename T, T... chars>
-constexpr Postform::InternedString operator ""_intern_error() {
-  return Postform::InternedString { Postform::InternedErrorString<chars..., '\0'>::string };
+template <typename T, T... chars>
+constexpr Postform::InternedString operator""_intern_error() {
+  return Postform::InternedString{
+      Postform::InternedErrorString<chars..., '\0'>::string};
 }
 
 /**
- * @brief variadic template user defined literal to declare a error interned string.
+ * @brief variadic template user defined literal to declare a error interned
+ * string.
  *
  * This is currently only supported by clang.
  */
-template<typename T, T... chars>
-constexpr Postform::InternedString operator ""_intern() {
-  return Postform::InternedString { Postform::InternedUserString<chars..., '\0'>::string };
+template <typename T, T... chars>
+constexpr Postform::InternedString operator""_intern() {
+  return Postform::InternedString{
+      Postform::InternedUserString<chars..., '\0'>::string};
 }
 
-#define __POSTFORM_LOG(level, intern_mode, logger, fmt, ...) \
-  { \
-    POSTFORM_ASSERT_FORMAT(fmt, ## __VA_ARGS__); \
-    (logger)->log(level, __FILE__ "@" __POSTFORM_EXPAND_AND_STRINGIFY(__LINE__) "@" fmt ## intern_mode, ## __VA_ARGS__); \
+#define __POSTFORM_LOG(level, intern_mode, logger, fmt, ...)    \
+  {                                                             \
+    POSTFORM_ASSERT_FORMAT(fmt, ##__VA_ARGS__);                 \
+    (logger)->log(level,                                        \
+                  __FILE__ "@" __POSTFORM_EXPAND_AND_STRINGIFY( \
+                      __LINE__) "@" fmt##intern_mode,           \
+                  ##__VA_ARGS__);                               \
   }
 
 /**
  * @brief Macro for a debug log with a printf-like formatting
  */
-#define LOG_DEBUG(logger, fmt, ...) \
-  __POSTFORM_LOG(Postform::LogLevel::DEBUG, _intern_debug, logger, fmt, ## __VA_ARGS__)
+#define LOG_DEBUG(logger, fmt, ...)                                     \
+  __POSTFORM_LOG(Postform::LogLevel::DEBUG, _intern_debug, logger, fmt, \
+                 ##__VA_ARGS__)
 /**
  * @brief Macro for an info log with a printf-like formatting
  */
-#define LOG_INFO(logger, fmt, ...) \
-  __POSTFORM_LOG(Postform::LogLevel::INFO, _intern_info, logger, fmt, ## __VA_ARGS__)
+#define LOG_INFO(logger, fmt, ...)                                    \
+  __POSTFORM_LOG(Postform::LogLevel::INFO, _intern_info, logger, fmt, \
+                 ##__VA_ARGS__)
 /**
  * @brief Macro for a warning log with a printf-like formatting
  */
-#define LOG_WARNING(logger, fmt, ...) \
-  __POSTFORM_LOG(Postform::LogLevel::WARNING, _intern_warning, logger, fmt, ## __VA_ARGS__)
+#define LOG_WARNING(logger, fmt, ...)                                       \
+  __POSTFORM_LOG(Postform::LogLevel::WARNING, _intern_warning, logger, fmt, \
+                 ##__VA_ARGS__)
 /**
  * @brief Macro for an error log with a printf-like formatting
  */
-#define LOG_ERROR(logger, fmt, ...) \
-  __POSTFORM_LOG(Postform::LogLevel::ERROR, _intern_error, logger, fmt, ## __VA_ARGS__)
+#define LOG_ERROR(logger, fmt, ...)                                     \
+  __POSTFORM_LOG(Postform::LogLevel::ERROR, _intern_error, logger, fmt, \
+                 ##__VA_ARGS__)
 
 #endif  // POSTFORM_LOGGER_H_

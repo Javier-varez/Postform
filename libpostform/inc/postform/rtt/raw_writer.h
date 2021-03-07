@@ -3,6 +3,7 @@
 #define POSTFORM_RTT_RAW_WRITER_H_
 
 #include <cstdint>
+
 #include "postform/rtt/rtt.h"
 
 namespace Postform {
@@ -11,7 +12,7 @@ class Manager;
 
 class RawWriter {
  public:
-  void write(const uint8_t *data, uint32_t size);
+  void write(const uint8_t* data, uint32_t size);
   void commit();
 
   RawWriter();
@@ -25,10 +26,7 @@ class RawWriter {
   operator bool() { return State::Writable == m_state; }
 
  private:
-  enum class State {
-    Writable,
-    Finished
-  };
+  enum class State { Writable, Finished };
 
   Manager* m_manager = nullptr;
   Channel* m_channel = nullptr;

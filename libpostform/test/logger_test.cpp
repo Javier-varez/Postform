@@ -1,3 +1,5 @@
+#include "postform/logger.h"
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -5,7 +7,6 @@
 #include <variant>
 
 #include "mock_logger.h"
-#include "postform/logger.h"
 
 using ::testing::_;
 using ::testing::ElementsAreArray;

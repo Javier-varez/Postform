@@ -15,7 +15,7 @@ class FileWriter {
  public:
   FileWriter() = default;
 
-  void write(const uint8_t *data, uint32_t size);
+  void write(const uint8_t* data, uint32_t size);
   void commit();
 
   FileWriter(const FileWriter&) = delete;
@@ -32,29 +32,27 @@ class FileWriter {
   FileLogger* m_logger = nullptr;
   std::vector<uint8_t> m_data;
 
-  FileWriter(FileLogger* logger, int fd) : m_fd(fd), m_logger(logger) { }
+  FileWriter(FileLogger* logger, int fd) : m_fd(fd), m_logger(logger) {}
   friend class FileLogger;
 };
 
-class FileLogger: public Logger<FileLogger, FileWriter> {
+class FileLogger : public Logger<FileLogger, FileWriter> {
  public:
   explicit FileLogger(std::string file_path);
   ~FileLogger();
 
  private:
-  std::atomic_bool m_taken { false };
+  std::atomic_bool m_taken{false};
   int m_fd = -1;
 
   FileWriter getWriter() {
     if (!m_taken.exchange(true)) {
-      return FileWriter { this, m_fd };
+      return FileWriter{this, m_fd};
     }
-    return FileWriter {};
+    return FileWriter{};
   }
 
-  void release() {
-    m_taken.store(false);
-  }
+  void release() { m_taken.store(false); }
 
   friend Logger<FileLogger, FileWriter>;
   friend class FileWriter;

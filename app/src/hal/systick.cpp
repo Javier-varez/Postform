@@ -9,7 +9,7 @@ struct SysTickRegs {
       uint32_t tickint : 1;
       uint32_t clksource : 1;
       uint32_t : 13;
-      uint32_t countflag: 1;
+      uint32_t countflag : 1;
     } bits;
   } CSR;
   volatile union {
@@ -21,25 +21,23 @@ struct SysTickRegs {
   volatile union {
     uint32_t reg;
     struct {
-      uint32_t cv: 24;
+      uint32_t cv : 24;
     } bits;
   } CVR;
   volatile union {
     uint32_t reg;
     struct {
-      uint32_t cal_value: 24;
+      uint32_t cal_value : 24;
       uint32_t : 6;
-      uint32_t skew: 1;
-      uint32_t noref: 1;
+      uint32_t skew : 1;
+      uint32_t noref : 1;
     } bits;
   } CALVR;
 };
 
 static __attribute__((section(".bss.systick_regs"))) SysTickRegs s_systick_regs;
 
-extern "C" void SysTick_Handler() {
-  SysTick::getInstance().m_ticks++;
-}
+extern "C" void SysTick_Handler() { SysTick::getInstance().m_ticks++; }
 
 void SysTick::init(uint32_t core_clk_hz) {
   m_ticks = 0;
@@ -58,8 +56,7 @@ uint64_t SysTick::getTickCount() {
   uint32_t coarse = getCoarseTickCount();
   uint32_t fine = getFineTickCount();
 
-  if ((coarse != getCoarseTickCount()) &&
-      (fine < (m_max_count / 2))) {
+  if ((coarse != getCoarseTickCount()) && (fine < (m_max_count / 2))) {
     coarse = getCoarseTickCount();
   }
 
@@ -72,5 +69,6 @@ uint32_t SysTick::getFineTickCount() {
 
 void SysTick::delay(uint32_t coarse_ticks) {
   const uint32_t start = m_ticks;
-  while((m_ticks - start) < coarse_ticks);
+  while ((m_ticks - start) < coarse_ticks)
+    ;
 }
