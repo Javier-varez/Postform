@@ -1,8 +1,5 @@
-mod shared_types;
-
 use byteorder::{LittleEndian, ReadBytesExt};
 use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
-use shared_types::Postform_PlatformDescription as PostformPlatformDescription;
 use std::{fs, path::PathBuf};
 
 include!(concat!(env!("OUT_DIR"), "/version.rs"));
@@ -26,8 +23,6 @@ pub enum Error {
     MissingInternedStrings,
     #[error("No postform configuration found")]
     MissingPostformConfiguration,
-    #[error("No postform platform description found")]
-    MissingPostformPlatformDescription,
     #[error("Missing Postform version")]
     MissingPostformVersion,
     #[error("Mismatched Postform versions. Firmware: {0}, Host: {1}")]
@@ -42,8 +37,6 @@ pub enum Error {
     MissingLogArgument,
     #[error("Invalid format specifier: '{0}'")]
     InvalidFormatSpecifier(char),
-    #[error("Platform descriptors are not valid: '{0:?}'")]
-    InvalidPlatformDescriptors(PostformPlatformDescription),
 }
 
 /// Available log levels of Postform.
@@ -122,7 +115,6 @@ pub struct ElfMetadata {
     timestamp_freq: f64,
     strings: Vec<u8>,
     log_sections: Vec<LogSection>,
-    platform_descriptors: PostformPlatformDescription,
 }
 
 impl ElfMetadata {
@@ -157,23 +149,6 @@ impl ElfMetadata {
             .ok_or(Error::MissingPostformConfiguration)?
             .data()?
             .read_u32::<LittleEndian>()? as f64;
-        let postform_platform_descriptors_data = elf_file
-            .section_by_name(".postform_platform_descriptors")
-            .ok_or(Error::MissingPostformPlatformDescription)?
-            .data()?;
-        let mut postform_platform_descriptors =
-            std::mem::MaybeUninit::<PostformPlatformDescription>::uninit();
-        unsafe {
-            std::ptr::copy_nonoverlapping(
-                postform_platform_descriptors_data.as_ptr(),
-                postform_platform_descriptors.as_mut_ptr() as *mut u8,
-                std::mem::size_of::<PostformPlatformDescription>(),
-            );
-        };
-
-        // SAFETY: At this point, the platform descriptors should be correctly initialized, since
-        // it has been copied from the ELF section.
-        let postform_platform_descriptors = unsafe { postform_platform_descriptors.assume_init() };
 
         let levels = [
             LogLevel::Debug,
@@ -198,7 +173,6 @@ impl ElfMetadata {
             timestamp_freq,
             strings: interned_strings.into(),
             log_sections: sections,
-            platform_descriptors: postform_platform_descriptors,
         })
     }
 
@@ -230,60 +204,44 @@ impl ElfMetadata {
 
 type FormatSpecHandler = for<'a> fn(&Decoder, &mut String, &'_ mut &'a [u8]) -> Result<(), Error>;
 
-fn decode_unsigned(_size: u32, message: &'_ mut &'_ [u8]) -> Result<u64, Error> {
+fn decode_unsigned(message: &'_ mut &'_ [u8]) -> Result<u64, Error> {
     leb128::read::unsigned(message).map_err(|_| Error::InvalidLogMessage)
 }
 
-fn decode_signed(_size: u32, message: &'_ mut &'_ [u8]) -> Result<i64, Error> {
+fn decode_signed(message: &'_ mut &'_ [u8]) -> Result<i64, Error> {
     leb128::read::signed(message).map_err(|_| Error::InvalidLogMessage)
 }
 
-fn format_unsigned<'a>(
-    size: u32,
-    out_str: &mut String,
-    buffer: &'_ mut &'a [u8],
-) -> Result<(), Error> {
-    let integer_val = decode_unsigned(size, buffer)?;
+fn format_unsigned<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+    let integer_val = decode_unsigned(buffer)?;
     let integer_str = format!("{}", integer_val);
     out_str.push_str(&integer_str);
     Ok(())
 }
 
-fn format_signed<'a>(
-    size: u32,
-    out_str: &mut String,
-    buffer: &'_ mut &'a [u8],
-) -> Result<(), Error> {
-    let integer_val = decode_signed(size, buffer)?;
+fn format_signed<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+    let integer_val = decode_signed(buffer)?;
     let integer_str = format!("{}", integer_val);
     out_str.push_str(&integer_str);
     Ok(())
 }
 
-fn format_octal<'a>(
-    size: u32,
-    out_str: &mut String,
-    buffer: &'_ mut &'a [u8],
-) -> Result<(), Error> {
-    let integer_val = decode_unsigned(size, buffer)?;
+fn format_octal<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+    let integer_val = decode_unsigned(buffer)?;
     let integer_str = format!("{:o}", integer_val);
     out_str.push_str(&integer_str);
     Ok(())
 }
 
-fn format_hex<'a>(size: u32, out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
-    let integer_val = decode_unsigned(size, buffer)?;
+fn format_hex<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+    let integer_val = decode_unsigned(buffer)?;
     let integer_str = format!("{:x}", integer_val);
     out_str.push_str(&integer_str);
     Ok(())
 }
 
-fn format_pointer<'a>(
-    size: u32,
-    out_str: &mut String,
-    buffer: &'_ mut &'a [u8],
-) -> Result<(), Error> {
-    let integer_val = decode_unsigned(size, buffer)?;
+fn format_pointer<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+    let integer_val = decode_unsigned(buffer)?;
     let integer_str = format!("0x{:x}", integer_val);
     out_str.push_str(&integer_str);
     Ok(())
@@ -302,93 +260,33 @@ const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 24] = [
         out_str.push_str(res);
         Ok(())
     }),
-    ("%hhd", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_signed(platform_descriptors.char_size, out_str, buffer)
+    ("%hhd", |_, out_str, buffer| format_signed(out_str, buffer)),
+    ("%hd", |_, out_str, buffer| format_signed(out_str, buffer)),
+    ("%d", |_, out_str, buffer| format_signed(out_str, buffer)),
+    ("%ld", |_, out_str, buffer| format_signed(out_str, buffer)),
+    ("%lld", |_, out_str, buffer| format_signed(out_str, buffer)),
+    ("%hhu", |_, out_str, buffer| {
+        format_unsigned(out_str, buffer)
     }),
-    ("%hd", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_signed(platform_descriptors.short_size, out_str, buffer)
+    ("%hu", |_, out_str, buffer| format_unsigned(out_str, buffer)),
+    ("%u", |_, out_str, buffer| format_unsigned(out_str, buffer)),
+    ("%lu", |_, out_str, buffer| format_unsigned(out_str, buffer)),
+    ("%llu", |_, out_str, buffer| {
+        format_unsigned(out_str, buffer)
     }),
-    ("%d", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_signed(platform_descriptors.int_size, out_str, buffer)
-    }),
-    ("%ld", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_signed(platform_descriptors.long_int_size, out_str, buffer)
-    }),
-    ("%lld", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_signed(platform_descriptors.long_long_int_size, out_str, buffer)
-    }),
-    ("%hhu", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_unsigned(platform_descriptors.char_size, out_str, buffer)
-    }),
-    ("%hu", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_unsigned(platform_descriptors.short_size, out_str, buffer)
-    }),
-    ("%u", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_unsigned(platform_descriptors.int_size, out_str, buffer)
-    }),
-    ("%lu", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_unsigned(platform_descriptors.long_int_size, out_str, buffer)
-    }),
-    ("%llu", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_unsigned(platform_descriptors.long_long_int_size, out_str, buffer)
-    }),
-    ("%hho", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_octal(platform_descriptors.char_size, out_str, buffer)
-    }),
-    ("%ho", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_octal(platform_descriptors.short_size, out_str, buffer)
-    }),
-    ("%o", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_octal(platform_descriptors.int_size, out_str, buffer)
-    }),
-    ("%lo", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_octal(platform_descriptors.long_int_size, out_str, buffer)
-    }),
-    ("%llo", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_octal(platform_descriptors.long_long_int_size, out_str, buffer)
-    }),
-    ("%hhx", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_hex(platform_descriptors.char_size, out_str, buffer)
-    }),
-    ("%hx", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_hex(platform_descriptors.short_size, out_str, buffer)
-    }),
-    ("%x", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_hex(platform_descriptors.int_size, out_str, buffer)
-    }),
-    ("%lx", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_hex(platform_descriptors.long_int_size, out_str, buffer)
-    }),
-    ("%llx", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_hex(platform_descriptors.long_long_int_size, out_str, buffer)
-    }),
-    ("%p", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        format_pointer(platform_descriptors.ptr_size, out_str, buffer)
-    }),
+    ("%hho", |_, out_str, buffer| format_octal(out_str, buffer)),
+    ("%ho", |_, out_str, buffer| format_octal(out_str, buffer)),
+    ("%o", |_, out_str, buffer| format_octal(out_str, buffer)),
+    ("%lo", |_, out_str, buffer| format_octal(out_str, buffer)),
+    ("%llo", |_, out_str, buffer| format_octal(out_str, buffer)),
+    ("%hhx", |_, out_str, buffer| format_hex(out_str, buffer)),
+    ("%hx", |_, out_str, buffer| format_hex(out_str, buffer)),
+    ("%x", |_, out_str, buffer| format_hex(out_str, buffer)),
+    ("%lx", |_, out_str, buffer| format_hex(out_str, buffer)),
+    ("%llx", |_, out_str, buffer| format_hex(out_str, buffer)),
+    ("%p", |_, out_str, buffer| format_pointer(out_str, buffer)),
     ("%k", |decoder, out_str, buffer| {
-        let platform_descriptors = &decoder.elf_metadata.platform_descriptors;
-        let str_ptr = decode_unsigned(platform_descriptors.ptr_size, buffer)? as usize;
+        let str_ptr = decode_unsigned(buffer)? as usize;
         let interned_string = decoder
             .elf_metadata
             .recover_interned_string(str_ptr as usize)?;
@@ -419,8 +317,7 @@ impl<'a> Decoder<'a> {
             as f64
             / self.elf_metadata.timestamp_freq;
 
-        let platform_descriptors = &self.elf_metadata.platform_descriptors;
-        let str_ptr = decode_unsigned(platform_descriptors.ptr_size, &mut buffer)? as usize;
+        let str_ptr = decode_unsigned(&mut buffer)? as usize;
 
         let format_string = self.elf_metadata.recover_interned_string(str_ptr)?;
         let (file_name, line_number, format_str) = self.decode_format_string(format_string)?;
@@ -495,14 +392,6 @@ mod tests {
             timestamp_freq: 1_000f64,
             strings: b"test/my_file.cpp@1234@This is my log message\0test/my_file2.cpp@12343@This is my second log message\0".into_iter().map(|c| c.clone()).collect(),
             log_sections: vec![],
-            platform_descriptors: PostformPlatformDescription {
-                char_size: 1,
-                short_size: 2,
-                int_size: 4,
-                long_int_size: 8,
-                long_long_int_size: 8,
-                ptr_size: 8
-            }
         }
     }
 
