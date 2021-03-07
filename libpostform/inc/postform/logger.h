@@ -3,7 +3,9 @@
 
 #include <atomic>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
+#include <type_traits>
 
 #include "postform/format_validator.h"
 #include "postform/types.h"
@@ -75,43 +77,6 @@ class Logger {
     vlog(arg_array.data(), arg_array.size());
   }
 
-  void vlog(const Argument* arguments, std::size_t nargs) {
-    uint64_t timestamp = getGlobalTimestamp();
-
-    Writer writer = static_cast<Derived&>(*this).getWriter();
-    writer.write(reinterpret_cast<const uint8_t*>(&timestamp), sizeof(timestamp));
-    for (std::size_t i = 0; i < nargs; i++) {
-      switch (arguments[i].type) {
-        case Argument::Type::STRING_POINTER:
-          writer.write(reinterpret_cast<const uint8_t*>(arguments[i].str_ptr),
-                       strlen(arguments[i].str_ptr) + 1);
-          break;
-        case Argument::Type::UNSIGNED_INTEGER: {
-          writer.write(reinterpret_cast<const uint8_t*>(&arguments[i].unsigned_long_long),
-                       arguments[i].size);
-          break;
-        }
-        case Argument::Type::SIGNED_INTEGER: {
-          writer.write(reinterpret_cast<const uint8_t*>(&arguments[i].signed_long_long),
-                       arguments[i].size);
-          break;
-        }
-        case Argument::Type::INTERNED_STRING: {
-          uint8_t data[sizeof(InternedString)];
-          memcpy(data, &arguments[i].interned_string, sizeof(InternedString));
-          writer.write(data, sizeof(data));
-          break;
-        }
-        case Argument::Type::VOID_PTR: {
-          uint8_t data[sizeof(const void*)];
-          memcpy(data, &arguments[i].void_ptr, sizeof(const void*));
-          writer.write(data, sizeof(data));
-          break;
-        }
-      }
-    }
-  }
-
   /**
    * @brief Sets the log level for the logger.
    *
@@ -122,6 +87,90 @@ class Logger {
 
  private:
   std::atomic<LogLevel> m_level = LogLevel::DEBUG;
+
+  /**
+   * @brief Creates a log with the supplied arguments.
+   *        The arguments must include the format string.
+   * @param arguments pointer to the argument array.
+   * @param nargs number of arguments to log
+   */
+  void vlog(const Argument* arguments, std::size_t nargs) {
+    uint64_t timestamp = getGlobalTimestamp();
+
+    Writer writer = static_cast<Derived&>(*this).getWriter();
+    writeLeb128(&writer, timestamp);
+    for (std::size_t i = 0; i < nargs; i++) {
+      switch (arguments[i].type) {
+        case Argument::Type::STRING_POINTER:
+          writer.write(reinterpret_cast<const uint8_t*>(arguments[i].str_ptr),
+                       strlen(arguments[i].str_ptr) + 1);
+          break;
+        case Argument::Type::UNSIGNED_INTEGER: {
+          writeLeb128(&writer, arguments[i].unsigned_long_long);
+          break;
+        }
+        case Argument::Type::SIGNED_INTEGER: {
+          writeLeb128(&writer, arguments[i].signed_long_long);
+          break;
+        }
+        case Argument::Type::INTERNED_STRING: {
+          auto ptr = reinterpret_cast<uintptr_t>(arguments[i].interned_string.str);
+          writeLeb128(&writer, ptr);
+          break;
+        }
+        case Argument::Type::VOID_PTR: {
+          auto ptr = reinterpret_cast<uintptr_t>(arguments[i].void_ptr);
+          writeLeb128(&writer, ptr);
+          break;
+        }
+      }
+    }
+  }
+
+  template<class T, std::enable_if_t<std::is_integral_v<T> && std::is_unsigned_v<T>, bool> = true>
+  void writeLeb128(Writer* writer, T value) {
+    constexpr std::size_t MAX_BUF_SIZE = (sizeof(T) * 8 + 6) / 7;
+    uint8_t buffer[MAX_BUF_SIZE];
+    uint32_t number_of_bytes = 0;
+
+    do {
+      buffer[number_of_bytes] = value & 0x7F;
+      value >>= 7;
+      if (value) {
+        buffer[number_of_bytes] |= 0x80;
+      }
+      number_of_bytes++;
+    } while (value);
+
+    writer->write(buffer, number_of_bytes);
+  }
+
+  template<class T, std::enable_if_t<std::is_integral_v<T> && std::is_signed_v<T>, bool> = true>
+  void writeLeb128(Writer* writer, T value) {
+    constexpr std::size_t MAX_BUF_SIZE = (sizeof(T) * 8 + 6) / 7;
+    const bool negative = value < 0;
+    uint8_t buffer[MAX_BUF_SIZE];
+    uint32_t number_of_bytes = 0;
+
+    bool done = false;
+    do {
+      buffer[number_of_bytes] = value & 0x7f;
+      value >>= 7;
+      if (negative) {
+        value |= T{ 0x7f } << (sizeof(T) * 8 - 7);
+      }
+      if ((value == -1) && (buffer[number_of_bytes] & 0x40)) {
+        done = true;
+      } else if ((value == 0) && !(buffer[number_of_bytes] & 0x40)) {
+        done = true;
+      } else {
+        buffer[number_of_bytes] |= 0x80;
+      }
+      number_of_bytes++;
+    } while (!done);
+
+    writer->write(buffer, number_of_bytes);
+  }
 };
 
 /**

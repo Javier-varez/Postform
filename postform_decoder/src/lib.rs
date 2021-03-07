@@ -230,26 +230,12 @@ impl ElfMetadata {
 
 type FormatSpecHandler = for<'a> fn(&Decoder, &mut String, &'_ mut &'a [u8]) -> Result<(), Error>;
 
-fn decode_unsigned(size: u32, message: &'_ mut &'_ [u8]) -> Result<u64, Error> {
-    match size {
-        1 => message.read_u8().map(|x| x as u64),
-        2 => message.read_u16::<LittleEndian>().map(|x| x as u64),
-        4 => message.read_u32::<LittleEndian>().map(|x| x as u64),
-        8 => message.read_u64::<LittleEndian>().map(|x| x as u64),
-        _ => panic!("Invalid size: {}", size),
-    }
-    .or(Err(Error::InvalidLogMessage))
+fn decode_unsigned(_size: u32, message: &'_ mut &'_ [u8]) -> Result<u64, Error> {
+    leb128::read::unsigned(message).map_err(|_| Error::InvalidLogMessage)
 }
 
-fn decode_signed(size: u32, message: &'_ mut &'_ [u8]) -> Result<i64, Error> {
-    match size {
-        1 => message.read_i8().map(|x| x as i64),
-        2 => message.read_i16::<LittleEndian>().map(|x| x as i64),
-        4 => message.read_i32::<LittleEndian>().map(|x| x as i64),
-        8 => message.read_i64::<LittleEndian>().map(|x| x as i64),
-        _ => panic!("Invalid size: {}", size),
-    }
-    .or(Err(Error::InvalidLogMessage))
+fn decode_signed(_size: u32, message: &'_ mut &'_ [u8]) -> Result<i64, Error> {
+    leb128::read::signed(message).map_err(|_| Error::InvalidLogMessage)
 }
 
 fn format_unsigned<'a>(
@@ -429,8 +415,9 @@ impl<'a> Decoder<'a> {
     /// Parses a Postform message from the passed buffer.
     /// If the buffer is invalid it may return an error.
     pub fn decode(&mut self, mut buffer: &[u8]) -> Result<Log, Error> {
-        let timestamp =
-            buffer.read_u64::<byteorder::LittleEndian>()? as f64 / self.elf_metadata.timestamp_freq;
+        let timestamp = leb128::read::unsigned(&mut buffer).map_err(|_| Error::InvalidLogMessage)?
+            as f64
+            / self.elf_metadata.timestamp_freq;
 
         let platform_descriptors = &self.elf_metadata.platform_descriptors;
         let str_ptr = decode_unsigned(platform_descriptors.ptr_size, &mut buffer)? as usize;
@@ -536,7 +523,9 @@ mod tests {
         let elf_metadata = create_elf_metadata();
         let decoder = Decoder::new(&elf_metadata);
         let format = "This is the log message %d and some data after";
-        let args = (-4_000_230i32).to_le_bytes();
+        let mut args = [0u8; 5];
+        let mut args_slice = &mut args[..];
+        leb128::write::signed(&mut args_slice, -4000230).expect("Couldn't format arg");
         let log = decoder.format_string(format, &args).unwrap();
         assert_eq!(log, "This is the log message -4000230 and some data after");
     }
@@ -546,7 +535,9 @@ mod tests {
         let elf_metadata = create_elf_metadata();
         let decoder = Decoder::new(&elf_metadata);
         let format = "This is the log message %u";
-        let args = 4_000_230u32.to_le_bytes();
+        let mut args = [0u8; 5];
+        let mut args_slice = &mut args[..];
+        leb128::write::unsigned(&mut args_slice, 4000230).expect("Couldn't format arg");
         let log = decoder.format_string(format, &args).unwrap();
         assert_eq!(log, "This is the log message 4000230");
     }
