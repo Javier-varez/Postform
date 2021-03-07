@@ -1,23 +1,23 @@
 
 #include "postform/rtt/cobs_writer.h"
-#include "postform/rtt/rtt_manager.h"
+
 #include <atomic>
+
+#include "postform/rtt/rtt_manager.h"
 
 namespace Postform {
 
-Rtt::CobsWriter::CobsWriter(Rtt::Manager* manager, Rtt::Channel* channel) :
-  m_manager(manager),
-  m_channel(channel),
-  m_write_ptr(channel->write.load(std::memory_order_relaxed)),
-  m_marker_ptr(m_write_ptr) {
-    blockUntilNotFull();
-    m_channel->buffer[m_write_ptr] = 0;
-    m_write_ptr = nextWritePtr();
-  }
-
-Rtt::CobsWriter::~CobsWriter() {
-  commit();
+Rtt::CobsWriter::CobsWriter(Rtt::Manager* manager, Rtt::Channel* channel)
+    : m_manager(manager),
+      m_channel(channel),
+      m_write_ptr(channel->write.load(std::memory_order_relaxed)),
+      m_marker_ptr(m_write_ptr) {
+  blockUntilNotFull();
+  m_channel->buffer[m_write_ptr] = 0;
+  m_write_ptr = nextWritePtr();
 }
+
+Rtt::CobsWriter::~CobsWriter() { commit(); }
 
 Rtt::CobsWriter::CobsWriter(CobsWriter&& other) {
   m_manager = other.m_manager;

@@ -1,14 +1,14 @@
 
 #include "postform/file_logger.h"
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 namespace Postform {
 
-void FileWriter::write(const uint8_t *data, uint32_t size) {
+void FileWriter::write(const uint8_t* data, uint32_t size) {
   if (*this) {
     m_data.insert(m_data.end(), data, data + size);
   }
@@ -47,9 +47,6 @@ FileLogger::FileLogger(std::string file_path) {
   m_fd = open(file_path.c_str(), O_CREAT | O_RDWR, 0664);
 }
 
-FileLogger::~FileLogger() {
-  close(m_fd);
-}
+FileLogger::~FileLogger() { close(m_fd); }
 
 }  // namespace Postform
-

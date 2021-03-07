@@ -3,8 +3,8 @@
 
 #include <cstdint>
 
-#include "postform/utils.h"
 #include "postform/shared_types.hpp"
+#include "postform/utils.h"
 
 /**
  * @brief Declares a postform configuration in your application
@@ -15,9 +15,10 @@
  * Multiple definitions of the postform configuration will cause a
  * linker error.
  */
-#define DECLARE_POSTFORM_CONFIG(content) \
+#define DECLARE_POSTFORM_CONFIG(content)                      \
   CLINKAGE __attribute__((section(".postform_config"), used)) \
-  const Postform::Config _postform_config { content }
-
+      const Postform::Config _postform_config {               \
+    content                                                   \
+  }
 
 #endif  // POSTFORM_CONFIG_H_

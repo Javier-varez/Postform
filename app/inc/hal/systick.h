@@ -14,9 +14,7 @@ class SysTick {
 
   uint64_t getTickCount();
   uint32_t getFineTickCount();
-  uint32_t getCoarseTickCount() {
-    return m_ticks;
-  }
+  uint32_t getCoarseTickCount() { return m_ticks; }
   void delay(uint32_t coarse_ticks);
 
   static SysTick& getInstance() {
@@ -25,7 +23,7 @@ class SysTick {
   }
 
  private:
-  volatile uint32_t m_ticks { 0 };
+  volatile uint32_t m_ticks{0};
   uint32_t m_max_count = 0;
 
   SysTick() = default;

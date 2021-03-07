@@ -5,9 +5,9 @@
 #include <atomic>
 #include <cstdint>
 
-#include "postform/rtt/rtt.h"
-#include "postform/rtt/raw_writer.h"
 #include "postform/rtt/cobs_writer.h"
+#include "postform/rtt/raw_writer.h"
+#include "postform/rtt/rtt.h"
 
 namespace Postform {
 namespace Rtt {
@@ -22,12 +22,10 @@ class Manager {
   CobsWriter getCobsWriter();
 
  private:
-  std::atomic<bool> m_taken { false };
+  std::atomic<bool> m_taken{false};
 
   Manager() = default;
-  void releaseWriter() {
-    m_taken.store(false, std::memory_order_release);
-  }
+  void releaseWriter() { m_taken.store(false, std::memory_order_release); }
 
   bool takeWriter() {
     return !m_taken.exchange(true, std::memory_order_acq_rel);
