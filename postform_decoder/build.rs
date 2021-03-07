@@ -39,14 +39,5 @@ pub const POSTFORM_VERSION: &str = "{}";
         ),
     )?;
 
-    // Now let's generate the C++ bindings for Postform
-    let bindings = bindgen::Builder::default()
-        .header("bindings/shared_types.hpp")
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-        .generate()
-        .expect("Unable to generate bindings for shared_types.hpp");
-
-    let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-    bindings.write_to_file(out_path.join("shared_types.rs"))?;
     Ok(())
 }
