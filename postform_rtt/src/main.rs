@@ -6,6 +6,7 @@ use postform_rtt::{
     attach_rtt, configure_rtt_mode, download_firmware, handle_log, run_core, RttError, RttMode,
 };
 use probe_rs::{config::registry, Probe};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::{
     fs,
     path::PathBuf,
@@ -110,14 +111,13 @@ fn main() -> Result<()> {
             .find(|s| s.name().unwrap() == "_SEGGER_RTT")
             .ok_or(RttError::MissingSymbol("_SEGGER_RTT"))?;
         let segger_rtt_addr = segger_rtt.address();
+        let is_app_running = Arc::new(AtomicBool::new(true));
 
         {
-            let session = session.clone();
+            let is_app_running = is_app_running.clone();
             ctrlc::set_handler(move || {
                 println!("Exiting application");
-                configure_rtt_mode(&session, segger_rtt_addr, RttMode::NonBlocking)
-                    .expect("Error setting NonBlocking mode");
-                std::process::exit(0);
+                is_app_running.store(false, Ordering::Relaxed);
             })?;
         }
         if !opts.attach {
@@ -126,7 +126,7 @@ fn main() -> Result<()> {
         configure_rtt_mode(&session, segger_rtt_addr, RttMode::Blocking)?;
 
         let mut rtt = attach_rtt(session.clone(), &elf_file)?;
-        run_core(session)?;
+        run_core(session.clone())?;
 
         if let Some(log_channel) = rtt.up_channels().take(0) {
             let mut dec_buf = [0u8; 4096];
@@ -150,8 +150,12 @@ fn main() -> Result<()> {
                         Ok(None) => {}
                     }
                 }
+                if is_app_running.load(Ordering::Relaxed) {
+                    break;
+                }
             }
         }
+        configure_rtt_mode(&session, segger_rtt_addr, RttMode::NonBlocking)?;
     }
     Ok(())
 }
