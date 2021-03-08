@@ -150,7 +150,7 @@ fn main() -> Result<()> {
                         Ok(None) => {}
                     }
                 }
-                if is_app_running.load(Ordering::Relaxed) {
+                if !is_app_running.load(Ordering::Relaxed) {
                     break;
                 }
             }
