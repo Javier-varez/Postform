@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <cstdio>
 
-#include "hal/systick.h"
+#include "cortex_m_hal/systick.h"
 #include "postform/rtt_logger.h"
 
 void configureUart() {

@@ -34,7 +34,6 @@ LOCAL_LINKER_FILE := \
     $(LOCAL_DIR)/memory.ld
 LOCAL_SRC := \
     $(LOCAL_DIR)/src/postform_config.cpp \
-    $(LOCAL_DIR)/src/hal/systick.cpp \
     $(LOCAL_DIR)/src/main.cpp
 LOCAL_ARM_ARCHITECTURE := v7-m
 LOCAL_ARM_FPU := nofp
@@ -42,6 +41,7 @@ LOCAL_COMPILER := arm_clang
 LOCAL_STATIC_LIBS := \
     libopencm3_stm32f1 \
     libcortex_m_startup \
+    libcortex_m_hal \
     libpostform
 include $(BUILD_BINARY)
 
