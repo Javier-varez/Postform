@@ -1,16 +1,17 @@
 
-#include "postform/file_logger.h"
-
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "postform/file_logger.h"
+
 namespace Postform {
 
 void FileWriter::write(const uint8_t* data, uint32_t size) {
   if (*this) {
-    m_data.insert(m_data.end(), data, data + size);
+                         
+                                m_data.insert(m_data.end(), data, data + size);
   }
 }
 
