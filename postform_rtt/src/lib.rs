@@ -74,6 +74,15 @@ pub fn run_core(session: Arc<Mutex<Session>>) -> Result<()> {
     let mut core = mutex_guard.core(0)?;
     core.clear_all_hw_breakpoints()?;
     core.run()?;
+
+    // We write the DHCSR register here in order to disable C_DEBUGEN.
+    // Debugging the core is not possible while Postform is running, so at
+    // least we should be able to use the DebugMonitor Exception.
+    // We need to write the password to the DHCSR register in order for the
+    // write to be successful
+    let dhcsr_addr = 0xE000EDF0;
+    let dhcsr_val = [0xA05F << 16];
+    core.write_32(dhcsr_addr, &dhcsr_val)?;
     Ok(())
 }
 
