@@ -3,14 +3,16 @@ use color_eyre::eyre::Result;
 use object::read::{File as ElfFile, Object, ObjectSymbol};
 use postform_decoder::{ElfMetadata, POSTFORM_VERSION};
 use postform_rtt::{
-    attach_rtt, configure_rtt_mode, download_firmware, handle_log, run_core, RttError, RttMode,
+    attach_rtt, configure_rtt_mode, disable_cdebugen, download_firmware, handle_log, run_core,
+    RttError, RttMode,
 };
-use probe_rs::{config::registry, Probe};
+use probe_rs::Probe;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::{
     fs,
     path::PathBuf,
     sync::{Arc, Mutex},
+    time::Duration,
 };
 use structopt::StructOpt;
 
@@ -29,7 +31,7 @@ fn print_probes() {
 }
 
 fn print_chips() {
-    let registry = registry::families().expect("Could not retrieve chip family registry");
+    let registry = probe_rs::config::families().expect("Could not retrieve chip family registry");
     for chip_family in registry {
         println!("{}", chip_family.name);
         println!("    Variants:");
@@ -69,6 +71,9 @@ struct Opts {
 
     #[structopt(long, short = "V")]
     version: bool,
+
+    #[structopt(long, short)]
+    gdb_server: bool,
 }
 
 fn main() -> Result<()> {
@@ -123,10 +128,26 @@ fn main() -> Result<()> {
         if !opts.attach {
             download_firmware(&session, &elf_name)?;
         }
-        configure_rtt_mode(&session, segger_rtt_addr, RttMode::Blocking)?;
 
+        configure_rtt_mode(session.clone(), segger_rtt_addr, RttMode::Blocking)?;
         let mut rtt = attach_rtt(session.clone(), &elf_file)?;
         run_core(session.clone())?;
+
+        let mut gdb_thread_handle = None;
+        if !opts.gdb_server {
+            disable_cdebugen(session.clone())?;
+        } else {
+            let session = session.clone();
+            gdb_thread_handle = Some(std::thread::spawn(move || {
+                let gdb_connection_string = "127.0.0.1:1337";
+                // This next unwrap will always resolve as the connection string is always Some(T).
+                println!("Firing up GDB stub at {}.", gdb_connection_string);
+                if let Err(e) = probe_rs_gdb_server::run(Some(gdb_connection_string), &session) {
+                    println!("During the execution of GDB an error was encountered:");
+                    println!("{:?}", e);
+                }
+            }));
+        }
 
         if let Some(log_channel) = rtt.up_channels().take(0) {
             let mut dec_buf = [0u8; 4096];
@@ -153,9 +174,13 @@ fn main() -> Result<()> {
                 if !is_app_running.load(Ordering::Relaxed) {
                     break;
                 }
+                std::thread::sleep(Duration::from_millis(10));
             }
         }
-        configure_rtt_mode(&session, segger_rtt_addr, RttMode::NonBlocking)?;
+        if let Some(thread_handle) = gdb_thread_handle {
+            let _ = thread_handle.join();
+        }
+        configure_rtt_mode(session, segger_rtt_addr, RttMode::NonBlocking)?;
     }
     Ok(())
 }
