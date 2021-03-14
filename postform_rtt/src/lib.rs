@@ -55,7 +55,7 @@ pub enum RttMode {
 
 /// Configures the selected RTT mode in the RTT control block at the given address.
 pub fn configure_rtt_mode(
-    session: &Arc<Mutex<Session>>,
+    session: Arc<Mutex<Session>>,
     rtt_addr: u64,
     mode: RttMode,
 ) -> Result<()> {
@@ -70,10 +70,18 @@ pub fn configure_rtt_mode(
 
 /// Runs the core and clears all breakpoints
 pub fn run_core(session: Arc<Mutex<Session>>) -> Result<()> {
-    let mut mutex_guard = session.lock().unwrap();
-    let mut core = mutex_guard.core(0)?;
+    let mut session_lock = session.lock().unwrap();
+    let mut core = session_lock.core(0)?;
     core.clear_all_hw_breakpoints()?;
     core.run()?;
+
+    Ok(())
+}
+
+/// Disables C_DEBUGEN for a cortex-m mcu
+pub fn disable_cdebugen(session: Arc<Mutex<Session>>) -> Result<()> {
+    let mut session_lock = session.lock().unwrap();
+    let mut core = session_lock.core(0)?;
 
     // We write the DHCSR register here in order to disable C_DEBUGEN.
     // Debugging the core is not possible while Postform is running, so at
