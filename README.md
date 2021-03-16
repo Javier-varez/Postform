@@ -47,7 +47,7 @@ And, as you could expect, some **drawbacks**:
 
 ![Build Status](https://img.shields.io/github/workflow/status/javier-varez/deferred-logging/Target%20App)
 
-`Postform` is very much under development at this point in time. All contributions are really apprecieated and encouraged. Feel free to open issues with suggestions for improvements, bugs that you've encountered, etc. If you'd like to contribute, please checkout the [contribution guidelines](docs/CONTRIBUTING.md).
+`Postform` is very much under development at this point in time. All contributions are really appreciated and encouraged. Feel free to open issues with suggestions for improvements, bugs that you've encountered, etc. If you'd like to contribute, please checkout the [contribution guidelines](docs/CONTRIBUTING.md).
 
 Currently the build targets an __STM32F103C8__ microcontroller, like the ones found in the STM32 blue pill. Postform aims to be a platform-independent logging library for 32-bit microcontrollers, we aim for portable code as much as possible.
 
