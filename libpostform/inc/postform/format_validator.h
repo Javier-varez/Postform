@@ -70,7 +70,7 @@ template <class T>
                                          integer_size_handlers.size()},
                         "x", []() { return std::is_integral_v<T>; }},
       FormatSpecHandler{SizeSpecHandlers{}, "p",
-                        []() { return std::is_convertible_v<T, void*>; }},
+                        []() { return std::is_pointer_v<T>; }},
       FormatSpecHandler{
           SizeSpecHandlers{}, "k",
           []() { return std::is_same_v<T, Postform::InternedString>; }},
