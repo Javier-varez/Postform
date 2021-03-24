@@ -133,12 +133,11 @@ fn main() -> Result<()> {
         let mut rtt = attach_rtt(session.clone(), &elf_file)?;
         run_core(session.clone())?;
 
-        let mut gdb_thread_handle = None;
         if !opts.gdb_server {
             disable_cdebugen(session.clone())?;
         } else {
             let session = session.clone();
-            gdb_thread_handle = Some(std::thread::spawn(move || {
+            let _ = Some(std::thread::spawn(move || {
                 let gdb_connection_string = "127.0.0.1:1337";
                 // This next unwrap will always resolve as the connection string is always Some(T).
                 println!("Firing up GDB stub at {}.", gdb_connection_string);
@@ -176,9 +175,6 @@ fn main() -> Result<()> {
                 }
                 std::thread::sleep(Duration::from_millis(10));
             }
-        }
-        if let Some(thread_handle) = gdb_thread_handle {
-            let _ = thread_handle.join();
         }
         configure_rtt_mode(session, segger_rtt_addr, RttMode::NonBlocking)?;
     }
