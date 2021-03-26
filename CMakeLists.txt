@@ -58,6 +58,15 @@ add_executable(postform_test
 target_compile_options(postform_test
   PRIVATE
     -Os)
+
+# Clang emits a warning for tthe string literal operator template GNU extension
+# We are opting in gnu extensions, so this warning is fine.
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+target_compile_options(postform_test
+  PRIVATE
+    -Wno-gnu-string-literal-operator-template)
+endif()
+
 target_link_libraries(postform_test
   PRIVATE
     postform)
