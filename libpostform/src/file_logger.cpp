@@ -17,8 +17,8 @@ void FileWriter::write(const uint8_t* data, uint32_t size) {
 void FileWriter::commit() {
   if (m_logger) {
     uint32_t size = m_data.size();
-    ::write(m_fd, &size, sizeof(size));
-    ::write(m_fd, m_data.data(), m_data.size());
+    [[maybe_unused]] uint32_t written = ::write(m_fd, &size, sizeof(size));
+    written = ::write(m_fd, m_data.data(), m_data.size());
     m_logger->release();
     m_logger = nullptr;
     m_fd = -1;
