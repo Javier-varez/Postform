@@ -20,8 +20,8 @@ target_link_libraries(postform_test
     postform)
 target_link_options(postform_test
   PRIVATE
-    "SHELL:-Wl,-T ${CMAKE_CURRENT_SOURCE_DIR}/host_ld.x"
+    "SHELL:-Wl,-T ${CMAKE_CURRENT_SOURCE_DIR}/host.ld"
     "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/postform_test.map")
 set_target_properties(postform_test
   PROPERTIES
-    LINK_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/host_ld.x)
+    LINK_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/host.ld)
