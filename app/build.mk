@@ -53,5 +53,5 @@ LOCAL_CXXFLAGS := \
     $(POSTFORM_CXXFLAGS)
 LOCAL_SRC := $(LOCAL_DIR)/src/host_main.cpp
 LOCAL_STATIC_LIBS := libpostform_host
-LOCAL_LINKER_FILE := $(LOCAL_DIR)/host_ld.x
+LOCAL_LINKER_FILE := $(LOCAL_DIR)/host.ld
 include $(BUILD_BINARY)
