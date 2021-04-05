@@ -42,7 +42,7 @@ set(CMAKE_CXX_FLAGS "${arm_flags} -DARMV6_ARCH")
 link_directories(
   ${gcc_arm_sysroot}/lib/${gcc_arm_multi_dir}
   ${lib_gcc_dir})
-link_libraries(-nostdlib -lnosys -lc_nano -lstdc++_nano -lgcc -latomic)
+link_libraries(-nostdlib -lnosys -lc_nano -lstdc++_nano -lgcc)
 
 set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
 
