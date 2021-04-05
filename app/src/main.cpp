@@ -1,47 +1,15 @@
 
-#include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/usart.h>
-
 #include <cstdint>
 #include <cstdio>
 
 #include "cortex_m_hal/systick.h"
 #include "postform/rtt_logger.h"
 
-void configureUart() {
-  rcc_periph_clock_enable(rcc_periph_clken::RCC_GPIOA);
-
-  gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_10_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL,
-                GPIO2 | GPIO3);
-  gpio_primary_remap(0, AFIO_MAPR_USART2_REMAP);
-
-  rcc_periph_clock_enable(rcc_periph_clken::RCC_USART2);
-
-  usart_disable(USART2);
-  usart_set_baudrate(USART2, 115200);
-  usart_set_databits(USART2, 8);
-  usart_set_mode(USART2, USART_MODE_TX);
-  usart_set_parity(USART2, USART_PARITY_NONE);
-  usart_set_stopbits(USART2, USART_STOPBITS_1);
-  usart_enable(USART2);
-}
-
-extern "C" int _write([[maybe_unused]] int fd, const char* ptr, int len) {
-  for (int i = 0; i < len; i++) {
-    usart_send_blocking(USART2, ptr[i]);
-  }
-  return len;
-}
-
 int main() {
-  rcc_clock_setup_pll(&rcc_hse_configs[RCC_CLOCK_HSE8_72MHZ]);
-  configureUart();
-
   Postform::RttLogger logger;
   SysTick& systick = SysTick::getInstance();
 
-  const uint32_t systick_clk_hz = 72'000'000;
+  const uint32_t systick_clk_hz = 8'000'000;
   systick.init(systick_clk_hz);
 
   logger.setLevel(Postform::LogLevel::DEBUG);
