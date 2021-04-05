@@ -73,7 +73,6 @@ sudo apt install clang
 
 ```bash
 apt install make
-apt install bear
 ```
 
 For the `STM32` code `Postform` uses the abstraction layer provided by [libopencm3](https://github.com/libopencm3/libopencm3).
