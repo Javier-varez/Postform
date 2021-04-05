@@ -1,8 +1,8 @@
 set(CMAKE_SYSTEM_NAME, none)
 set(CMAKE_SYSTEM_PROCESSOR, arm)
 
-set(triple thumbv7m-none-eabi)
-set(ARM_TARGET_CONFIG "-mcpu=cortex-m3 -mfloat-abi=soft -mthumb")
+set(triple thumbv6m-none-eabi)
+set(ARM_TARGET_CONFIG "-mcpu=cortex-m0plus -mfloat-abi=soft -mthumb")
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_C_COMPILER_TARGET ${triple})
 set(CMAKE_CXX_COMPILER clang++)
@@ -19,12 +19,12 @@ execute_process(COMMAND arm-none-eabi-gcc -dumpversion
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 # Appropriate multilib directory
-execute_process(COMMAND arm-none-eabi-gcc -mcpu=cortex-m3 -mfloat-abi=soft -mthumb -print-multi-directory
+execute_process(COMMAND arm-none-eabi-gcc -mcpu=cortex-m0plus -mfloat-abi=soft -mthumb -print-multi-directory
   OUTPUT_VARIABLE gcc_arm_multi_dir
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 # libgcc location
-execute_process(COMMAND arm-none-eabi-gcc -mcpu=cortex-m3 -mfloat-abi=soft -mthumb -print-libgcc-file-name
+execute_process(COMMAND arm-none-eabi-gcc -mcpu=cortex-m0plus -mfloat-abi=soft -mthumb -print-libgcc-file-name
   OUTPUT_VARIABLE lib_gcc_file
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 get_filename_component(lib_gcc_dir ${lib_gcc_file} DIRECTORY)
@@ -42,7 +42,7 @@ set(CMAKE_CXX_FLAGS "${arm_flags} -DARMV6_ARCH")
 link_directories(
   ${gcc_arm_sysroot}/lib/${gcc_arm_multi_dir}
   ${lib_gcc_dir})
-link_libraries(-nostdlib -lnosys -lc_nano -lstdc++_nano -lgcc)
+link_libraries(-nostdlib -lnosys -lc_nano -lstdc++_nano -lgcc -latomic)
 
 set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
 

@@ -21,6 +21,3 @@ set_target_properties(libopencm3
     ${SOURCE_DIR}/lib/libopencm3_stm32f1.a
 )
 include_directories(${SOURCE_DIR}/include)
-
-message("Source dir of myExtProj = ${SOURCE_DIR}")
-
