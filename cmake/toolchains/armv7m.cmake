@@ -36,8 +36,8 @@ include_directories(
   ${gcc_arm_sysroot}/include/c++/${gcc_arm_version}/arm-none-eabi/${gcc_arm_multi_dir})
 
 set(arm_flags "${ARM_TARGET_CONFIG} -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections")
-set(CMAKE_C_FLAGS "${arm_flags} -DARMV6_ARCH")
-set(CMAKE_CXX_FLAGS "${arm_flags} -DARMV6_ARCH")
+set(CMAKE_C_FLAGS "${arm_flags} -DARMV7_ARCH")
+set(CMAKE_CXX_FLAGS "${arm_flags} -DARMV7_ARCH")
 
 link_directories(
   ${gcc_arm_sysroot}/lib/${gcc_arm_multi_dir}
