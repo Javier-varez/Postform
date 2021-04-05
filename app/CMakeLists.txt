@@ -27,8 +27,7 @@ if (POSTFORM_BUILD_TARGET_APP MATCHES "true")
     PRIVATE
       cortex-m_startup
       cortex-m_hal
-      postform
-      libopencm3)
+      postform)
 
   target_link_options(postform_format
     PRIVATE

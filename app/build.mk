@@ -39,7 +39,6 @@ LOCAL_ARM_ARCHITECTURE := v7-m
 LOCAL_ARM_FPU := nofp
 LOCAL_COMPILER := arm_clang
 LOCAL_STATIC_LIBS := \
-    libopencm3_stm32f1 \
     libcortex_m_startup \
     libcortex_m_hal \
     libpostform
