@@ -24,8 +24,9 @@ pub enum RttError {
 /// Downloads a FW ELF to the target in the associated session, halting the core at main.
 pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &PathBuf) -> Result<()> {
     let mut mutex_guard = session.lock().unwrap();
-    println!("Loading FW to target");
+    log::info!("Loading FW to target");
     download_file(&mut mutex_guard, &elf_path, Format::Elf)?;
+    log::info!("Download complete!");
 
     let file_contents = fs::read(elf_path)?;
     let elf_file = ElfFile::parse(&file_contents[..])?;
@@ -37,9 +38,10 @@ pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &PathBuf) -> R
     let mut core = mutex_guard.core(0).unwrap();
     let _ = core.reset_and_halt(Duration::from_millis(10))?;
     core.set_hw_breakpoint(main.address() as u32)?;
+    log::debug!("Inserting breakpoint at main() @ 0x{:x}", main.address());
     core.run()?;
     core.wait_for_core_halted(Duration::from_secs(1))?;
-    println!("Download complete!");
+    log::debug!("Core halted at main()");
 
     Ok(())
 }
@@ -62,7 +64,7 @@ pub fn configure_rtt_mode(
     let mut session_lock = session.lock().unwrap();
     let mut core = session_lock.core(0)?;
     let mode_flags_addr = rtt_addr as u32 + 44u32;
-    println!("Setting mode to {:?}", mode);
+    log::info!("Setting mode to {:?}", mode);
     core.write_word_32(mode_flags_addr, mode as u32)?;
 
     Ok(())
@@ -72,6 +74,7 @@ pub fn configure_rtt_mode(
 pub fn run_core(session: Arc<Mutex<Session>>) -> Result<()> {
     let mut session_lock = session.lock().unwrap();
     let mut core = session_lock.core(0)?;
+    log::info!("Clearing breakpoints and entering run state");
     core.clear_all_hw_breakpoints()?;
     core.run()?;
 
@@ -91,6 +94,7 @@ pub fn disable_cdebugen(session: Arc<Mutex<Session>>) -> Result<()> {
     let dhcsr_addr = 0xE000EDF0;
     let dhcsr_val = [0xA05F << 16];
     core.write_32(dhcsr_addr, &dhcsr_val)?;
+    log::info!("Disabled debugging");
     Ok(())
 }
 
@@ -142,7 +146,7 @@ pub fn attach_rtt(session: Arc<Mutex<Session>>, elf_file: &ElfFile) -> Result<Rt
         .symbols()
         .find(|s| s.name().unwrap() == "_SEGGER_RTT")
         .ok_or(RttError::MissingSymbol("_SEGGER_RTT"))?;
-    println!("Attaching RTT to address 0x{:x}", segger_rtt.address());
+    log::info!("Attaching RTT to address 0x{:x}", segger_rtt.address());
     let scan_region = ScanRegion::Exact(segger_rtt.address() as u32);
     Ok(Rtt::attach_region(session, &scan_region)?)
 }

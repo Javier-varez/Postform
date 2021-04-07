@@ -78,6 +78,7 @@ struct Opts {
 
 fn main() -> Result<()> {
     color_eyre::install()?;
+    env_logger::init();
 
     let opts = Opts::from_args();
 
@@ -121,7 +122,6 @@ fn main() -> Result<()> {
         {
             let is_app_running = is_app_running.clone();
             ctrlc::set_handler(move || {
-                println!("Exiting application");
                 is_app_running.store(false, Ordering::Relaxed);
             })?;
         }
@@ -140,10 +140,10 @@ fn main() -> Result<()> {
             let _ = Some(std::thread::spawn(move || {
                 let gdb_connection_string = "127.0.0.1:1337";
                 // This next unwrap will always resolve as the connection string is always Some(T).
-                println!("Firing up GDB stub at {}.", gdb_connection_string);
+                log::info!("Firing up GDB stub at {}.", gdb_connection_string);
                 if let Err(e) = probe_rs_gdb_server::run(Some(gdb_connection_string), &session) {
-                    println!("During the execution of GDB an error was encountered:");
-                    println!("{:?}", e);
+                    log::error!("During the execution of GDB an error was encountered:");
+                    log::error!("{:?}", e);
                 }
             }));
         }
@@ -154,23 +154,28 @@ fn main() -> Result<()> {
             let mut decoder = CobsDecoder::new(&mut dec_buf);
             loop {
                 let count = log_channel.read(&mut buf[..])?;
-                for data_byte in buf.iter().take(count) {
-                    match decoder.feed(*data_byte) {
-                        Ok(Some(msg_len)) => {
-                            drop(decoder);
-                            handle_log(&elf_metadata, &dec_buf[..msg_len]);
-                            decoder = CobsDecoder::new(&mut dec_buf[..]);
+                if count > 0 {
+                    log::debug!("Read from RTT {:?}", &buf[..count]);
+                    for data_byte in buf.iter().take(count) {
+                        match decoder.feed(*data_byte) {
+                            Ok(Some(msg_len)) => {
+                                drop(decoder);
+                                log::debug!("Cobs decoded message: {:?}", &dec_buf[..msg_len]);
+                                handle_log(&elf_metadata, &dec_buf[..msg_len]);
+                                decoder = CobsDecoder::new(&mut dec_buf[..]);
+                            }
+                            Err(decoded_len) => {
+                                drop(decoder);
+                                log::error!("Cobs decoding failed after {} bytes", decoded_len);
+                                log::error!("Decoded buffer: {:?}", &dec_buf[..decoded_len]);
+                                decoder = CobsDecoder::new(&mut dec_buf[..]);
+                            }
+                            Ok(None) => {}
                         }
-                        Err(decoded_len) => {
-                            drop(decoder);
-                            println!("Cobs decoding failed after {} bytes", decoded_len);
-                            println!("Decoded buffer: {:?}", &dec_buf[..decoded_len]);
-                            decoder = CobsDecoder::new(&mut dec_buf[..]);
-                        }
-                        Ok(None) => {}
                     }
                 }
                 if !is_app_running.load(Ordering::Relaxed) {
+                    log::info!("Closing application");
                     break;
                 }
                 std::thread::sleep(Duration::from_millis(10));

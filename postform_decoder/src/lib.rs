@@ -165,7 +165,7 @@ impl ElfMetadata {
                     end,
                 });
             } else {
-                println!("Warning: Level {:?} not found in elf file", level);
+                log::warn!("Log level {:?} not found in elf file", level);
             }
         }
 
