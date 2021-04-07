@@ -29,6 +29,7 @@ struct Opts {
 
 fn main() -> Result<()> {
     color_eyre::install()?;
+    env_logger::init();
 
     let opts = Opts::from_args();
 
