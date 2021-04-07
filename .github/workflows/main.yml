@@ -189,19 +189,19 @@ jobs:
       with:
         cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
         cmakeListsTxtPath: '${{ github.workspace }}/postform/CMakeLists.txt'
-        cmakeAppendedArgs: '-DCMAKE_CXX_COMPILER=clang++ -DPOSTFORM_BUILD_EXAMPLES=true'
+        cmakeAppendedArgs: '-G Ninja -DCMAKE_CXX_COMPILER=clang++ -DPOSTFORM_BUILD_EXAMPLES=true'
         buildDirectory: '${{ runner.workspace }}/build'
     - name: Build with CMake for thumbv7m
       uses: lukka/run-cmake@v3
       with:
         cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
         cmakeListsTxtPath: '${{ github.workspace }}/postform/CMakeLists.txt'
-        cmakeAppendedArgs: '-D CMAKE_TOOLCHAIN_FILE=cmake/toolchains/armv7m.cmake -DPOSTFORM_BUILD_EXAMPLES=true -DPOSTFORM_BUILD_TARGET_APP=true'
+        cmakeAppendedArgs: '-G Ninja -D CMAKE_TOOLCHAIN_FILE=cmake/toolchains/armv7m.cmake -DPOSTFORM_BUILD_EXAMPLES=true -DPOSTFORM_BUILD_TARGET_APP=true'
         buildDirectory: '${{ runner.workspace }}/build_thumbv7m'
     - name: Build with CMake for thumbv6m
       uses: lukka/run-cmake@v3
       with:
         cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
         cmakeListsTxtPath: '${{ github.workspace }}/postform/CMakeLists.txt'
-        cmakeAppendedArgs: '-D CMAKE_TOOLCHAIN_FILE=cmake/toolchains/armv6m.cmake -DPOSTFORM_BUILD_EXAMPLES=true -DPOSTFORM_BUILD_TARGET_APP=true'
+        cmakeAppendedArgs: '-G Ninja -D CMAKE_TOOLCHAIN_FILE=cmake/toolchains/armv6m.cmake -DPOSTFORM_BUILD_EXAMPLES=true -DPOSTFORM_BUILD_TARGET_APP=true'
         buildDirectory: '${{ runner.workspace }}/build_thumbv6m'
