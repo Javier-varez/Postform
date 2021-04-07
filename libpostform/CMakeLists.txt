@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 # Get version number
 execute_process(
   COMMAND git describe
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   OUTPUT_STRIP_TRAILING_WHITESPACE
   OUTPUT_VARIABLE POSTFORM_VERSION)
 message(VERBOSE "postform version is ${POSTFORM_VERSION}")
@@ -42,7 +42,7 @@ target_include_directories(postform
 target_compile_options(postform
   PRIVATE
     -Os)
-target_link_options(postform 
+target_link_options(postform
   INTERFACE
     "SHELL:-Wl,-T ${CMAKE_CURRENT_SOURCE_DIR}/postform.ld")
 set_target_properties(postform
