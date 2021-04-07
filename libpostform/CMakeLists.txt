@@ -18,14 +18,12 @@ add_library(postform STATIC
   src/rtt/raw_writer.cpp
   src/rtt/rtt_manager.cpp)
 
-target_compile_features(postform
-  PUBLIC
-    cxx_std_17)
 target_compile_options(postform
   PRIVATE
     -Wall
     -Wextra
     -Werror
+    -std=gnu++17
     -DPOSTFORM_COMMIT_ID=${POSTFORM_VERSION})
 
 # Clang emits a warning for the string literal operator template GNU extension
