@@ -1,12 +1,11 @@
 use cobs::CobsDecoder;
-use color_eyre::eyre::Result;
 use object::read::{File as ElfFile, Object, ObjectSymbol};
 use postform_decoder::{ElfMetadata, POSTFORM_VERSION};
 use postform_rtt::{
     attach_rtt, configure_rtt_mode, disable_cdebugen, download_firmware, handle_log, run_core,
     RttError, RttMode,
 };
-use probe_rs::Probe;
+use probe_rs::{DebugProbeError, DebugProbeSelector, Probe};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::{
     fs,
@@ -15,6 +14,7 @@ use std::{
     time::Duration,
 };
 use structopt::StructOpt;
+use thiserror::Error;
 
 fn print_probes() {
     let probes = Probe::list_all();
@@ -47,6 +47,41 @@ fn print_version() {
     println!("supported Postform version: {}", POSTFORM_VERSION);
 }
 
+#[derive(Error, Debug)]
+enum ProbeErrors {
+    #[error("There are no probes available")]
+    NoProbesAvailable,
+    #[error(
+        "More than one probe available. Select one of them with --probe-selector or --probe-index"
+    )]
+    MoreThanOneProbeAvailable,
+    #[error("Probe index is larger than the number of probes available")]
+    IndexOutOfRange,
+    #[error("Specific probe error from probe-rs")]
+    OpenError(#[from] DebugProbeError),
+}
+
+/// Opens a probe with the given index or the first one if there is only one
+fn open_probe(index: Option<usize>) -> Result<Probe, ProbeErrors> {
+    let probes = Probe::list_all();
+    if probes.is_empty() {
+        return Err(ProbeErrors::NoProbesAvailable);
+    }
+
+    let index = match index {
+        Some(index) if (index >= probes.len()) => {
+            return Err(ProbeErrors::IndexOutOfRange);
+        }
+        None if (probes.len() != 1) => {
+            return Err(ProbeErrors::MoreThanOneProbeAvailable);
+        }
+        Some(index) => index,
+        None => 0,
+    };
+
+    Ok(Probe::open(probes[index].clone())?)
+}
+
 #[derive(Debug, StructOpt)]
 #[structopt()]
 struct Opts {
@@ -59,8 +94,16 @@ struct Opts {
     list_probes: bool,
 
     /// The chip.
-    #[structopt(long, required_unless_one(&["list-chips", "list-probes", "version"]), env = "PROBE_RUN_CHIP")]
+    #[structopt(long, required_unless_one(&["list-chips", "list-probes", "version"]), env = "POSTFORM_CHIP")]
     chip: Option<String>,
+
+    /// The probe to open. The format is <VID>:<PID>[:<SERIAL>]
+    #[structopt(long, env = "POSTFORM_PROBE")]
+    probe_selector: Option<DebugProbeSelector>,
+
+    /// Index of the probe to open. Can be obtained with --list-probes
+    #[structopt(long = "probe-index")]
+    probe_index: Option<usize>,
 
     /// Path to an ELF firmware file.
     #[structopt(name = "ELF", parse(from_os_str), required_unless_one(&["list-chips", "list-probes", "version"]))]
@@ -76,7 +119,7 @@ struct Opts {
     gdb_server: bool,
 }
 
-fn main() -> Result<()> {
+fn main() -> color_eyre::eyre::Result<()> {
     color_eyre::install()?;
     env_logger::init();
 
@@ -100,12 +143,11 @@ fn main() -> Result<()> {
     let elf_name = opts.elf.unwrap();
     let elf_metadata = ElfMetadata::from_elf_file(&elf_name)?;
 
-    let probes = Probe::list_all();
-    if probes.len() > 1 {
-        println!("More than one probe conected! {:?}", probes);
-        return Ok(());
-    }
-    let probe = probes[0].open()?;
+    let probe = if let Some(probe_name) = opts.probe_selector {
+        Probe::open(probe_name)?
+    } else {
+        open_probe(opts.probe_index)?
+    };
 
     if let Some(chip) = opts.chip {
         let session = Arc::new(Mutex::new(probe.attach(chip)?));
