@@ -18,8 +18,6 @@ class Argument {
     InternedString interned_string;
   };
 
-  const std::size_t size = 0;
-
   const enum class Type {
     UNSIGNED_INTEGER,
     SIGNED_INTEGER,
@@ -34,7 +32,6 @@ template <
     std::enable_if_t<std::is_integral_v<T> && std::is_signed_v<T>, bool> = true>
 constexpr Argument make_arg(T value) {
   return Argument{.signed_long_long = value,
-                  .size = sizeof(T),
                   .type = Argument::Type::SIGNED_INTEGER};
 }
 
@@ -44,7 +41,6 @@ template <class T,
 constexpr Argument make_arg(T value) {
   return Argument{
       .unsigned_long_long = value,
-      .size = sizeof(T),
       .type = Argument::Type::UNSIGNED_INTEGER,
   };
 }
