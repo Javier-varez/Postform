@@ -2,7 +2,7 @@
 
 [![crates.io](https://meritbadge.herokuapp.com/postform_decoder)](https://crates.io/crates/postform_decoder) [![documentation](https://docs.rs/postform_decoder/badge.svg)](https://docs.rs/postform_decoder) ![Build Status](https://img.shields.io/github/workflow/status/javier-varez/deferred-logging/Target%20App)
 
-`Postform` *(short for "Postponed formatting")* is an example implementation of a deferred-formatting logging system in C++ for 32 bit microcontrollers. This project is inspired/based on the [defmt](https://github.com/knurling-rs/defmt) rust crate from [Knurling-rs](https://knurling.ferrous-systems.com/). They are doing a splendid job that motivated me to create a C++ alternative following similar principles of operation, still leveraging rust for the host-side implementation of this logger.
+`Postform` *(short for "Postponed formatting")* is a deferred-formatting logging system in C++ for 32 bit microcontrollers. This project is inspired/based on the [defmt](https://github.com/knurling-rs/defmt) rust crate from [Knurling-rs](https://knurling.ferrous-systems.com/). They are doing a splendid job that motivated me to create a C++ alternative following similar principles of operation, still leveraging rust for the host-side implementation of this logger.
 
 ## Table of Contents
 
@@ -47,11 +47,11 @@ And, as you could expect, some **drawbacks**:
 
 ![Build Status](https://img.shields.io/github/workflow/status/javier-varez/deferred-logging/Target%20App)
 
-`Postform` is very much under development at this point in time. All contributions are really appreciated and encouraged. Feel free to open issues with suggestions for improvements, bugs that you've encountered, etc. If you'd like to contribute, please checkout the [contribution guidelines](docs/CONTRIBUTING.md).
+`Postform` is under active development at this point in time. All contributions are really appreciated and encouraged. Feel free to open issues with suggestions for improvements, bugs that you've encountered, etc. If you'd like to contribute, please checkout the [contribution guidelines](docs/CONTRIBUTING.md).
 
-Currently the build targets an __STM32F103C8__ microcontroller, like the ones found in the STM32 blue pill. Postform aims to be a platform-independent logging library for 32-bit microcontrollers, we aim for portable code as much as possible.
+Currently the default build targets an `Cortex-M` processor, however `Postform` aims to be a platform-independent logging library for 32-bit microcontrollers, we aim for portable code as much as possible. In fact, it is also built for the host for testing purposes, showing how portable the code actually is.
 
-At this point the API is still volatile and might change in the future. `Postform` uses [Semantic Versioning](https://semver.org) for its releases, so you will know when a breaking API feature has been added when a major number changes. Currently `Postform` is below `0.1.0` as there are no releases yet.
+At this point the API is still volatile and might change in the future. `Postform` uses [Semantic Versioning](https://semver.org) for its releases, so you will know when a breaking API feature has been added when a major number changes. However, until we reach `1.0.0` we may still make breaking API/ABI changes even if the minor is incremented.
 
 **[Back to top](#table-of-contents)**
 
@@ -59,7 +59,7 @@ At this point the API is still volatile and might change in the future. `Postfor
 
 ## Dependencies
 
-`Postform` uses `clang` as a compiler and the libraries and sysroot from the `GNU ARM Embedded Toolchain`. The build is currently supported on `Ubuntu 20.04`.
+`Postform` can be built and used with `clang` and `GCC`. The build is currently supported on `Ubuntu 20.04`.
 
 Get the latest `GNU ARM Embedded toolchain` [here](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm). Make sure to add the bin folder to your path.
 
@@ -72,10 +72,10 @@ sudo apt install clang
 `Postform` relies on a custom build system based on a non-recursive set of makefile templates. You can find a link to it [here](https://github.com/Javier-varez/buildsystem). The dependencies for the buildsystem are:
 
 ```bash
-apt install make
+sudo apt install make
 ```
 
-For the `STM32` code `Postform` uses the abstraction layer provided by [libopencm3](https://github.com/libopencm3/libopencm3).
+Alternatively, `CMake` can be used to build the `Postform` target library.
 
 All the Rust code for the host has its dependencies indicated in the `Cargo.toml` file.
 
@@ -108,8 +108,34 @@ Building the C++ code is as simple as running make.
 make -j
 ```
 
-The target will be available in `build/targets`.
+This commands builds the `libpostform` library along with an example application for the target and an example application on the host for testing. The target will be available in `build/targets`. 
 
+If instead you'd prefer to use `CMake` you can build the postform library with:
+
+```bash
+mkdir build
+cd build
+cmake ..
+make -j
+```
+
+Keep in mind that the `CMake` build can be run with any compiler and for any target as usual with cmake. If you want to build it for the armv7m architecture you can use the following toolchain:
+
+```bash
+mkdir build
+cd build
+cmake -dcmake_toolchain_file=../cmake/toolchains/armv7m.cmake ..
+make -j
+```
+
+Or to build it for the armv6m architecture:
+
+```bash
+mkdir build
+cd build
+cmake -dcmake_toolchain_file=../cmake/toolchains/armv6m.cmake ..
+make -j
+```
 ### Building the Rust code
 
 Change directory to the `postform` directory and run:
@@ -121,6 +147,8 @@ cargo build
 ## Usage
 
 In order to run the demo simply navigate to `postform-rtt` and run `cargo r`.
+
+The example app is built for an `STM32F103C8` microcontrollers connected via a debugger compatible with `probe-rs`, like an `ST-Link` or a `J-Link`.
 
 The postform-rtt binary will load the firmware into the `STM32F103C8` device and start listening for logs. You should see a similar output to:
 
@@ -144,7 +172,7 @@ Rtt connected
 
 ## Versioning
 
-This project uses [Semantic Versioning](http://semver.org/). Releases will be tagged.
+This project uses [Semantic Versioning](http://semver.org/). Releases are tagged accordingly. Versions below `1.0.0` can have breaking API/ABI changes at any time.
 
 **[Back to top](#table-of-contents)**
 
