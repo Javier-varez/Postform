@@ -1,3 +1,6 @@
+#ifndef MOCK_LOGGER_H_
+#define MOCK_LOGGER_H_
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -11,3 +14,5 @@ class MockWriter {
 class MockLogger : public Postform::Logger<MockLogger, MockWriter> {
   MockWriter getWriter() { return MockWriter{}; }
 };
+
+#endif  // MOCK_LOGGER_H_

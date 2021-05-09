@@ -1,4 +1,7 @@
 
+#ifndef SERIAL_TRANSPORT_MOCK_H_
+#define SERIAL_TRANSPORT_MOCK_H_
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -9,3 +12,5 @@ class SerialTransportMock {
   MOCK_METHOD(void, commit, (), ());
 };
 }  // namespace Postform
+
+#endif  // SERIAL_TRANSPORT_MOCK_H_
