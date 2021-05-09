@@ -2,6 +2,7 @@
 #ifndef POSTFORM_UTILS_H_
 #define POSTFORM_UTILS_H_
 
+#include <cstddef>
 #include <cstdint>
 
 #define UNINIT __attribute((section(".uninit")))
