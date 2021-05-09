@@ -8,7 +8,7 @@
 namespace Postform {
 class SerialTransportMock {
  public:
-  MOCK_METHOD(bool, write, (const std::uint8_t*, std::uint32_t), ());
+  MOCK_METHOD(bool, write, (std::uint8_t), ());
   MOCK_METHOD(void, commit, (), ());
 };
 }  // namespace Postform
