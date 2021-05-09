@@ -73,12 +73,14 @@ include $(BUILD_STATIC_LIB)
 include $(CLEAR_VARS)
 LOCAL_NAME := postform_tests
 LOCAL_CFLAGS := \
+    -I$(LOCAL_DIR)/test \
     $(POSTFORM_CFLAGS)
 LOCAL_CXXFLAGS := \
     $(LOCAL_CFLAGS) \
     $(POSTFORM_CXXFLAGS)
 LOCAL_SRC := \
     $(POSTFORM_SRC) \
-    $(LOCAL_DIR)/test/logger_test.cpp
+    $(LOCAL_DIR)/test/timestamp_mock.cpp \
+    $(LOCAL_DIR)/test/logger_test.cpp \
+    $(LOCAL_DIR)/test/serial_logger_test.cpp
 include $(BUILD_HOST_TEST)
-
