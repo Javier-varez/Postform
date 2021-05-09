@@ -1,4 +1,7 @@
 
+#ifndef TIMESTAMP_MOCK_H_
+#define TIMESTAMP_MOCK_H_
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -8,3 +11,5 @@ class TimestampMock {
 };
 
 extern TimestampMock* g_timestamp;
+
+#endif  // TIMESTAMP_MOCK_H_
