@@ -83,6 +83,8 @@ class SerialWriter {
   SerialLogger<T>* m_logger = nullptr;
   T* m_transport = nullptr;
   State m_state = State::Finished;
+  //! Number of bits since the last 0.
+  uint32_t m_marker = 1;
 
   /**
    * @brief Actual constructor for the SerialWriter. Only created from the
@@ -108,7 +110,7 @@ class SerialLogger : public Logger<SerialLogger<T>, SerialWriter<T>> {
    * following methods:
    *
    * ```c++
-   *   bool write(const uint8_t* data, uint32_t size);
+   *   void write(uint8_t value);
    *   void commit();
    * ```
    */
@@ -141,10 +143,12 @@ template <class T>
 SerialWriter<T>::SerialWriter(SerialWriter<T>&& other)
     : m_logger(other.m_logger),
       m_transport(other.m_transport),
-      m_state(other.m_state) {
+      m_state(other.m_state),
+      m_marker(other.m_marker) {
   other.m_logger = nullptr;
   other.m_transport = nullptr;
   other.m_state = State::Finished;
+  other.m_marker = 1;
 }
 
 template <class T>
@@ -153,9 +157,11 @@ SerialWriter<T>& SerialWriter<T>::operator=(SerialWriter<T>&& other) {
     m_logger = other.m_logger;
     m_transport = other.m_transport;
     m_state = other.m_state;
+    m_marker = other.m_marker;
     other.m_logger = nullptr;
     other.m_transport = nullptr;
     other.m_state = State::Finished;
+    other.m_marker = -1;
   }
   return *this;
 }
@@ -173,7 +179,24 @@ SerialWriter<T>::operator bool() const {
 template <class T>
 void SerialWriter<T>::write(const uint8_t* data, uint32_t size) {
   if (*this) {
-    m_transport->write(data, size);
+    for (uint32_t i = 0; i < size; i++) {
+      if (m_marker == 255) {
+        // lets insert a virtual zero marker to continue the message
+        m_transport->write(m_marker);
+        m_marker = 1;
+      }
+
+      // Write the current value
+      uint8_t value = data[i];
+      if (value == 0) {
+        // Write the marker instead
+        m_transport->write(m_marker);
+        m_marker = 1;
+      } else {
+        m_transport->write(value);
+        m_marker++;
+      }
+    }
   }
 }
 
@@ -181,10 +204,13 @@ template <class T>
 void SerialWriter<T>::commit() {
   if (*this) {
     m_state = State::Finished;
+    m_transport->write(m_marker);
+    m_transport->write(0);
     m_transport->commit();
     m_transport = nullptr;
     m_logger->release();
     m_logger = nullptr;
+    m_marker = 0;
   }
 }
 
