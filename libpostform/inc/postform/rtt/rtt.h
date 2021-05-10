@@ -6,8 +6,7 @@
 #include <cstdint>
 #include <cstring>
 
-namespace Postform {
-namespace Rtt {
+namespace Postform::Rtt {
 
 enum class Flags : uint32_t { BLOCK_IF_FULL = 2, NO_BLOCK_TRIM = 1 };
 
@@ -54,7 +53,6 @@ struct ControlBlock {
         down_channel("down", down_buffer, down_buffer_size) {}
 };
 
-}  // namespace Rtt
-}  // namespace Postform
+}  // namespace Postform::Rtt
 
 #endif  // RTT_RTT_H_
