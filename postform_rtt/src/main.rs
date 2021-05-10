@@ -1,4 +1,3 @@
-use cobs::CobsDecoder;
 use object::read::{File as ElfFile, Object, ObjectSymbol};
 use postform_decoder::{ElfMetadata, POSTFORM_VERSION};
 use postform_rtt::{
@@ -11,7 +10,6 @@ use std::{
     fs,
     path::PathBuf,
     sync::{Arc, Mutex},
-    time::Duration,
 };
 use structopt::StructOpt;
 use thiserror::Error;
@@ -191,36 +189,25 @@ fn main() -> color_eyre::eyre::Result<()> {
         }
 
         if let Some(log_channel) = rtt.up_channels().take(0) {
-            let mut dec_buf = [0u8; 4096];
-            let mut buf = [0u8; 4096];
-            let mut decoder = CobsDecoder::new(&mut dec_buf);
+            let mut value = [0u8];
+            let mut buffer: Vec<u8> = vec![];
             loop {
-                let count = log_channel.read(&mut buf[..])?;
+                let count = log_channel.read(&mut value[..])?;
                 if count > 0 {
-                    log::debug!("Read from RTT {:?}", &buf[..count]);
-                    for data_byte in buf.iter().take(count) {
-                        match decoder.feed(*data_byte) {
-                            Ok(Some(msg_len)) => {
-                                drop(decoder);
-                                log::debug!("Cobs decoded message: {:?}", &dec_buf[..msg_len]);
-                                handle_log(&elf_metadata, &dec_buf[..msg_len]);
-                                decoder = CobsDecoder::new(&mut dec_buf[..]);
-                            }
-                            Err(decoded_len) => {
-                                drop(decoder);
-                                log::error!("Cobs decoding failed after {} bytes", decoded_len);
-                                log::error!("Decoded buffer: {:?}", &dec_buf[..decoded_len]);
-                                decoder = CobsDecoder::new(&mut dec_buf[..]);
-                            }
-                            Ok(None) => {}
-                        }
+                    if value[0] == 0 {
+                        let message = rcobs::decode(&buffer[..]).unwrap();
+                        handle_log(&&elf_metadata, &message[..]);
+                        buffer.clear();
+                    } else {
+                        buffer.push(value[0]);
                     }
                 }
+
+                // Close application if requested
                 if !is_app_running.load(Ordering::Relaxed) {
                     log::info!("Closing application");
                     break;
                 }
-                std::thread::sleep(Duration::from_millis(10));
             }
         }
         configure_rtt_mode(session, segger_rtt_addr, RttMode::NonBlocking)?;
