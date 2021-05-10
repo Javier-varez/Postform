@@ -359,12 +359,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cobs"
-version = "0.1.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c44be444fc7959957b0f331d596bafcfbbe30cbdf41665d1c40c68eda24137f6"
-
-[[package]]
 name = "color-eyre"
 version = "0.5.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1069,7 +1063,6 @@ dependencies = [
 name = "postform_rtt"
 version = "0.3.0"
 dependencies = [
- "cobs",
  "color-eyre",
  "ctrlc",
  "env_logger",
@@ -1079,6 +1072,7 @@ dependencies = [
  "postform_decoder",
  "probe-rs",
  "probe-rs-rtt",
+ "rcobs",
  "structopt",
  "termion",
  "thiserror",
@@ -1196,6 +1190,12 @@ name = "radium"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "941ba9d78d8e2f7ce474c015eea4d9c6d25b6a3327f9832ee29a4de27f91bbb8"
+
+[[package]]
+name = "rcobs"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "06cdc4ce376f8155e90aa043d76cd40ecd11b2ec4bb4dea713194683ae01a252"
 
 [[package]]
 name = "redox_syscall"
