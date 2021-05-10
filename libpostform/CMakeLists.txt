@@ -14,9 +14,7 @@ add_library(postform STATIC
   src/format_validator.cpp
   src/macros.cpp
   src/platform.cpp
-  src/rtt/cobs_writer.cpp
-  src/rtt/raw_writer.cpp
-  src/rtt/rtt_manager.cpp)
+  src/rtt/transport.cpp)
 
 target_compile_options(postform
   PRIVATE
@@ -47,4 +45,3 @@ set_target_properties(postform
   PROPERTIES
   INTERFACE_LINK_DEPENDS
   ${CMAKE_CURRENT_SOURCE_DIR}/postform.ld)
-

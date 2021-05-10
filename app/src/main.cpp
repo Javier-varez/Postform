@@ -3,10 +3,13 @@
 #include <cstdio>
 
 #include "cortex_m_hal/systick.h"
-#include "postform/rtt_logger.h"
+#include "postform/rtt/transport.h"
+#include "postform/serial_logger.h"
 
 int main() {
-  Postform::RttLogger logger;
+  Postform::Rtt::Transport transport;
+  Postform::SerialLogger<Postform::Rtt::Transport> logger{&transport};
+
   SysTick& systick = SysTick::getInstance();
 
   const uint32_t systick_clk_hz = 8'000'000;

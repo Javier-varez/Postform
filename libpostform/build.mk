@@ -20,9 +20,7 @@ POSTFORM_CXXFLAGS := \
     -fno-rtti
 
 POSTFORM_SRC := \
-    $(LOCAL_DIR)/src/rtt/rtt_manager.cpp \
-    $(LOCAL_DIR)/src/rtt/raw_writer.cpp \
-    $(LOCAL_DIR)/src/rtt/cobs_writer.cpp \
+    $(LOCAL_DIR)/src/rtt/transport.cpp \
     $(LOCAL_DIR)/src/file_logger.cpp \
     $(LOCAL_DIR)/src/format_validator.cpp \
     $(LOCAL_DIR)/src/macros.cpp \
