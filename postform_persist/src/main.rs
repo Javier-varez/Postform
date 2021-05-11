@@ -1,6 +1,5 @@
 use color_eyre::eyre::Result;
-use postform_decoder::{ElfMetadata, POSTFORM_VERSION};
-use postform_persist::handle_log;
+use postform_decoder::{handle_log, ElfMetadata, POSTFORM_VERSION};
 use std::convert::TryInto;
 use std::io::prelude::*;
 use std::{fs, path::PathBuf};
