@@ -1,8 +1,8 @@
 use object::read::{File as ElfFile, Object, ObjectSymbol};
-use postform_decoder::{ElfMetadata, POSTFORM_VERSION};
+use postform_decoder::{handle_log, ElfMetadata, POSTFORM_VERSION};
 use postform_rtt::{
-    attach_rtt, configure_rtt_mode, disable_cdebugen, download_firmware, handle_log, run_core,
-    RttError, RttMode,
+    attach_rtt, configure_rtt_mode, disable_cdebugen, download_firmware, run_core, RttError,
+    RttMode,
 };
 use probe_rs::{DebugProbeError, DebugProbeSelector, Probe};
 use std::sync::atomic::{AtomicBool, Ordering};
