@@ -15,10 +15,10 @@ jobs:
       uses: actions/checkout@v2
       with:
         submodules: 'true'
-    - name: Install libusb and libftdi
+    - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y libusb-1.0-0-dev libftdi1-dev
+        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
@@ -43,10 +43,10 @@ jobs:
         manifest-url: 'Javier-varez/manifest'
         manifest-group: 'postform'
         checkout-deps: true
-    - name: Install libusb and libftdi
+    - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y libusb-1.0-0-dev libftdi1-dev
+        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
@@ -67,10 +67,10 @@ jobs:
       uses: actions/checkout@v2
       with:
         submodules: 'true'
-    - name: Install libusb and libftdi
+    - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y libusb-1.0-0-dev libftdi1-dev
+        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
