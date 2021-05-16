@@ -1123,6 +1123,7 @@ dependencies = [
  "leb128",
  "log",
  "object 0.22.0",
+ "rcobs",
  "strum_macros",
  "termion",
  "thiserror",
@@ -1138,6 +1139,7 @@ dependencies = [
  "log",
  "postform_decoder",
  "structopt",
+ "termion",
  "thiserror",
 ]
 
@@ -1154,7 +1156,6 @@ dependencies = [
  "postform_decoder",
  "probe-rs",
  "probe-rs-rtt",
- "rcobs",
  "structopt",
  "thiserror",
 ]

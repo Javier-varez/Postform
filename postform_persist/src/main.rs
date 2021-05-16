@@ -1,9 +1,10 @@
 use color_eyre::eyre::Result;
-use postform_decoder::{handle_log, ElfMetadata, POSTFORM_VERSION};
+use postform_decoder::{print_log, Decoder, ElfMetadata, POSTFORM_VERSION};
 use std::convert::TryInto;
 use std::io::prelude::*;
 use std::{fs, path::PathBuf};
 use structopt::StructOpt;
+use termion::color;
 
 fn print_version() {
     // version from Cargo.toml e.g. "0.1.4"
@@ -45,10 +46,22 @@ fn main() -> Result<()> {
     log_file.read_to_end(&mut log_data)?;
 
     let mut log_data = &log_data[..];
+    let mut decoder = Decoder::new(&elf_metadata);
     loop {
         let (size_bits, rest) = log_data.split_at(std::mem::size_of::<u32>());
         let size = u32::from_le_bytes(size_bits.try_into().unwrap()) as usize;
-        handle_log(&elf_metadata, &rest[..size]);
+        match decoder.decode(&rest[..size]) {
+            Ok(log) => print_log(&log),
+            Err(error) => {
+                println!(
+                    "{color}Error parsing log:{reset_color} {error}.",
+                    color = color::Fg(color::Red),
+                    error = error,
+                    reset_color = color::Fg(color::Reset)
+                );
+            }
+        };
+
         log_data = &log_data[4 + size..];
         if log_data.is_empty() {
             break;
