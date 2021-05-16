@@ -3,16 +3,77 @@
 #include <cstdio>
 
 #include "cortex_m_hal/systick.h"
+#include "hal/flash.h"
+#include "hal/gpio.h"
+#include "hal/rcc.h"
+#include "hal/uart.h"
 #include "postform/rtt/transport.h"
 #include "postform/serial_logger.h"
 
+static volatile __attribute__((section(".uart2_regs")))
+UartRegisters uart2_regs;
+static volatile __attribute__((section(".gpioa_regs")))
+GpioBankRegisters bank_a_regs;
+static volatile __attribute__((section(".rcc_regs"))) RccRegisters rcc_regs;
+static volatile __attribute__((section(".flash_regs")))
+FlashRegisters flash_regs;
+
+Uart uart{&uart2_regs};
+
+void configureClocks() {
+  // Enable hse @ 8MHz
+  rcc_regs.control_reg.bits.hse_on = 1;
+  while (!rcc_regs.control_reg.bits.hse_ready) {
+  }
+
+  rcc_regs.clock_config_reg.bits.pll_source = PllSource::HSE;
+  rcc_regs.clock_config_reg.bits.pll_hse_divider = PllHsePrescaler::DIV_1;
+  rcc_regs.clock_config_reg.bits.pll_multiplier = PllMultiplier::FACTOR_9;
+  rcc_regs.control_reg.bits.pll_on = true;
+  while (!rcc_regs.control_reg.bits.pll_on) {
+  }
+
+  // Set proper flash latency and enable prefetch. This needs to be done before
+  // switching to the PLL
+  flash_regs.access_control_reg.reg = 0x32;
+
+  // AHB 72 MHz, APB1 36 MHz, APB2 72 MHz
+  rcc_regs.clock_config_reg.bits.ahb_prescaler = AhbPrescaler::DIV_1;
+  rcc_regs.clock_config_reg.bits.apb1_prescaler = ApbPrescaler::DIV_2;
+  rcc_regs.clock_config_reg.bits.apb2_prescaler = ApbPrescaler::DIV_1;
+
+  rcc_regs.clock_config_reg.bits.system_clk_switch = SystemClockSwitch::PLL;
+  while (rcc_regs.clock_config_reg.bits.system_clk_switch_status !=
+         SystemClockSwitch::PLL) {
+  }
+}
+
+void configureUart() {
+  rcc_regs.apb2_enable_reg.bits.port_a_clk_enable = true;
+  rcc_regs.apb1_enable_reg.bits.usart2_clk_enable = true;
+
+  bank_a_regs.control_reg_low.bits.config2 = GpioConfig::PushPullAlternateFunc;
+  bank_a_regs.control_reg_low.bits.mode2 = GpioMode::OutputSlow;
+  // APB1 works at 1/2 HCLK
+  uart.Init(36'000'000, 115'200);
+}
+
+void initializeHardware() {
+  configureClocks();
+  configureUart();
+}
+
 int main() {
+  initializeHardware();
+
+  Postform::SerialLogger<Uart> uart_logger{&uart};
+
   Postform::Rtt::Transport transport;
   Postform::SerialLogger<Postform::Rtt::Transport> logger{&transport};
 
   SysTick& systick = SysTick::getInstance();
 
-  const uint32_t systick_clk_hz = 8'000'000;
+  const uint32_t systick_clk_hz = 72'000'000;
   systick.init(systick_clk_hz);
 
   logger.setLevel(Postform::LogLevel::DEBUG);
@@ -23,6 +84,7 @@ int main() {
     // proper framing they would be confused from the host. If they all show
     // that means that the COBS framing works
     LOG_DEBUG(&logger, "Iteration number: %u", iteration);
+    LOG_DEBUG(&uart_logger, "The UART works too!");
     LOG_DEBUG(&logger, "Is this %s or what?!", "nice");
     LOG_INFO(&logger, "I am %d years old...", 28);
     LOG_WARNING(&logger, "Third string! With multiple %s and more numbers: %d",
