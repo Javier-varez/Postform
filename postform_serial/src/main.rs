@@ -1,4 +1,4 @@
-use postform_decoder::{ElfMetadata, POSTFORM_VERSION};
+use postform_decoder::{print_log, ElfMetadata, SerialDecoder, POSTFORM_VERSION};
 use serialport::{self, FlowControl, Parity, StopBits};
 use std::path::PathBuf;
 use structopt::StructOpt;
@@ -87,7 +87,8 @@ fn main() -> color_eyre::eyre::Result<()> {
     }
 
     let elf_name = opts.elf.unwrap();
-    let _elf_metadata = ElfMetadata::from_elf_file(&elf_name)?;
+    let elf_metadata = ElfMetadata::from_elf_file(&elf_name)?;
+    let mut decoder = SerialDecoder::new(&elf_metadata);
 
     let mut port = serialport::new(opts.port.unwrap(), opts.baudrate.unwrap_or(115200u32))
         .parity(opts.parity.unwrap_or(Parity::None))
@@ -104,7 +105,9 @@ fn main() -> color_eyre::eyre::Result<()> {
         }?;
 
         if count > 0 {
-            println!("{:?}", &buffer[..count]);
+            decoder.feed_and_do(&buffer[..count], |log| {
+                print_log(&log);
+            });
         }
     }
 }

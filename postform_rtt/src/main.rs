@@ -1,5 +1,5 @@
 use object::read::{File as ElfFile, Object, ObjectSymbol};
-use postform_decoder::{handle_log, ElfMetadata, POSTFORM_VERSION};
+use postform_decoder::{print_log, ElfMetadata, SerialDecoder, POSTFORM_VERSION};
 use postform_rtt::{
     attach_rtt, configure_rtt_mode, disable_cdebugen, download_firmware, run_core, RttError,
     RttMode,
@@ -189,18 +189,14 @@ fn main() -> color_eyre::eyre::Result<()> {
         }
 
         if let Some(log_channel) = rtt.up_channels().take(0) {
-            let mut value = [0u8];
-            let mut buffer: Vec<u8> = vec![];
+            let mut buffer = [0u8; 1024];
+            let mut decoder = SerialDecoder::new(&elf_metadata);
             loop {
-                let count = log_channel.read(&mut value[..])?;
+                let count = log_channel.read(&mut buffer[..])?;
                 if count > 0 {
-                    if value[0] == 0 {
-                        let message = rcobs::decode(&buffer[..]).unwrap();
-                        handle_log(&&elf_metadata, &message[..]);
-                        buffer.clear();
-                    } else {
-                        buffer.push(value[0]);
-                    }
+                    decoder.feed_and_do(&buffer[..count], |log| {
+                        print_log(&log);
+                    });
                 }
 
                 // Close application if requested
