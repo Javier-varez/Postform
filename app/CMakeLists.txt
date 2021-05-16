@@ -5,6 +5,8 @@ if (POSTFORM_BUILD_TARGET_APP MATCHES "true")
   add_executable(postform_format
     src/main.cpp src/postform_config.cpp)
 
+  target_include_directories(postform_format PRIVATE inc)
+
   target_compile_options(postform_format PRIVATE
     -Os -std=gnu++17)
 
