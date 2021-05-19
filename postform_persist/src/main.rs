@@ -1,10 +1,10 @@
 use color_eyre::eyre::Result;
+use colored::Colorize;
 use postform_decoder::{print_log, Decoder, ElfMetadata, POSTFORM_VERSION};
 use std::convert::TryInto;
 use std::io::prelude::*;
 use std::{fs, path::PathBuf};
 use structopt::StructOpt;
-use termion::color;
 
 fn print_version() {
     // version from Cargo.toml e.g. "0.1.4"
@@ -53,12 +53,7 @@ fn main() -> Result<()> {
         match decoder.decode(&rest[..size]) {
             Ok(log) => print_log(&log),
             Err(error) => {
-                println!(
-                    "{color}Error parsing log:{reset_color} {error}.",
-                    color = color::Fg(color::Red),
-                    error = error,
-                    reset_color = color::Fg(color::Reset)
-                );
+                println!("{}{}", "Error parsing log: ".red(), error);
             }
         };
 

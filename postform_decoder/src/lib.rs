@@ -1,7 +1,7 @@
 use byteorder::{LittleEndian, ReadBytesExt};
+use colored::Colorize;
 use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
 use std::{fs, path::PathBuf};
-use termion::color;
 
 include!(concat!(env!("OUT_DIR"), "/version.rs"));
 
@@ -415,21 +415,12 @@ impl<'a> SerialDecoder<'a> {
                                 action(log);
                             }
                             Err(error) => {
-                                println!(
-                                    "{color}Error parsing log:{reset_color} {error}.",
-                                    color = color::Fg(color::Red),
-                                    error = error,
-                                    reset_color = color::Fg(color::Reset)
-                                );
+                                println!("{}{}", "Error parsing log: ".red(), error);
                             }
                         };
                     }
                     Err(_) => {
-                        println!(
-                            "{color}Error decoding rcobs log{reset_color}",
-                            color = color::Fg(color::Red),
-                            reset_color = color::Fg(color::Reset)
-                        );
+                        println!("{}", "Error decoding rcobs log".red());
                     }
                 }
                 self.rcobs_msg_buffer.clear();
@@ -441,32 +432,34 @@ impl<'a> SerialDecoder<'a> {
 }
 
 /// Returns the associated color for the log level
-fn color_for_level(level: LogLevel) -> String {
+fn color_for_level(level: LogLevel) -> colored::Color {
     match level {
-        LogLevel::Debug => String::from(color::Green.fg_str()),
-        LogLevel::Info => String::from(color::Yellow.fg_str()),
-        LogLevel::Warning => color::Rgb(255u8, 0xA5u8, 0u8).fg_string(),
-        LogLevel::Error => String::from(color::Red.fg_str()),
-        LogLevel::Unknown => color::Rgb(255u8, 0u8, 0u8).fg_string(),
+        LogLevel::Debug => colored::Color::Green,
+        LogLevel::Info => colored::Color::Yellow,
+        LogLevel::Warning => colored::Color::TrueColor {
+            r: 0xFFu8,
+            g: 0xA5u8,
+            b: 0u8,
+        },
+        LogLevel::Error => colored::Color::Red,
+        LogLevel::Unknown => colored::Color::Red,
     }
 }
 
 /// Reads a log from buffer and prints it to stdout
 pub fn print_log(log: &Log) {
     println!(
-        "{timestamp:<12.6} {color}{level:<11}{reset_color}: {msg}",
+        "{timestamp:<12.6} {level:<11}: {msg}",
         timestamp = log.timestamp,
-        color = color_for_level(log.level),
-        level = log.level.to_string(),
-        reset_color = color::Fg(color::Reset),
+        level = log.level.to_string().color(color_for_level(log.level)),
         msg = log.message
     );
     println!(
-        "{color}└── File: {file_name}, Line number: {line_number}{reset}",
-        color = color::Fg(color::LightBlack),
-        file_name = log.file_name,
-        line_number = log.line_number,
-        reset = color::Fg(color::Reset)
+        "{}{}{}{}",
+        "└── File: ".dimmed(),
+        log.file_name.dimmed(),
+        ", Line number: ".dimmed(),
+        log.line_number.to_string().dimmed(),
     );
 }
 

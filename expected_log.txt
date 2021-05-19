@@ -1,250 +1,250 @@
-0.000000     [38;5;2mDebug      [39m: Iteration number: 0
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 30[39m
-1.000000     [38;5;2mDebug      [39m: Is this nice or what?!
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
-2.000000     [38;5;3mInfo       [39m: I am 28 years old...
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
-3.000000     [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
-4.000000     [38;5;1mError      [39m: Oh boy, error 234556 just happened
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
-5.000000     [38;5;1mError      [39m: This is my char array: 123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
-6.000000     [38;5;1mError      [39m: different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 43[39m
-7.000000     [38;5;1mError      [39m: different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 47[39m
-8.000000     [38;5;1mError      [39m: different octal sizes: 123, 123, 123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 53[39m
-9.000000     [38;5;1mError      [39m: different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 59[39m
-10.000000    [38;5;1mError      [39m: Pointer 0x12341234
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 60[39m
-11.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+0.000000     Debug      : Iteration number: 0
+└── File: postform/app/src/host_main.cpp, Line number: 30
+1.000000     Debug      : Is this nice or what?!
+└── File: postform/app/src/host_main.cpp, Line number: 31
+2.000000     Info       : I am 28 years old...
+└── File: postform/app/src/host_main.cpp, Line number: 32
+3.000000     Warning    : Third string! With multiple args and more numbers: -1124
+└── File: postform/app/src/host_main.cpp, Line number: 34
+4.000000     Error      : Oh boy, error 234556 just happened
+└── File: postform/app/src/host_main.cpp, Line number: 35
+5.000000     Error      : This is my char array: 123
+└── File: postform/app/src/host_main.cpp, Line number: 37
+6.000000     Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 43
+7.000000     Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: postform/app/src/host_main.cpp, Line number: 47
+8.000000     Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 53
+9.000000     Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: postform/app/src/host_main.cpp, Line number: 59
+10.000000    Error      : Pointer 0x12341234
+└── File: postform/app/src/host_main.cpp, Line number: 60
+11.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 92[39m
-12.000000    [38;5;2mDebug      [39m: Iteration number: 1
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 30[39m
-13.000000    [38;5;2mDebug      [39m: Is this nice or what?!
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
-14.000000    [38;5;3mInfo       [39m: I am 28 years old...
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
-15.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
-16.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
-17.000000    [38;5;1mError      [39m: This is my char array: 123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
-18.000000    [38;5;1mError      [39m: different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 43[39m
-19.000000    [38;5;1mError      [39m: different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 47[39m
-20.000000    [38;5;1mError      [39m: different octal sizes: 123, 123, 123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 53[39m
-21.000000    [38;5;1mError      [39m: different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 59[39m
-22.000000    [38;5;1mError      [39m: Pointer 0x12341234
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 60[39m
-23.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+└── File: postform/app/src/host_main.cpp, Line number: 92
+12.000000    Debug      : Iteration number: 1
+└── File: postform/app/src/host_main.cpp, Line number: 30
+13.000000    Debug      : Is this nice or what?!
+└── File: postform/app/src/host_main.cpp, Line number: 31
+14.000000    Info       : I am 28 years old...
+└── File: postform/app/src/host_main.cpp, Line number: 32
+15.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: postform/app/src/host_main.cpp, Line number: 34
+16.000000    Error      : Oh boy, error 234556 just happened
+└── File: postform/app/src/host_main.cpp, Line number: 35
+17.000000    Error      : This is my char array: 123
+└── File: postform/app/src/host_main.cpp, Line number: 37
+18.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 43
+19.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: postform/app/src/host_main.cpp, Line number: 47
+20.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 53
+21.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: postform/app/src/host_main.cpp, Line number: 59
+22.000000    Error      : Pointer 0x12341234
+└── File: postform/app/src/host_main.cpp, Line number: 60
+23.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 92[39m
-24.000000    [38;5;2mDebug      [39m: Iteration number: 2
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 30[39m
-25.000000    [38;5;2mDebug      [39m: Is this nice or what?!
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
-26.000000    [38;5;3mInfo       [39m: I am 28 years old...
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
-27.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
-28.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
-29.000000    [38;5;1mError      [39m: This is my char array: 123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
-30.000000    [38;5;1mError      [39m: different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 43[39m
-31.000000    [38;5;1mError      [39m: different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 47[39m
-32.000000    [38;5;1mError      [39m: different octal sizes: 123, 123, 123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 53[39m
-33.000000    [38;5;1mError      [39m: different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 59[39m
-34.000000    [38;5;1mError      [39m: Pointer 0x12341234
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 60[39m
-35.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+└── File: postform/app/src/host_main.cpp, Line number: 92
+24.000000    Debug      : Iteration number: 2
+└── File: postform/app/src/host_main.cpp, Line number: 30
+25.000000    Debug      : Is this nice or what?!
+└── File: postform/app/src/host_main.cpp, Line number: 31
+26.000000    Info       : I am 28 years old...
+└── File: postform/app/src/host_main.cpp, Line number: 32
+27.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: postform/app/src/host_main.cpp, Line number: 34
+28.000000    Error      : Oh boy, error 234556 just happened
+└── File: postform/app/src/host_main.cpp, Line number: 35
+29.000000    Error      : This is my char array: 123
+└── File: postform/app/src/host_main.cpp, Line number: 37
+30.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 43
+31.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: postform/app/src/host_main.cpp, Line number: 47
+32.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 53
+33.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: postform/app/src/host_main.cpp, Line number: 59
+34.000000    Error      : Pointer 0x12341234
+└── File: postform/app/src/host_main.cpp, Line number: 60
+35.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 92[39m
-36.000000    [38;5;2mDebug      [39m: Iteration number: 3
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 30[39m
-37.000000    [38;5;2mDebug      [39m: Is this nice or what?!
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
-38.000000    [38;5;3mInfo       [39m: I am 28 years old...
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
-39.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
-40.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
-41.000000    [38;5;1mError      [39m: This is my char array: 123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
-42.000000    [38;5;1mError      [39m: different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 43[39m
-43.000000    [38;5;1mError      [39m: different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 47[39m
-44.000000    [38;5;1mError      [39m: different octal sizes: 123, 123, 123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 53[39m
-45.000000    [38;5;1mError      [39m: different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 59[39m
-46.000000    [38;5;1mError      [39m: Pointer 0x12341234
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 60[39m
-47.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+└── File: postform/app/src/host_main.cpp, Line number: 92
+36.000000    Debug      : Iteration number: 3
+└── File: postform/app/src/host_main.cpp, Line number: 30
+37.000000    Debug      : Is this nice or what?!
+└── File: postform/app/src/host_main.cpp, Line number: 31
+38.000000    Info       : I am 28 years old...
+└── File: postform/app/src/host_main.cpp, Line number: 32
+39.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: postform/app/src/host_main.cpp, Line number: 34
+40.000000    Error      : Oh boy, error 234556 just happened
+└── File: postform/app/src/host_main.cpp, Line number: 35
+41.000000    Error      : This is my char array: 123
+└── File: postform/app/src/host_main.cpp, Line number: 37
+42.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 43
+43.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: postform/app/src/host_main.cpp, Line number: 47
+44.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 53
+45.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: postform/app/src/host_main.cpp, Line number: 59
+46.000000    Error      : Pointer 0x12341234
+└── File: postform/app/src/host_main.cpp, Line number: 60
+47.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 92[39m
-48.000000    [38;5;2mDebug      [39m: Iteration number: 4
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 30[39m
-49.000000    [38;5;2mDebug      [39m: Is this nice or what?!
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
-50.000000    [38;5;3mInfo       [39m: I am 28 years old...
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
-51.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
-52.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
-53.000000    [38;5;1mError      [39m: This is my char array: 123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
-54.000000    [38;5;1mError      [39m: different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 43[39m
-55.000000    [38;5;1mError      [39m: different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 47[39m
-56.000000    [38;5;1mError      [39m: different octal sizes: 123, 123, 123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 53[39m
-57.000000    [38;5;1mError      [39m: different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 59[39m
-58.000000    [38;5;1mError      [39m: Pointer 0x12341234
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 60[39m
-59.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+└── File: postform/app/src/host_main.cpp, Line number: 92
+48.000000    Debug      : Iteration number: 4
+└── File: postform/app/src/host_main.cpp, Line number: 30
+49.000000    Debug      : Is this nice or what?!
+└── File: postform/app/src/host_main.cpp, Line number: 31
+50.000000    Info       : I am 28 years old...
+└── File: postform/app/src/host_main.cpp, Line number: 32
+51.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: postform/app/src/host_main.cpp, Line number: 34
+52.000000    Error      : Oh boy, error 234556 just happened
+└── File: postform/app/src/host_main.cpp, Line number: 35
+53.000000    Error      : This is my char array: 123
+└── File: postform/app/src/host_main.cpp, Line number: 37
+54.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 43
+55.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: postform/app/src/host_main.cpp, Line number: 47
+56.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 53
+57.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: postform/app/src/host_main.cpp, Line number: 59
+58.000000    Error      : Pointer 0x12341234
+└── File: postform/app/src/host_main.cpp, Line number: 60
+59.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 92[39m
-60.000000    [38;5;2mDebug      [39m: Iteration number: 5
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 30[39m
-61.000000    [38;5;2mDebug      [39m: Is this nice or what?!
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
-62.000000    [38;5;3mInfo       [39m: I am 28 years old...
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
-63.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
-64.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
-65.000000    [38;5;1mError      [39m: This is my char array: 123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
-66.000000    [38;5;1mError      [39m: different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 43[39m
-67.000000    [38;5;1mError      [39m: different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 47[39m
-68.000000    [38;5;1mError      [39m: different octal sizes: 123, 123, 123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 53[39m
-69.000000    [38;5;1mError      [39m: different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 59[39m
-70.000000    [38;5;1mError      [39m: Pointer 0x12341234
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 60[39m
-71.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+└── File: postform/app/src/host_main.cpp, Line number: 92
+60.000000    Debug      : Iteration number: 5
+└── File: postform/app/src/host_main.cpp, Line number: 30
+61.000000    Debug      : Is this nice or what?!
+└── File: postform/app/src/host_main.cpp, Line number: 31
+62.000000    Info       : I am 28 years old...
+└── File: postform/app/src/host_main.cpp, Line number: 32
+63.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: postform/app/src/host_main.cpp, Line number: 34
+64.000000    Error      : Oh boy, error 234556 just happened
+└── File: postform/app/src/host_main.cpp, Line number: 35
+65.000000    Error      : This is my char array: 123
+└── File: postform/app/src/host_main.cpp, Line number: 37
+66.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 43
+67.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: postform/app/src/host_main.cpp, Line number: 47
+68.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 53
+69.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: postform/app/src/host_main.cpp, Line number: 59
+70.000000    Error      : Pointer 0x12341234
+└── File: postform/app/src/host_main.cpp, Line number: 60
+71.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 92[39m
-72.000000    [38;5;2mDebug      [39m: Iteration number: 6
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 30[39m
-73.000000    [38;5;2mDebug      [39m: Is this nice or what?!
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
-74.000000    [38;5;3mInfo       [39m: I am 28 years old...
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
-75.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
-76.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
-77.000000    [38;5;1mError      [39m: This is my char array: 123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
-78.000000    [38;5;1mError      [39m: different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 43[39m
-79.000000    [38;5;1mError      [39m: different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 47[39m
-80.000000    [38;5;1mError      [39m: different octal sizes: 123, 123, 123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 53[39m
-81.000000    [38;5;1mError      [39m: different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 59[39m
-82.000000    [38;5;1mError      [39m: Pointer 0x12341234
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 60[39m
-83.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+└── File: postform/app/src/host_main.cpp, Line number: 92
+72.000000    Debug      : Iteration number: 6
+└── File: postform/app/src/host_main.cpp, Line number: 30
+73.000000    Debug      : Is this nice or what?!
+└── File: postform/app/src/host_main.cpp, Line number: 31
+74.000000    Info       : I am 28 years old...
+└── File: postform/app/src/host_main.cpp, Line number: 32
+75.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: postform/app/src/host_main.cpp, Line number: 34
+76.000000    Error      : Oh boy, error 234556 just happened
+└── File: postform/app/src/host_main.cpp, Line number: 35
+77.000000    Error      : This is my char array: 123
+└── File: postform/app/src/host_main.cpp, Line number: 37
+78.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 43
+79.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: postform/app/src/host_main.cpp, Line number: 47
+80.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 53
+81.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: postform/app/src/host_main.cpp, Line number: 59
+82.000000    Error      : Pointer 0x12341234
+└── File: postform/app/src/host_main.cpp, Line number: 60
+83.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 92[39m
-84.000000    [38;5;2mDebug      [39m: Iteration number: 7
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 30[39m
-85.000000    [38;5;2mDebug      [39m: Is this nice or what?!
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
-86.000000    [38;5;3mInfo       [39m: I am 28 years old...
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
-87.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
-88.000000    [38;5;1mError      [39m: Oh boy, error 234556 just happened
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
-89.000000    [38;5;1mError      [39m: This is my char array: 123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
-90.000000    [38;5;1mError      [39m: different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 43[39m
-91.000000    [38;5;1mError      [39m: different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 47[39m
-92.000000    [38;5;1mError      [39m: different octal sizes: 123, 123, 123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 53[39m
-93.000000    [38;5;1mError      [39m: different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 59[39m
-94.000000    [38;5;1mError      [39m: Pointer 0x12341234
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 60[39m
-95.000000    [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+└── File: postform/app/src/host_main.cpp, Line number: 92
+84.000000    Debug      : Iteration number: 7
+└── File: postform/app/src/host_main.cpp, Line number: 30
+85.000000    Debug      : Is this nice or what?!
+└── File: postform/app/src/host_main.cpp, Line number: 31
+86.000000    Info       : I am 28 years old...
+└── File: postform/app/src/host_main.cpp, Line number: 32
+87.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: postform/app/src/host_main.cpp, Line number: 34
+88.000000    Error      : Oh boy, error 234556 just happened
+└── File: postform/app/src/host_main.cpp, Line number: 35
+89.000000    Error      : This is my char array: 123
+└── File: postform/app/src/host_main.cpp, Line number: 37
+90.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 43
+91.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: postform/app/src/host_main.cpp, Line number: 47
+92.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 53
+93.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: postform/app/src/host_main.cpp, Line number: 59
+94.000000    Error      : Pointer 0x12341234
+└── File: postform/app/src/host_main.cpp, Line number: 60
+95.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 92[39m
-96.000000    [38;5;2mDebug      [39m: Iteration number: 8
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 30[39m
-97.000000    [38;5;2mDebug      [39m: Is this nice or what?!
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
-98.000000    [38;5;3mInfo       [39m: I am 28 years old...
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
-99.000000    [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
-100.000000   [38;5;1mError      [39m: Oh boy, error 234556 just happened
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
-101.000000   [38;5;1mError      [39m: This is my char array: 123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
-102.000000   [38;5;1mError      [39m: different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 43[39m
-103.000000   [38;5;1mError      [39m: different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 47[39m
-104.000000   [38;5;1mError      [39m: different octal sizes: 123, 123, 123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 53[39m
-105.000000   [38;5;1mError      [39m: different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 59[39m
-106.000000   [38;5;1mError      [39m: Pointer 0x12341234
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 60[39m
-107.000000   [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+└── File: postform/app/src/host_main.cpp, Line number: 92
+96.000000    Debug      : Iteration number: 8
+└── File: postform/app/src/host_main.cpp, Line number: 30
+97.000000    Debug      : Is this nice or what?!
+└── File: postform/app/src/host_main.cpp, Line number: 31
+98.000000    Info       : I am 28 years old...
+└── File: postform/app/src/host_main.cpp, Line number: 32
+99.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: postform/app/src/host_main.cpp, Line number: 34
+100.000000   Error      : Oh boy, error 234556 just happened
+└── File: postform/app/src/host_main.cpp, Line number: 35
+101.000000   Error      : This is my char array: 123
+└── File: postform/app/src/host_main.cpp, Line number: 37
+102.000000   Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 43
+103.000000   Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: postform/app/src/host_main.cpp, Line number: 47
+104.000000   Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 53
+105.000000   Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: postform/app/src/host_main.cpp, Line number: 59
+106.000000   Error      : Pointer 0x12341234
+└── File: postform/app/src/host_main.cpp, Line number: 60
+107.000000   Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 92[39m
-108.000000   [38;5;2mDebug      [39m: Iteration number: 9
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 30[39m
-109.000000   [38;5;2mDebug      [39m: Is this nice or what?!
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 31[39m
-110.000000   [38;5;3mInfo       [39m: I am 28 years old...
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 32[39m
-111.000000   [38;2;255;165;0mWarning    [39m: Third string! With multiple args and more numbers: -1124
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 34[39m
-112.000000   [38;5;1mError      [39m: Oh boy, error 234556 just happened
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 35[39m
-113.000000   [38;5;1mError      [39m: This is my char array: 123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 37[39m
-114.000000   [38;5;1mError      [39m: different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 43[39m
-115.000000   [38;5;1mError      [39m: different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 47[39m
-116.000000   [38;5;1mError      [39m: different octal sizes: 123, 123, 123123, 123123123, 123123123
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 53[39m
-117.000000   [38;5;1mError      [39m: different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 59[39m
-118.000000   [38;5;1mError      [39m: Pointer 0x12341234
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 60[39m
-119.000000   [38;5;2mDebug      [39m: Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+└── File: postform/app/src/host_main.cpp, Line number: 92
+108.000000   Debug      : Iteration number: 9
+└── File: postform/app/src/host_main.cpp, Line number: 30
+109.000000   Debug      : Is this nice or what?!
+└── File: postform/app/src/host_main.cpp, Line number: 31
+110.000000   Info       : I am 28 years old...
+└── File: postform/app/src/host_main.cpp, Line number: 32
+111.000000   Warning    : Third string! With multiple args and more numbers: -1124
+└── File: postform/app/src/host_main.cpp, Line number: 34
+112.000000   Error      : Oh boy, error 234556 just happened
+└── File: postform/app/src/host_main.cpp, Line number: 35
+113.000000   Error      : This is my char array: 123
+└── File: postform/app/src/host_main.cpp, Line number: 37
+114.000000   Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 43
+115.000000   Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: postform/app/src/host_main.cpp, Line number: 47
+116.000000   Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: postform/app/src/host_main.cpp, Line number: 53
+117.000000   Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: postform/app/src/host_main.cpp, Line number: 59
+118.000000   Error      : Pointer 0x12341234
+└── File: postform/app/src/host_main.cpp, Line number: 60
+119.000000   Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-[38;5;8m└── File: postform/app/src/host_main.cpp, Line number: 92[39m
+└── File: postform/app/src/host_main.cpp, Line number: 92
