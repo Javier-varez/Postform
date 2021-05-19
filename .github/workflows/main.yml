@@ -115,8 +115,10 @@ jobs:
       uses: fiam/arm-none-eabi-gcc@v1.0.3
       with:
         release: '9-2020-q2'
-    - name: make
+    - name: build
       run: make -j
+    - name: unit tests
+      run: make -j run_tests
     - name: Archive format_host binary
       uses: actions/upload-artifact@v2
       with:
