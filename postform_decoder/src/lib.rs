@@ -1,7 +1,7 @@
 use byteorder::{LittleEndian, ReadBytesExt};
 use colored::Colorize;
 use object::read::{File as ElfFile, Object, ObjectSection, ObjectSymbol};
-use std::{fs, path::PathBuf};
+use std::{fs, path::Path};
 
 include!(concat!(env!("OUT_DIR"), "/version.rs"));
 
@@ -97,9 +97,9 @@ pub struct Log {
 /// An instance of ElfMetadata is required in order to parse any logs received from the target.
 ///
 /// ```
-/// use std::path::PathBuf;
+/// use std::path::Path;
 /// use postform_decoder::{Decoder, ElfMetadata};
-/// fn postform_example(file: &PathBuf) {
+/// fn postform_example(file: &Path) {
 ///     let elf_metadata = ElfMetadata::from_elf_file(file).unwrap();
 ///
 ///     // Get postform messages from the device
@@ -120,7 +120,7 @@ pub struct ElfMetadata {
 
 impl ElfMetadata {
     /// Attempts to instantiate the ElfMetadata struct from the provided ELF file.
-    pub fn from_elf_file(elf_path: &PathBuf) -> Result<Self, Error> {
+    pub fn from_elf_file(elf_path: &Path) -> Result<Self, Error> {
         let file_contents = fs::read(elf_path)?;
         let elf_file = ElfFile::parse(&file_contents[..])?;
 

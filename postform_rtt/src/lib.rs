@@ -7,7 +7,7 @@ use probe_rs::{
 use probe_rs_rtt::{Rtt, ScanRegion};
 use std::{
     fs,
-    path::PathBuf,
+    path::Path,
     sync::{Arc, Mutex},
     time::Duration,
 };
@@ -20,7 +20,7 @@ pub enum RttError {
 }
 
 /// Downloads a FW ELF to the target in the associated session, halting the core at main.
-pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &PathBuf) -> Result<()> {
+pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &Path) -> Result<()> {
     let mut mutex_guard = session.lock().unwrap();
     log::info!("Loading FW to target");
     download_file(&mut mutex_guard, &elf_path, Format::Elf)?;
