@@ -95,6 +95,7 @@ fn main() -> color_eyre::eyre::Result<()> {
         .stop_bits(opts.stop_bits.unwrap_or(StopBits::One))
         .flow_control(FlowControl::None)
         .open()?;
+    port.set_timeout(std::time::Duration::from_millis(100))?;
 
     loop {
         let mut buffer = [0; 1024];
