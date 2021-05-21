@@ -34,7 +34,7 @@ pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &Path) -> Resu
         .ok_or(RttError::MissingSymbol("main"))?;
 
     let mut core = mutex_guard.core(0).unwrap();
-    let _ = core.reset_and_halt(Duration::from_millis(10))?;
+    let _ = core.reset_and_halt(Duration::from_millis(100))?;
     core.set_hw_breakpoint(main.address() as u32)?;
     log::debug!("Inserting breakpoint at main() @ 0x{:x}", main.address());
     core.run()?;
