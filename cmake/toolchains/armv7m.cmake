@@ -1,4 +1,4 @@
-set(CMAKE_SYSTEM_NAME, none)
+set(CMAKE_SYSTEM_NAME, Generic)
 set(CMAKE_SYSTEM_PROCESSOR, arm)
 
 set(triple thumbv7m-none-eabi)
@@ -29,11 +29,10 @@ execute_process(COMMAND arm-none-eabi-gcc -mcpu=cortex-m3 -mfloat-abi=soft -mthu
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 get_filename_component(lib_gcc_dir ${lib_gcc_file} DIRECTORY)
 
-set(CMAKE_SYSROOT ${gcc_arm_sysroot})
-
 include_directories(
   ${gcc_arm_sysroot}/include/c++/${gcc_arm_version}
-  ${gcc_arm_sysroot}/include/c++/${gcc_arm_version}/arm-none-eabi/${gcc_arm_multi_dir})
+  ${gcc_arm_sysroot}/include/c++/${gcc_arm_version}/arm-none-eabi/${gcc_arm_multi_dir}
+  ${gcc_arm_sysroot}/include)
 
 set(arm_flags "${ARM_TARGET_CONFIG} -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections")
 set(CMAKE_C_FLAGS "${arm_flags} -DARMV7_ARCH")
@@ -51,4 +50,3 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-
