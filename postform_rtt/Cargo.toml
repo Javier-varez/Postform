@@ -1,6 +1,6 @@
 [package]
 name = "postform_rtt"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Javier Alvarez <javier.alvarez@allthingsembedded.net>"]
 description = "Decodes Rtt logs for Postform, an efficient logging framework for mcu's"
 license = "MIT OR Apache-2.0"
@@ -12,7 +12,7 @@ readme = "../README.md"
 edition = "2018"
 
 [dependencies]
-postform_decoder = { path="../postform_decoder", version="0.3" }
+postform_decoder = { path="../postform_decoder", version="0.4" }
 object = "0.22"
 probe-rs = { git = "https://github.com/probe-rs/probe-rs", version = "0.10.0" }
 gdb-server = { git = "https://github.com/probe-rs/probe-rs", version = "0.10.0" }
