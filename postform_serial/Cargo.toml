@@ -1,6 +1,6 @@
 [package]
 name = "postform_serial"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Javier Alvarez <javier.alvarez@allthingsembedded.net>"]
 description = "Decodes persistent logs for Postform, an efficient logging framework for mcu's"
 license = "MIT OR Apache-2.0"
@@ -15,7 +15,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-postform_decoder = { path="../postform_decoder", version="0.3" }
+postform_decoder = { path="../postform_decoder", version="0.4" }
 structopt = "0.3"
 thiserror = "1.0"
 color-eyre = "0.5"
