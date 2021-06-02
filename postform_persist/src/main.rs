@@ -23,6 +23,10 @@ struct Opts {
     #[structopt(name = "LOG_FILE", parse(from_os_str), required_unless_one(&["version"]))]
     log_file: Option<PathBuf>,
 
+    /// Disables FW version check.
+    #[structopt(long, short = "d")]
+    disable_version_check: bool,
+
     #[structopt(long, short = "V")]
     version: bool,
 }
@@ -39,7 +43,7 @@ fn main() -> Result<()> {
     }
 
     let elf_name = opts.elf.unwrap();
-    let elf_metadata = ElfMetadata::from_elf_file(&elf_name)?;
+    let elf_metadata = ElfMetadata::from_elf_file(&elf_name, opts.disable_version_check)?;
 
     let mut log_file = fs::File::open(opts.log_file.unwrap())?;
     let mut log_data = vec![];
