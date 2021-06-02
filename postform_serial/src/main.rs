@@ -58,6 +58,10 @@ struct Opts {
     #[structopt(long, parse(try_from_str=try_to_serial_parity))]
     parity: Option<Parity>,
 
+    /// Disables FW version check.
+    #[structopt(long, short = "d")]
+    disable_version_check: bool,
+
     /// Lists the available serial ports and exits.
     #[structopt(long)]
     list_ports: bool,
@@ -87,7 +91,7 @@ fn main() -> color_eyre::eyre::Result<()> {
     }
 
     let elf_name = opts.elf.unwrap();
-    let elf_metadata = ElfMetadata::from_elf_file(&elf_name)?;
+    let elf_metadata = ElfMetadata::from_elf_file(&elf_name, opts.disable_version_check)?;
     let mut decoder = SerialDecoder::new(&elf_metadata);
 
     let mut port = serialport::new(opts.port.unwrap(), opts.baudrate.unwrap_or(115200u32))

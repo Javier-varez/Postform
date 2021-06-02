@@ -100,7 +100,7 @@ pub struct Log {
 /// use std::path::Path;
 /// use postform_decoder::{Decoder, ElfMetadata};
 /// fn postform_example(file: &Path) {
-///     let elf_metadata = ElfMetadata::from_elf_file(file).unwrap();
+///     let elf_metadata = ElfMetadata::from_elf_file(file, false).unwrap();
 ///
 ///     // Get postform messages from the device
 ///     // This is just an example buffer, assume it comes from the target device
@@ -120,7 +120,7 @@ pub struct ElfMetadata {
 
 impl ElfMetadata {
     /// Attempts to instantiate the ElfMetadata struct from the provided ELF file.
-    pub fn from_elf_file(elf_path: &Path) -> Result<Self, Error> {
+    pub fn from_elf_file(elf_path: &Path, disable_version_check: bool) -> Result<Self, Error> {
         let file_contents = fs::read(elf_path)?;
         let elf_file = ElfFile::parse(&file_contents[..])?;
 
@@ -135,7 +135,7 @@ impl ElfMetadata {
                 .position(|&c| c == b'\0')
                 .unwrap_or(postform_version.len())],
         );
-        if postform_version != POSTFORM_VERSION {
+        if !disable_version_check && postform_version != POSTFORM_VERSION {
             return Err(Error::MismatchedPostformVersions(
                 postform_version.to_string(),
                 POSTFORM_VERSION.to_string(),

@@ -95,11 +95,11 @@ struct Opts {
     #[structopt(long, required_unless_one(&["list-chips", "list-probes", "version"]), env = "POSTFORM_CHIP")]
     chip: Option<String>,
 
-    /// The probe to open. The format is <VID>:<PID>[:<SERIAL>]
+    /// The probe to open. The format is <VID>:<PID>[:<SERIAL>].
     #[structopt(long, env = "POSTFORM_PROBE")]
     probe_selector: Option<DebugProbeSelector>,
 
-    /// Index of the probe to open. Can be obtained with --list-probes
+    /// Index of the probe to open. Can be obtained with --list-probes.
     #[structopt(long = "probe-index")]
     probe_index: Option<usize>,
 
@@ -107,8 +107,13 @@ struct Opts {
     #[structopt(name = "ELF", parse(from_os_str), required_unless_one(&["list-chips", "list-probes", "version"]))]
     elf: Option<PathBuf>,
 
+    /// Attaches to a running target instead of downloading the firmware.
     #[structopt(long, short)]
     attach: bool,
+
+    /// Disables FW version check.
+    #[structopt(long, short = "d")]
+    disable_version_check: bool,
 
     #[structopt(long, short = "V")]
     version: bool,
@@ -139,7 +144,7 @@ fn main() -> color_eyre::eyre::Result<()> {
     }
 
     let elf_name = opts.elf.unwrap();
-    let elf_metadata = ElfMetadata::from_elf_file(&elf_name)?;
+    let elf_metadata = ElfMetadata::from_elf_file(&elf_name, opts.disable_version_check)?;
 
     let probe = if let Some(probe_name) = opts.probe_selector {
         Probe::open(probe_name)?
