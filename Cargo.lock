@@ -267,18 +267,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
 
 [[package]]
-name = "bitmatch"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a53e105d41966c9b4594b8e3b7cf8e81ae63cc83664880b049af8a11381a3ad"
-dependencies = [
- "boolean_expression",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "bitvec"
 version = "0.19.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -302,16 +290,6 @@ dependencies = [
  "fastrand",
  "futures-lite",
  "once_cell",
-]
-
-[[package]]
-name = "boolean_expression"
-version = "0.3.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c33ef624481a2d2252fd352266c050e83203343d0884622f7ba09782abbfa83"
-dependencies = [
- "itertools",
- "smallvec",
 ]
 
 [[package]]
@@ -477,12 +455,6 @@ name = "dtoa"
 version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56899898ce76aaf4a0f24d914c97ea6ed976d42fec6ad33fcbb0a1103e07b2b0"
-
-[[package]]
-name = "either"
-version = "1.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "enum-primitive-derive"
@@ -677,8 +649,9 @@ dependencies = [
 
 [[package]]
 name = "gdb-server"
-version = "0.10.0"
-source = "git+https://github.com/probe-rs/probe-rs#0d72f8c247df422727fc8d3986455bf9890fdf94"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d76de05ca351d7a123bbcfe3844db7a7dab431527ffdc70585367ea2620ad8f"
 dependencies = [
  "anyhow",
  "async-std",
@@ -783,29 +756,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "itertools"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "284f18f85651fe11e8a991b2adb42cb078325c996ed026d994719efcfca1d54b"
-dependencies = [
- "either",
-]
-
-[[package]]
-name = "itm-decode"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cd02c370de5bcaf5f1206dda960c8ec6425c4f3862d7c654a1b4f75f6678300f"
-dependencies = [
- "bitmatch",
- "bitvec",
- "funty",
-]
-
-[[package]]
 name = "jaylink"
-version = "0.1.5"
-source = "git+https://github.com/jonas-schievink/jaylink#546331c3e8873630c1e73d9190c69dff5bec638f"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3f58b72b6aa9d25083b8c19d292fe015a936185fa200d15e225e1524a18222e9"
 dependencies = [
  "bitflags",
  "byteorder",
@@ -1053,6 +1007,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1a5b3dd1c072ee7963717671d1ca129f1048fda25edea6b752bfc71ac8854170"
 
 [[package]]
+name = "object"
+version = "0.25.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a38f2be3697a57b4060074ff41b44c16870d916ad7877c17696e063257482bc7"
+dependencies = [
+ "memchr",
+]
+
+[[package]]
 name = "once_cell"
 version = "1.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1169,8 +1132,9 @@ dependencies = [
 
 [[package]]
 name = "probe-rs"
-version = "0.10.1"
-source = "git+https://github.com/probe-rs/probe-rs#0d72f8c247df422727fc8d3986455bf9890fdf94"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "769c3160e006e16220a7d505ac6051e43655cb1bbeee027a5fe1bac9ef64d5c8"
 dependencies = [
  "anyhow",
  "base64",
@@ -1178,17 +1142,15 @@ dependencies = [
  "bitfield",
  "bitvec",
  "enum-primitive-derive",
- "funty",
  "gimli",
  "hidapi",
  "ihex",
- "itm-decode",
  "jaylink",
  "jep106",
- "lazy_static",
  "log",
  "num-traits",
- "object 0.24.0",
+ "object 0.25.3",
+ "once_cell",
  "probe-rs-target",
  "rusb",
  "scroll",
@@ -1197,12 +1159,14 @@ dependencies = [
  "static_assertions",
  "svg",
  "thiserror",
+ "thousands",
 ]
 
 [[package]]
 name = "probe-rs-rtt"
-version = "0.10.1"
-source = "git+https://github.com/probe-rs/probe-rs-rtt?rev=35b51734dcf209bcaa6a30522d9dbce84e5187b2#35b51734dcf209bcaa6a30522d9dbce84e5187b2"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "de940be8e1c8f3af3927bcfeccdb02f05556f5d221028a56a0b6c89898b82804"
 dependencies = [
  "log",
  "probe-rs",
@@ -1212,8 +1176,9 @@ dependencies = [
 
 [[package]]
 name = "probe-rs-target"
-version = "0.1.0"
-source = "git+https://github.com/probe-rs/probe-rs#0d72f8c247df422727fc8d3986455bf9890fdf94"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6cd2aebcc973030c9ff5041c9dc4f44a66a7f382376a378c76d38570a0765ebb"
 dependencies = [
  "base64",
  "jep106",
@@ -1408,12 +1373,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f173ac3d1a7e3b28003f40de0b5ce7fe2710f9b9dc3fc38664cebee46b3b6527"
 
 [[package]]
-name = "smallvec"
-version = "1.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe0f37c9e8f3c5a4a66ad655a93c74daac4ad00c441533bf5c6e7990bb42604e"
-
-[[package]]
 name = "socket2"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1537,6 +1496,12 @@ dependencies = [
  "quote",
  "syn",
 ]
+
+[[package]]
+name = "thousands"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3bf63baf9f5039dadc247375c29eb13706706cfde997d0330d05aa63a77d8820"
 
 [[package]]
 name = "thread_local"
