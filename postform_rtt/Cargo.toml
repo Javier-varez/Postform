@@ -14,9 +14,9 @@ edition = "2018"
 [dependencies]
 postform_decoder = { path="../postform_decoder", version="0.4" }
 object = "0.22"
-probe-rs = { git = "https://github.com/probe-rs/probe-rs", version = "0.10.0" }
-gdb-server = { git = "https://github.com/probe-rs/probe-rs", version = "0.10.0" }
-probe-rs-rtt = { git = "https://github.com/probe-rs/probe-rs-rtt", rev="35b51734dcf209bcaa6a30522d9dbce84e5187b2", version="0.10.1" }
+probe-rs = "0.11.0"
+gdb-server = "0.11.0"
+probe-rs-rtt = "0.11.0"
 structopt = "0.3"
 thiserror = "1.0"
 color-eyre = "0.5"
