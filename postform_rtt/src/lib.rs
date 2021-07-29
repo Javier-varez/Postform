@@ -35,8 +35,11 @@ pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &Path) -> Resu
 
     let mut core = mutex_guard.core(0).unwrap();
     let _ = core.reset_and_halt(Duration::from_millis(100))?;
-    core.set_hw_breakpoint(main.address() as u32)?;
-    log::debug!("Inserting breakpoint at main() @ 0x{:x}", main.address());
+    // If the main address has bit 0 set to indicate thumb mode in an ARM binary, let's set it back
+    // to 0
+    let main = (main.address() as u32) & !0x01;
+    core.set_hw_breakpoint(main)?;
+    log::debug!("Inserting breakpoint at main() @ 0x{:x}", main);
     core.run()?;
     core.wait_for_core_halted(Duration::from_secs(1))?;
     log::debug!("Core halted at main()");
