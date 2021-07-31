@@ -45,6 +45,8 @@ LOCAL_STATIC_LIBS := \
 include $(BUILD_BINARY)
 
 include $(CLEAR_VARS)
+CC := clang
+CXX := clang++
 LOCAL_NAME := format_host
 LOCAL_CFLAGS := $(POSTFORM_CFLAGS)
 LOCAL_CXXFLAGS := \
