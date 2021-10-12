@@ -26,8 +26,7 @@ fn build_cxx_tests(root_dir: &Path, build_dir: &Path) -> Result<()> {
     mkdir_p(build_dir)?;
     let _dir = pushd(build_dir)?;
 
-    cmd!("cmake -G Ninja -DPOSTFORM_BUILD_EXAMPLES=true -DCMAKE_CXX_COMPILER=clang++ {root_dir}")
-        .run()?;
+    cmd!("cmake -DPOSTFORM_BUILD_EXAMPLES=true -DCMAKE_CXX_COMPILER=clang++ {root_dir}").run()?;
     cmd!("cmake --build .").run()?;
     Ok(())
 }
