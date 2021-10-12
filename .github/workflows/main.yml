@@ -119,11 +119,6 @@ jobs:
       run: make -j
     - name: unit tests
       run: make -j run_tests
-    - name: Archive format_host binary
-      uses: actions/upload-artifact@v2
-      with:
-        name: format_host
-        path: build/targets/format_host
     - name: Archive manifest
       uses: actions/upload-artifact@v2
       with:
@@ -148,31 +143,24 @@ jobs:
 
   system_test:
     runs-on: ubuntu-latest
-    needs: [ cargo_build, libpostform_build ]
 
     steps:
     - name: checkout
       uses: actions/checkout@v2
       with:
         submodules: 'true'
-    - name: Download format_host binary
-      uses: actions/download-artifact@v2
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev
+    - uses: actions-rs/toolchain@v1
       with:
-        name: format_host
-        path: binaries
-    - name: Download postform_persist binary
-      uses: actions/download-artifact@v2
+        toolchain: stable
+    - name: Run cargo xtask test
+      uses: actions-rs/cargo@v1
       with:
-        name: postform_persist
-        path: binaries
-    - name: Set permissions
-      run: chmod +x ./binaries/format_host ./binaries/postform_persist
-    - name: Execute format_host
-      run: ./binaries/format_host host.log
-    - name: Decode log
-      run: ./binaries/postform_persist binaries/format_host host.log > actual_log.txt
-    - name: Compare translated logs
-      run: diff expected_log.txt actual_log.txt
+        command: xtask
+        args: test
 
   build_docs:
     runs-on: ubuntu-latest
