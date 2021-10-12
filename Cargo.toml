@@ -1,2 +1,10 @@
 [workspace]
-members = ["postform_rtt", "postform_decoder", "postform_persist", "postform_serial"]
+members = [
+    "postform_rtt",
+    "postform_decoder",
+    "postform_persist",
+    "postform_serial"
+]
+exclude = [
+    "xtask"
+]
