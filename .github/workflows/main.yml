@@ -152,7 +152,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev
+        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev ninja-build
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
