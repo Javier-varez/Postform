@@ -26,6 +26,7 @@ fn build_cxx_tests(root_dir: &Path, build_dir: &Path) -> Result<()> {
     mkdir_p(build_dir)?;
     let _dir = pushd(build_dir)?;
 
+    cmd!("cmake --version").run()?;
     cmd!("cmake -G Ninja -DPOSTFORM_BUILD_EXAMPLES=true -DCMAKE_CXX_COMPILER=clang++ {root_dir}")
         .run()?;
     cmd!("cmake --build .").run()?;
@@ -47,7 +48,7 @@ fn run_cxx_tests() {
     postform_test.push("postform_test");
 
     cmd!("{postform_test} {file_name}").run().unwrap();
-    let text = cmd!("cargo run --bin=postform_persist -- -d {postform_test} {file_name}")
+    let text = cmd!("cargo run --bin=postform_persist -- {postform_test} {file_name}")
         .read()
         .unwrap();
 
@@ -85,7 +86,7 @@ fn bless_cxx_tests() {
     postform_test.push("postform_test");
 
     cmd!("{postform_test} {file_name}").run().unwrap();
-    let text = cmd!("cargo run --bin=postform_persist -- -d {postform_test} {file_name}")
+    let text = cmd!("cargo run --bin=postform_persist -- {postform_test} {file_name}")
         .read()
         .unwrap();
 
