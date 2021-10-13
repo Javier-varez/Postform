@@ -52,9 +52,12 @@ fn run_cxx_tests() {
         .read()
         .unwrap();
 
-    let mut blessed_file = root_dir;
+    let mut blessed_file = root_dir.clone();
     blessed_file.push("expected_log.txt");
     let blessed = read_file(&blessed_file).unwrap();
+
+    // Replace absolute paths by relative paths
+    let text = text.replace(&root_dir.to_str().unwrap(), "..");
 
     let diff = diff_lines(&blessed, &text).set_diff_only(true);
     let mut diffs = diff.diff().into_iter().filter(|x| match x {
@@ -89,6 +92,9 @@ fn bless_cxx_tests() {
     let text = cmd!("cargo run --bin=postform_persist -- {postform_test} {file_name}")
         .read()
         .unwrap();
+
+    // Replace absolute paths by relative paths
+    let text = text.replace(&root_dir.to_str().unwrap(), "..");
 
     let mut blessed_file = root_dir;
     blessed_file.push("expected_log.txt");
