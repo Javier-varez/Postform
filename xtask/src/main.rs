@@ -1,16 +1,30 @@
-use itertools::Itertools;
 use prettydiff::text::diff_lines;
 use std::path::Path;
 use structopt::StructOpt;
 use xshell::{cmd, cwd, mkdir_p, pushd, read_file, rm_rf, write_file, Result};
 
 #[derive(Debug, StructOpt)]
+enum Core {
+    /// ARM Cortex-M0, uses armv6m toolchain
+    CortexM0,
+    /// ARM Cortex-M3, uses armv7m toolchain
+    CortexM3,
+}
+
+#[derive(Debug, StructOpt)]
 #[structopt(name = "xtask", about = "runs automated tasks with cargo")]
 enum Options {
-    #[structopt(about = "Bless the test output given by the current implementation of Postform")]
+    /// Builds and example firmware application for a Cortex-M3 MCU
+    BuildFirmware {
+        #[structopt(subcommand)]
+        core: Option<Core>,
+    },
+    /// Bless the test output given by the current implementation of Postform
     Bless,
-    #[structopt(about = "Run Postform tests and display an output diff")]
+    /// Run Postform tests and display an output diff
     Test,
+    /// Cleans all target folders
+    Clean,
 }
 
 fn run_in_docker<T>(args: T)
@@ -19,9 +33,8 @@ where
 {
     // rerun in docker
     let root_dir = cwd().unwrap();
-    let xtask_invocation: String = Itertools::intersperse(args, " ".to_string()).collect();
 
-    cmd!("docker run --rm -v {root_dir}:/workspace --workdir /workspace javiervarez/ate_builder:main cargo xtask {xtask_invocation}").run().unwrap();
+    cmd!("docker run --rm -v {root_dir}:/workspace --workdir /workspace javiervarez/ate_builder:main cargo xtask").args(args).run().unwrap();
 }
 
 fn main() {
@@ -36,8 +49,10 @@ fn main() {
     let opts = Options::from_args();
 
     match opts {
+        Options::BuildFirmware { core } => build_firmware(core),
         Options::Bless => bless_cxx_tests(),
         Options::Test => run_cxx_tests(),
+        Options::Clean => clean(),
     }
 }
 
@@ -46,11 +61,49 @@ fn build_cxx_tests(root_dir: &Path, build_dir: &Path) -> Result<()> {
     mkdir_p(build_dir)?;
     let _dir = pushd(build_dir)?;
 
-    cmd!("cmake --version").run()?;
     cmd!("cmake -G Ninja -DPOSTFORM_BUILD_EXAMPLES=true -DCMAKE_CXX_COMPILER=clang++ {root_dir}")
         .run()?;
     cmd!("cmake --build .").run()?;
     Ok(())
+}
+
+fn build_firmware(core: Option<Core>) {
+    let root_dir = cwd().unwrap();
+    let mut build_dir = root_dir.clone();
+    build_dir.push("fw_build");
+
+    let core = core.unwrap_or(Core::CortexM3);
+
+    match core {
+        Core::CortexM0 => build_dir.push("m0"),
+        Core::CortexM3 => build_dir.push("m3"),
+    }
+
+    let toolchain = match core {
+        Core::CortexM0 => "-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/armv6m.cmake",
+        Core::CortexM3 => "-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/armv7m.cmake",
+    };
+
+    rm_rf(&build_dir).unwrap();
+    mkdir_p(&build_dir).unwrap();
+    let _dir = pushd(&build_dir).unwrap();
+
+    cmd!("cmake -G Ninja -DPOSTFORM_BUILD_EXAMPLES=true {toolchain} -DPOSTFORM_BUILD_TARGET_APP=true -DCMAKE_CXX_COMPILER=clang++ {root_dir}")
+        .run()
+        .unwrap();
+    cmd!("cmake --build .").run().unwrap();
+}
+
+fn clean() {
+    let root_dir = cwd().unwrap();
+    let mut build_dir = root_dir.clone();
+    build_dir.push("fw_build");
+    let mut test_dir = root_dir;
+    test_dir.push("cxx_build");
+
+    rm_rf(build_dir).unwrap();
+    rm_rf(test_dir).unwrap();
+    cmd!("cargo clean").run().unwrap();
 }
 
 fn run_cxx_tests() {
