@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use prettydiff::text::diff_lines;
 use std::path::Path;
 use structopt::StructOpt;
@@ -12,7 +13,26 @@ enum Options {
     Test,
 }
 
+fn run_in_docker<T>(args: T)
+where
+    T: std::iter::Iterator<Item = String>,
+{
+    // rerun in docker
+    let root_dir = cwd().unwrap();
+    let xtask_invocation: String = Itertools::intersperse(args, " ".to_string()).collect();
+
+    cmd!("docker run --rm -v {root_dir}:/workspace --workdir /workspace javiervarez/ate_builder:main cargo xtask {xtask_invocation}").run().unwrap();
+}
+
 fn main() {
+    // Check if we should restart under docker
+    let mut args = std::env::args();
+    let first_arg = args.nth(1);
+    if first_arg.unwrap_or_default() == "docker" {
+        run_in_docker(args);
+        return;
+    }
+
     let opts = Options::from_args();
 
     match opts {
