@@ -1,6 +1,7 @@
 compile_commands.json
 build
 cxx_build
+fw_build
 .clangd
 postform-host/target
 .vscode
