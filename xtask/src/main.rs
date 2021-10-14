@@ -14,6 +14,12 @@ enum Core {
 #[derive(Debug, StructOpt)]
 #[structopt(name = "xtask", about = "runs automated tasks with cargo")]
 enum Options {
+    /// Builds all postform host binaries and libraries
+    Build {
+        /// Builds the release version of the host tools
+        #[structopt(long)]
+        release: bool,
+    },
     /// Builds and example firmware application for a Cortex-M3 MCU
     BuildFirmware {
         #[structopt(subcommand)]
@@ -49,6 +55,7 @@ fn main() {
     let opts = Options::from_args();
 
     match opts {
+        Options::Build { release } => build(release),
         Options::BuildFirmware { core } => build_firmware(core),
         Options::Bless => bless_cxx_tests(),
         Options::Test => run_cxx_tests(),
@@ -65,6 +72,11 @@ fn build_cxx_tests(root_dir: &Path, build_dir: &Path) -> Result<()> {
         .run()?;
     cmd!("cmake --build .").run()?;
     Ok(())
+}
+
+fn build(release: bool) {
+    let release = if release { Some("--release") } else { None };
+    cmd!("cargo build").args(release).run().unwrap();
 }
 
 fn build_firmware(core: Option<Core>) {
