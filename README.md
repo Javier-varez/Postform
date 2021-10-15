@@ -1,6 +1,6 @@
 # Postform
 
-[![crates.io](https://meritbadge.herokuapp.com/postform_decoder)](https://crates.io/crates/postform_decoder) [![documentation](https://docs.rs/postform_decoder/badge.svg)](https://docs.rs/postform_decoder) ![Build Status](https://img.shields.io/github/workflow/status/javier-varez/deferred-logging/Target%20App)
+[![crates.io](https://img.shields.io/crates/v/postform_decoder)](https://crates.io/crates/postform_decoder) [![documentation](https://docs.rs/postform_decoder/badge.svg)](https://docs.rs/postform_decoder) ![Build Status](https://img.shields.io/github/workflow/status/javier-varez/deferred-logging/Target%20App)
 
 `Postform` *(short for "Postponed formatting")* is a deferred-formatting logging system in C++ for 32 bit microcontrollers. This project is inspired/based on the [defmt](https://github.com/knurling-rs/defmt) rust crate from [Knurling-rs](https://knurling.ferrous-systems.com/). They are doing a splendid job that motivated me to create a C++ alternative following similar principles of operation, still leveraging rust for the host-side implementation of this logger.
 
