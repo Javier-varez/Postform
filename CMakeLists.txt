@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 project(Postform)
 
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+
 add_subdirectory(libpostform)
 if (POSTFORM_BUILD_EXAMPLES MATCHES "true")
   if (POSTFORM_BUILD_TARGET_APP MATCHES "true")
@@ -12,4 +14,8 @@ if (POSTFORM_BUILD_EXAMPLES MATCHES "true")
     endif()
   endif()
   add_subdirectory(app)
+endif()
+
+if (POSTFORM_BUILD_UNITTESTS MATCHES "true")
+  include(cmake/googletest.cmake)
 endif()

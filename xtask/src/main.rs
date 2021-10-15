@@ -73,7 +73,7 @@ fn build_cxx_tests(root_dir: &Path, build_dir: &Path) -> Result<()> {
     mkdir_p(build_dir)?;
     let _dir = pushd(build_dir)?;
 
-    cmd!("cmake -G Ninja -DPOSTFORM_BUILD_EXAMPLES=true -DCMAKE_CXX_COMPILER=clang++ {root_dir}")
+    cmd!("cmake -G Ninja -DPOSTFORM_BUILD_EXAMPLES=true -DPOSTFORM_BUILD_UNITTESTS=true -DCMAKE_CXX_COMPILER=clang++ {root_dir}")
         .run()?;
     cmd!("cmake --build .").run()?;
     Ok(())
@@ -125,17 +125,20 @@ fn clean() {
     cmd!("cargo clean").run().unwrap();
 }
 
-fn run_cxx_tests() {
-    let root_dir = cwd().unwrap();
-    let mut build_dir = root_dir.clone();
-    build_dir.push("cxx_build");
+fn run_unit_tests(build_dir: &Path) -> Result<()> {
+    let mut postform_test = build_dir.to_owned();
+    postform_test.push("libpostform");
+    postform_test.push("postform_tests");
 
-    let mut file_name = build_dir.clone();
+    cmd!("{postform_test}").run().unwrap();
+    Ok(())
+}
+
+fn run_system_tests(root_dir: &Path, build_dir: &Path) -> Result<()> {
+    let mut file_name = build_dir.to_owned();
     file_name.push("logs.txt");
 
-    build_cxx_tests(&root_dir, &build_dir).unwrap();
-
-    let mut postform_test = build_dir.clone();
+    let mut postform_test = build_dir.to_owned();
     postform_test.push("app");
     postform_test.push("postform_test");
 
@@ -144,7 +147,7 @@ fn run_cxx_tests() {
         .read()
         .unwrap();
 
-    let mut blessed_file = root_dir.clone();
+    let mut blessed_file = root_dir.to_owned();
     blessed_file.push("expected_log.txt");
     let blessed = read_file(&blessed_file).unwrap();
 
@@ -164,6 +167,17 @@ fn run_cxx_tests() {
     } else {
         println!("Results match expected data, tests PASSED");
     }
+    Ok(())
+}
+
+fn run_cxx_tests() {
+    let root_dir = cwd().unwrap();
+    let mut build_dir = root_dir.clone();
+    build_dir.push("cxx_build");
+
+    build_cxx_tests(&root_dir, &build_dir).unwrap();
+    run_unit_tests(&build_dir).unwrap();
+    run_system_tests(&root_dir, &build_dir).unwrap();
 }
 
 fn bless_cxx_tests() {
