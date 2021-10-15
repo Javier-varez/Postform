@@ -374,7 +374,7 @@ impl<'a> Decoder<'a> {
 
             for (format_spec, handler) in &FORMAT_SPEC_TABLE {
                 if format.starts_with(format_spec) {
-                    handler(&self, &mut formatted_str, &mut arguments)?;
+                    handler(self, &mut formatted_str, &mut arguments)?;
                     // Advance the format string past the format specifier
                     format = format.chars().skip(format_spec.len()).collect();
                     break;
@@ -396,7 +396,7 @@ impl<'a> SerialDecoder<'a> {
     pub fn new(elf_metadata: &'a ElfMetadata) -> Self {
         Self {
             rcobs_msg_buffer: vec![],
-            decoder: Decoder::new(&elf_metadata),
+            decoder: Decoder::new(elf_metadata),
         }
     }
 
