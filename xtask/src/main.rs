@@ -31,6 +31,8 @@ enum Options {
     Test,
     /// Cleans all target folders
     Clean,
+    /// Runs the example application on an STM32F103C8 microcontroller
+    RunExampleApp,
 }
 
 fn run_in_docker<T>(args: T)
@@ -60,6 +62,7 @@ fn main() {
         Options::Bless => bless_cxx_tests(),
         Options::Test => run_cxx_tests(),
         Options::Clean => clean(),
+        Options::RunExampleApp => run_example_app(),
     }
 }
 
@@ -184,4 +187,12 @@ fn bless_cxx_tests() {
     let mut blessed_file = root_dir;
     blessed_file.push("expected_log.txt");
     write_file(&blessed_file, text).unwrap();
+}
+
+fn run_example_app() {
+    // build the firmware, then run postform_rtt
+    build_firmware(Some(Core::CortexM3));
+    cmd!("cargo run --bin=postform_rtt -- --chip STM32F103C8 fw_build/m3/app/postform_format")
+        .run()
+        .unwrap();
 }
