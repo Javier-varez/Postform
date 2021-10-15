@@ -62,7 +62,7 @@ fn main() {
         Options::Build { release } => build(release),
         Options::BuildFirmware { core, force } => build_firmware(core, force),
         Options::Bless => bless_cxx_tests(),
-        Options::Test => run_cxx_tests(),
+        Options::Test => run_tests(),
         Options::Clean => clean(),
         Options::RunExampleApp => run_example_app(),
     }
@@ -130,7 +130,7 @@ fn run_unit_tests(build_dir: &Path) -> Result<()> {
     postform_test.push("libpostform");
     postform_test.push("postform_tests");
 
-    cmd!("{postform_test}").run().unwrap();
+    cmd!("{postform_test}").run()?;
     Ok(())
 }
 
@@ -142,14 +142,12 @@ fn run_system_tests(root_dir: &Path, build_dir: &Path) -> Result<()> {
     postform_test.push("app");
     postform_test.push("postform_test");
 
-    cmd!("{postform_test} {file_name}").run().unwrap();
-    let text = cmd!("cargo run --bin=postform_persist -- {postform_test} {file_name}")
-        .read()
-        .unwrap();
+    cmd!("{postform_test} {file_name}").run()?;
+    let text = cmd!("cargo run --bin=postform_persist -- {postform_test} {file_name}").read()?;
 
     let mut blessed_file = root_dir.to_owned();
     blessed_file.push("expected_log.txt");
-    let blessed = read_file(&blessed_file).unwrap();
+    let blessed = read_file(&blessed_file)?;
 
     // Replace absolute paths by relative paths
     let text = text.replace(&root_dir.to_str().unwrap(), "..");
@@ -170,7 +168,12 @@ fn run_system_tests(root_dir: &Path, build_dir: &Path) -> Result<()> {
     Ok(())
 }
 
-fn run_cxx_tests() {
+fn run_rust_tests() -> Result<()> {
+    cmd!("cargo test").run()?;
+    Ok(())
+}
+
+fn run_tests() {
     let root_dir = cwd().unwrap();
     let mut build_dir = root_dir.clone();
     build_dir.push("cxx_build");
@@ -178,6 +181,7 @@ fn run_cxx_tests() {
     build_cxx_tests(&root_dir, &build_dir).unwrap();
     run_unit_tests(&build_dir).unwrap();
     run_system_tests(&root_dir, &build_dir).unwrap();
+    run_rust_tests().unwrap();
 }
 
 fn bless_cxx_tests() {
