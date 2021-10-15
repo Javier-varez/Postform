@@ -22,6 +22,8 @@ enum Options {
     },
     /// Builds and example firmware application for a Cortex-M3 MCU
     BuildFirmware {
+        #[structopt(long)]
+        force: bool,
         #[structopt(subcommand)]
         core: Option<Core>,
     },
@@ -58,7 +60,7 @@ fn main() {
 
     match opts {
         Options::Build { release } => build(release),
-        Options::BuildFirmware { core } => build_firmware(core),
+        Options::BuildFirmware { core, force } => build_firmware(core, force),
         Options::Bless => bless_cxx_tests(),
         Options::Test => run_cxx_tests(),
         Options::Clean => clean(),
@@ -82,7 +84,7 @@ fn build(release: bool) {
     cmd!("cargo build").args(release).run().unwrap();
 }
 
-fn build_firmware(core: Option<Core>) {
+fn build_firmware(core: Option<Core>, force_clean: bool) {
     let root_dir = cwd().unwrap();
     let mut build_dir = root_dir.clone();
     build_dir.push("fw_build");
@@ -99,7 +101,9 @@ fn build_firmware(core: Option<Core>) {
         Core::CortexM3 => "-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/armv7m.cmake",
     };
 
-    rm_rf(&build_dir).unwrap();
+    if force_clean {
+        rm_rf(&build_dir).unwrap();
+    }
     mkdir_p(&build_dir).unwrap();
     let _dir = pushd(&build_dir).unwrap();
 
@@ -191,7 +195,7 @@ fn bless_cxx_tests() {
 
 fn run_example_app() {
     // build the firmware, then run postform_rtt
-    build_firmware(Some(Core::CortexM3));
+    build_firmware(Some(Core::CortexM3), false);
     cmd!("cargo run --bin=postform_rtt -- --chip STM32F103C8 fw_build/m3/app/postform_format")
         .run()
         .unwrap();
