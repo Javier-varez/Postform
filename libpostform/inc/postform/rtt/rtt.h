@@ -2,34 +2,41 @@
 #ifndef POSTFORM_RTT_RTT_H_
 #define POSTFORM_RTT_RTT_H_
 
+#include <array>
 #include <atomic>
 #include <cstdint>
 #include <cstring>
+#include <span>
+
+#include "ditto/assert.h"
 
 namespace Postform::Rtt {
 
 enum class Flags : uint32_t { BLOCK_IF_FULL = 2, NO_BLOCK_TRIM = 1 };
 
 struct Channel {
-  const char* const name{nullptr};
-  std::uint8_t* const buffer = nullptr;
-  const std::uint32_t size{0};
+  const char* name{nullptr};
+  std::uint8_t* buffer = nullptr;
+  std::uint32_t size{0};
   std::atomic<std::uint32_t> write{0};
   std::atomic<std::uint32_t> read{0};
   std::atomic<Flags> flags{Flags::NO_BLOCK_TRIM};
+};
 
-  Channel(const char* name, std::uint8_t* buffer, std::uint32_t size)
-      : name(name), buffer(buffer), size(size) {}
+struct ChannelDescriptor {
+  const char* name;
+  std::span<uint8_t> buffer;
 };
 
 struct Header {
   constexpr static std::uint32_t ID_LENTGH = 16;
 
   char id[ID_LENTGH];
-  std::uint32_t max_up_channels{1};
-  std::uint32_t max_down_channels{1};
+  std::uint32_t max_up_channels;
+  std::uint32_t max_down_channels;
 
-  Header() {
+  Header(uint32_t max_up_channels, uint32_t max_down_channels)
+      : max_up_channels(max_up_channels), max_down_channels(max_down_channels) {
     // We need to split this string or otherwise it will be found in memory in
     // .rodata which is not correct
     const char* first_part = "SEGGER";
@@ -41,16 +48,29 @@ struct Header {
   }
 };
 
+template <std::size_t UP_CHANNELS, std::size_t DOWN_CHANNELS>
 struct ControlBlock {
   Header header;
-  Rtt::Channel up_channel;
-  Rtt::Channel down_channel;
+  std::array<Rtt::Channel, UP_CHANNELS> up_channels;
+  std::array<Rtt::Channel, DOWN_CHANNELS> down_channels;
 
-  ControlBlock(std::uint8_t* up_buffer, std::uint32_t up_buffer_size,
-               std::uint8_t* down_buffer, std::uint32_t down_buffer_size)
-      : header(),
-        up_channel("up", up_buffer, up_buffer_size),
-        down_channel("down", down_buffer, down_buffer_size) {}
+  ControlBlock(std::span<ChannelDescriptor> up_channel_descriptors,
+               std::span<ChannelDescriptor> down_channel_descriptors)
+      : header(UP_CHANNELS, DOWN_CHANNELS) {
+    DITTO_VERIFY(up_channel_descriptors.size() == UP_CHANNELS);
+    DITTO_VERIFY(down_channel_descriptors.size() == DOWN_CHANNELS);
+
+    for (uint32_t i = 0; i < up_channel_descriptors.size(); i++) {
+      up_channels[i].name = up_channel_descriptors[i].name;
+      up_channels[i].buffer = up_channel_descriptors[i].buffer.data();
+      up_channels[i].size = up_channel_descriptors[i].buffer.size();
+    }
+    for (uint32_t i = 0; i < down_channel_descriptors.size(); i++) {
+      down_channels[i].name = down_channel_descriptors[i].name;
+      down_channels[i].buffer = down_channel_descriptors[i].buffer.data();
+      down_channels[i].size = down_channel_descriptors[i].buffer.size();
+    }
+  }
 };
 
 }  // namespace Postform::Rtt
