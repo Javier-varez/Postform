@@ -1,18 +1,9 @@
 
 #include "postform/rtt/transport.h"
 
-#include "postform/utils.h"
-
-static constexpr std::uint32_t UP_BUFFER_SIZE = 1024;
-static UNINIT std::uint8_t s_up_buffer[UP_BUFFER_SIZE];
-
-extern "C" Postform::Rtt::ControlBlock _SEGGER_RTT{s_up_buffer, UP_BUFFER_SIZE,
-                                                   nullptr, 0};
-
-Postform::Rtt::Transport::Transport()
-    : m_channel(&_SEGGER_RTT.up_channel),
-      m_write_ptr(
-          _SEGGER_RTT.up_channel.write.load(std::memory_order_relaxed)) {}
+Postform::Rtt::Transport::Transport(Channel* channel)
+    : m_channel(channel),
+      m_write_ptr(m_channel->write.load(std::memory_order_relaxed)) {}
 
 uint32_t Postform::Rtt::Transport::getNextWritePtr() const {
   uint32_t write_ptr = m_write_ptr;

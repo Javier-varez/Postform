@@ -11,8 +11,11 @@ class Transport {
   /**
    * @brief Constructs an Rtt transport to transmit information over the RTT up
    * channel
+   *
+   * @param channel The RTT UP channel over which this transport will send
+   * information back to the host.
    */
-  Transport();
+  Transport(Channel* channel);
 
   /**
    * @brief writes data to the RTT up channel.
