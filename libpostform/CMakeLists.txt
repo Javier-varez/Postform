@@ -16,6 +16,10 @@ add_library(postform STATIC
   src/platform.cpp
   src/rtt/transport.cpp)
 
+target_link_libraries(postform
+  PUBLIC
+  Ditto)
+
 target_compile_options(postform
   PRIVATE
     -Wall
@@ -59,6 +63,7 @@ if (POSTFORM_BUILD_UNITTESTS MATCHES "true")
     test/timestamp_mock.cpp)
 
   target_link_libraries(postform_tests
+    Ditto
     gtest_main
     gmock)
 
