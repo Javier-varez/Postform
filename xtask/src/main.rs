@@ -1,7 +1,7 @@
 use prettydiff::text::diff_lines;
 use std::path::Path;
 use structopt::StructOpt;
-use xshell::{cmd, cwd, mkdir_p, pushd, read_file, rm_rf, write_file, Result};
+use xshell::{cmd, cp, cwd, mkdir_p, pushd, read_file, rm_rf, write_file, Result};
 
 #[derive(Debug, StructOpt)]
 enum Core {
@@ -26,6 +26,8 @@ enum Options {
         force: bool,
         #[structopt(subcommand)]
         core: Option<Core>,
+        #[structopt(long)]
+        compdb: bool,
     },
     /// Bless the test output given by the current implementation of Postform
     Bless,
@@ -60,7 +62,11 @@ fn main() {
 
     match opts {
         Options::Build { release } => build(release),
-        Options::BuildFirmware { core, force } => build_firmware(core, force),
+        Options::BuildFirmware {
+            core,
+            force,
+            compdb,
+        } => build_firmware(core, force, compdb),
         Options::Bless => bless_cxx_tests(),
         Options::Test => run_tests(),
         Options::Clean => clean(),
@@ -84,7 +90,7 @@ fn build(release: bool) {
     cmd!("cargo build").args(release).run().unwrap();
 }
 
-fn build_firmware(core: Option<Core>, force_clean: bool) {
+fn build_firmware(core: Option<Core>, force_clean: bool, compdb: bool) {
     let root_dir = cwd().unwrap();
     let mut build_dir = root_dir.clone();
     build_dir.push("fw_build");
@@ -107,9 +113,22 @@ fn build_firmware(core: Option<Core>, force_clean: bool) {
     mkdir_p(&build_dir).unwrap();
     let _dir = pushd(&build_dir).unwrap();
 
-    cmd!("cmake -G Ninja -DPOSTFORM_BUILD_EXAMPLES=true {toolchain} -DPOSTFORM_BUILD_TARGET_APP=true -DCMAKE_CXX_COMPILER=clang++ {root_dir}")
-        .run()
-        .unwrap();
+    let cmake_cmd = cmd!("cmake -G Ninja -DPOSTFORM_BUILD_EXAMPLES=true {toolchain} -DPOSTFORM_BUILD_TARGET_APP=true -DCMAKE_CXX_COMPILER=clang++");
+    if compdb {
+        cmake_cmd
+            .arg("-DCMAKE_EXPORT_COMPILE_COMMANDS=ON")
+            .arg(root_dir.clone())
+            .run()
+            .unwrap();
+        let mut compdb_src = build_dir;
+        compdb_src.push("compile_commands.json");
+
+        let mut compdb_dest = root_dir;
+        compdb_dest.push("compile_commands.json");
+        cp(compdb_src, compdb_dest).unwrap();
+    } else {
+        cmake_cmd.arg(root_dir).run().unwrap();
+    }
     cmd!("cmake --build .").run().unwrap();
 }
 
@@ -213,7 +232,7 @@ fn bless_cxx_tests() {
 
 fn run_example_app() {
     // build the firmware, then run postform_rtt
-    build_firmware(Some(Core::CortexM3), false);
+    build_firmware(Some(Core::CortexM3), false, false);
     cmd!("cargo run --bin=postform_rtt -- --chip STM32F103C8 fw_build/m3/app/postform_format")
         .run()
         .unwrap();
