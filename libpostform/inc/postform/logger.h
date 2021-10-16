@@ -99,7 +99,7 @@ class Logger {
   void vlog(const Argument* arguments, std::size_t nargs) {
     uint64_t timestamp = getGlobalTimestamp();
 
-    Writer writer = static_cast<Derived&>(*this).getWriter();
+    Writer writer = static_cast<Derived&>(*this).getWriter({});
     writeLeb128(&writer, timestamp);
     for (std::size_t i = 0; i < nargs; i++) {
       switch (arguments[i].type) {

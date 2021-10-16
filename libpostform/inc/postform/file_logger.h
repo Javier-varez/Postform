@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "ditto/badge.h"
 #include "postform/logger.h"
 
 namespace Postform {
@@ -41,21 +42,18 @@ class FileLogger : public Logger<FileLogger, FileWriter> {
   explicit FileLogger(std::string file_path);
   ~FileLogger();
 
- private:
-  std::atomic_bool m_taken{false};
-  int m_fd = -1;
-
-  FileWriter getWriter() {
+  FileWriter getWriter(Ditto::Badge<Logger<FileLogger, FileWriter>>) {
     if (!m_taken.exchange(true)) {
       return FileWriter{this, m_fd};
     }
     return FileWriter{};
   }
 
-  void release() { m_taken.store(false); }
+  void release(Ditto::Badge<FileWriter>) { m_taken.store(false); }
 
-  friend Logger<FileLogger, FileWriter>;
-  friend class FileWriter;
+ private:
+  std::atomic_bool m_taken{false};
+  int m_fd = -1;
 };
 
 }  // namespace Postform

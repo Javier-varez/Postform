@@ -4,6 +4,7 @@
 
 #include <atomic>
 
+#include "ditto/badge.h"
 #include "postform/logger.h"
 
 namespace Postform {
@@ -116,6 +117,20 @@ class SerialLogger : public Logger<SerialLogger<T>, SerialWriter<T>> {
    */
   SerialLogger(T* transport) : m_transport(transport) {}
 
+  /**
+   * @brief Gets the writer if it is available. If it is already taken (maybe by
+   * some other thread or by our own) we return an invalid instance, since we
+   * can't risk writing to the transport or it could scramble the serial data.
+   *
+   * Can only be called by the Logger as a Badge needs to be provided.
+   */
+  SerialWriter<T> getWriter(
+      Ditto::Badge<Logger<SerialLogger<T>, SerialWriter<T>>>) {
+    return getWriter();
+  }
+
+  void release(Ditto::Badge<SerialWriter<T>>) { release(); }
+
  private:
   std::atomic_bool m_taken{false};
   T* m_transport;
@@ -133,9 +148,6 @@ class SerialLogger : public Logger<SerialLogger<T>, SerialWriter<T>> {
    */
   void release();
 
-  friend Logger<SerialLogger<T>, SerialWriter<T>>;
-  friend class SerialWriter<T>;  //! The serial writer must be able to release
-                                 //! itself.
   friend class SerialLoggerTest;
 };
 
@@ -208,7 +220,7 @@ void SerialWriter<T>::commit() {
     m_transport->write(0);
     m_transport->commit();
     m_transport = nullptr;
-    m_logger->release();
+    m_logger->release({});
     m_logger = nullptr;
     m_marker = 0;
   }
