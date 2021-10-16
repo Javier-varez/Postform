@@ -19,13 +19,29 @@ static volatile __attribute__((section(".rcc_regs"))) RccRegisters rcc_regs;
 static volatile __attribute__((section(".flash_regs")))
 FlashRegisters flash_regs;
 
-static constexpr std::uint32_t UP_BUFFER_SIZE = 1024;
-static UNINIT std::uint8_t s_up_buffer[UP_BUFFER_SIZE];
+static UNINIT std::array<std::uint8_t, 1024> s_up_buffer;
+static std::array<Postform::Rtt::ChannelDescriptor, 1> s_up_descriptors{
+    {"postform_channel", s_up_buffer}};
 
-extern "C" Postform::Rtt::ControlBlock _SEGGER_RTT{s_up_buffer, UP_BUFFER_SIZE,
-                                                   nullptr, 0};
+extern "C" Postform::Rtt::ControlBlock<1, 0> _SEGGER_RTT{s_up_descriptors, {}};
 
 Uart uart{&uart2_regs};
+
+Postform::SerialLogger<Uart> uart_logger{&uart};
+
+Postform::Rtt::Transport transport{&_SEGGER_RTT.up_channels[0]};
+Postform::SerialLogger<Postform::Rtt::Transport> logger{&transport};
+
+namespace Ditto {
+void assert_failed(const char* condition, int line, const char* file) {
+  LOG_ERROR(&logger,
+            "Oh boy, something really bad happened! "
+            "Condition `%s` failed in file `%s`, line %d",
+            condition, file, line);
+  while (true) {
+  }
+}
+}  // namespace Ditto
 
 void configureClocks() {
   // Enable hse @ 8MHz
@@ -72,11 +88,6 @@ void initializeHardware() {
 
 int main() {
   initializeHardware();
-
-  Postform::SerialLogger<Uart> uart_logger{&uart};
-
-  Postform::Rtt::Transport transport{&_SEGGER_RTT.up_channel};
-  Postform::SerialLogger<Postform::Rtt::Transport> logger{&transport};
 
   SysTick& systick = SysTick::getInstance();
 
@@ -154,6 +165,7 @@ int main() {
     LOG_DEBUG(&logger,
               "Now if I wanted to print a really long text I can use %%k: %k",
               interned_string);
+    DITTO_VERIFY(iteration < 5);
     systick.delay(SysTick::TICKS_PER_SECOND);
     iteration++;
   }
