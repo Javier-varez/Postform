@@ -120,6 +120,9 @@ struct Opts {
 
     #[structopt(long, short)]
     gdb_server: bool,
+
+    #[structopt(long, short)]
+    channel: Option<usize>,
 }
 
 fn main() -> color_eyre::eyre::Result<()> {
@@ -193,7 +196,7 @@ fn main() -> color_eyre::eyre::Result<()> {
             }));
         }
 
-        if let Some(log_channel) = rtt.up_channels().take(0) {
+        if let Some(log_channel) = rtt.up_channels().take(opts.channel.unwrap_or(0)) {
             let mut buffer = [0u8; 1024];
             let mut decoder = SerialDecoder::new(&elf_metadata);
             loop {
