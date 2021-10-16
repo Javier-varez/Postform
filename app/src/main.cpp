@@ -9,6 +9,7 @@
 #include "hal/uart.h"
 #include "postform/rtt/transport.h"
 #include "postform/serial_logger.h"
+#include "postform/utils.h"
 
 static volatile __attribute__((section(".uart2_regs")))
 UartRegisters uart2_regs;
@@ -17,6 +18,12 @@ GpioBankRegisters bank_a_regs;
 static volatile __attribute__((section(".rcc_regs"))) RccRegisters rcc_regs;
 static volatile __attribute__((section(".flash_regs")))
 FlashRegisters flash_regs;
+
+static constexpr std::uint32_t UP_BUFFER_SIZE = 1024;
+static UNINIT std::uint8_t s_up_buffer[UP_BUFFER_SIZE];
+
+extern "C" Postform::Rtt::ControlBlock _SEGGER_RTT{s_up_buffer, UP_BUFFER_SIZE,
+                                                   nullptr, 0};
 
 Uart uart{&uart2_regs};
 
@@ -68,7 +75,7 @@ int main() {
 
   Postform::SerialLogger<Uart> uart_logger{&uart};
 
-  Postform::Rtt::Transport transport;
+  Postform::Rtt::Transport transport{&_SEGGER_RTT.up_channel};
   Postform::SerialLogger<Postform::Rtt::Transport> logger{&transport};
 
   SysTick& systick = SysTick::getInstance();
