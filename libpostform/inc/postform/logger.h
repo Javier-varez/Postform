@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <span>
 #include <type_traits>
 
 #include "postform/args.h"
@@ -74,7 +75,7 @@ class Logger {
   inline void log(LogLevel level, T... args) {
     if (level < m_level.load(std::memory_order_relaxed)) return;
     const auto arg_array = build_args(args...);
-    vlog(arg_array.data(), arg_array.size());
+    vlog(arg_array);
   }
 
   /**
@@ -96,33 +97,32 @@ class Logger {
    * @param arguments pointer to the argument array.
    * @param nargs number of arguments to log
    */
-  void vlog(const Argument* arguments, std::size_t nargs) {
+  void vlog(std::span<const Argument> arguments) {
     uint64_t timestamp = getGlobalTimestamp();
 
     Writer writer = static_cast<Derived&>(*this).getWriter({});
     writeLeb128(&writer, timestamp);
-    for (std::size_t i = 0; i < nargs; i++) {
-      switch (arguments[i].type) {
+    for (const auto& argument : arguments) {
+      switch (argument.type) {
         case Argument::Type::STRING_POINTER:
-          writer.write(reinterpret_cast<const uint8_t*>(arguments[i].str_ptr),
-                       strlen(arguments[i].str_ptr) + 1);
+          writer.write(reinterpret_cast<const uint8_t*>(argument.str_ptr),
+                       strlen(argument.str_ptr) + 1);
           break;
         case Argument::Type::UNSIGNED_INTEGER: {
-          writeLeb128(&writer, arguments[i].unsigned_long_long);
+          writeLeb128(&writer, argument.unsigned_long_long);
           break;
         }
         case Argument::Type::SIGNED_INTEGER: {
-          writeLeb128(&writer, arguments[i].signed_long_long);
+          writeLeb128(&writer, argument.signed_long_long);
           break;
         }
         case Argument::Type::INTERNED_STRING: {
-          auto ptr =
-              reinterpret_cast<uintptr_t>(arguments[i].interned_string.str);
+          auto ptr = reinterpret_cast<uintptr_t>(argument.interned_string.str);
           writeLeb128(&writer, ptr);
           break;
         }
         case Argument::Type::VOID_PTR: {
-          auto ptr = reinterpret_cast<uintptr_t>(arguments[i].void_ptr);
+          auto ptr = reinterpret_cast<uintptr_t>(argument.void_ptr);
           writeLeb128(&writer, ptr);
           break;
         }
