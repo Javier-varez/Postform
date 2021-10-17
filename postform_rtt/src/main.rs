@@ -155,6 +155,8 @@ fn main() -> color_eyre::eyre::Result<()> {
         open_probe(opts.probe_index)?
     };
 
+    let rtt_channel = opts.channel.unwrap_or(0);
+
     if let Some(chip) = opts.chip {
         let session = Arc::new(Mutex::new(probe.attach(chip)?));
 
@@ -177,7 +179,12 @@ fn main() -> color_eyre::eyre::Result<()> {
             download_firmware(&session, &elf_name)?;
         }
 
-        configure_rtt_mode(session.clone(), segger_rtt_addr, RttMode::Blocking)?;
+        configure_rtt_mode(
+            session.clone(),
+            segger_rtt_addr,
+            rtt_channel,
+            RttMode::Blocking,
+        )?;
         let mut rtt = attach_rtt(session.clone(), &elf_file)?;
         run_core(session.clone())?;
 
@@ -196,7 +203,7 @@ fn main() -> color_eyre::eyre::Result<()> {
             }));
         }
 
-        if let Some(log_channel) = rtt.up_channels().take(opts.channel.unwrap_or(0)) {
+        if let Some(log_channel) = rtt.up_channels().take(rtt_channel) {
             let mut buffer = [0u8; 1024];
             let mut decoder = SerialDecoder::new(&elf_metadata);
             loop {
@@ -214,7 +221,7 @@ fn main() -> color_eyre::eyre::Result<()> {
                 }
             }
         }
-        configure_rtt_mode(session, segger_rtt_addr, RttMode::NonBlocking)?;
+        configure_rtt_mode(session, segger_rtt_addr, rtt_channel, RttMode::NonBlocking)?;
     }
     Ok(())
 }

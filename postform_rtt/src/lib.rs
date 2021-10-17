@@ -1,4 +1,5 @@
 use color_eyre::eyre::Result;
+use field_offset::offset_of;
 use object::read::{File as ElfFile, Object, ObjectSymbol};
 use probe_rs::{
     flashing::{download_file, Format},
@@ -17,6 +18,23 @@ use std::{
 pub enum RttError {
     #[error("Missing symbol {0}")]
     MissingSymbol(&'static str),
+}
+
+#[repr(C)]
+struct RttHeader {
+    id: [u8; 16],
+    max_up_channels: u32,
+    max_down_channels: u32,
+}
+
+#[repr(C)]
+struct RttChannel {
+    name: u32,
+    buffer: u32,
+    size: u32,
+    write: u32,
+    read: u32,
+    flags: u32,
 }
 
 /// Downloads a FW ELF to the target in the associated session, halting the core at main.
@@ -60,13 +78,21 @@ pub enum RttMode {
 pub fn configure_rtt_mode(
     session: Arc<Mutex<Session>>,
     rtt_addr: u64,
+    channel_idx: usize,
     mode: RttMode,
 ) -> Result<()> {
+    const CHANNEL_SIZE: usize = std::mem::size_of::<RttChannel>();
+    // Header size is: 16 bytes for the rtt magic string
+    //                 + 2 x uint32_t for number of up and down channels
+    const HEADER_SIZE: usize = std::mem::size_of::<RttHeader>();
     let mut session_lock = session.lock().unwrap();
     let mut core = session_lock.core(0)?;
-    let mode_flags_addr = rtt_addr as u32 + 44u32;
+    let mode_flags_addr = rtt_addr as usize
+        + HEADER_SIZE
+        + CHANNEL_SIZE * channel_idx
+        + offset_of!(RttChannel => flags).get_byte_offset();
     log::info!("Setting mode to {:?}", mode);
-    core.write_word_32(mode_flags_addr, mode as u32)?;
+    core.write_word_32(mode_flags_addr as u32, mode as u32)?;
 
     Ok(())
 }
