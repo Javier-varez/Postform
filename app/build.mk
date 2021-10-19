@@ -16,7 +16,7 @@ POSTFORM_CFLAGS := \
     -Wextra \
     -Wno-gnu-string-literal-operator-template
 POSTFORM_CXXFLAGS := \
-    -std=gnu++17 \
+    -std=gnu++20 \
     -fno-exceptions \
     -fno-rtti \
     -ffunction-sections \
@@ -39,6 +39,7 @@ LOCAL_ARM_ARCHITECTURE := v7-m
 LOCAL_ARM_FPU := nofp
 LOCAL_COMPILER := arm_clang
 LOCAL_STATIC_LIBS := \
+    libditto \
     libcortex_m_startup \
     libcortex_m_hal \
     libpostform
@@ -53,6 +54,8 @@ LOCAL_CXXFLAGS := \
     $(LOCAL_CFLAGS) \
     $(POSTFORM_CXXFLAGS)
 LOCAL_SRC := $(LOCAL_DIR)/src/host_main.cpp
-LOCAL_STATIC_LIBS := libpostform_host
+LOCAL_STATIC_LIBS := \
+    libpostform_host \
+    libditto_host
 LOCAL_LINKER_FILE := $(LOCAL_DIR)/host.ld
 include $(BUILD_BINARY)

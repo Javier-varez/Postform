@@ -15,7 +15,7 @@ POSTFORM_CFLAGS := \
     -fdata-sections
 
 POSTFORM_CXXFLAGS := \
-    -std=gnu++17 \
+    -std=gnu++20 \
     -fno-exceptions \
     -fno-rtti
 
@@ -48,6 +48,8 @@ LOCAL_EXPORTED_DIRS := \
     $(LOCAL_DIR)/inc
 LOCAL_LINKER_FILE := \
     $(LOCAL_DIR)/postform.ld
+LOCAL_STATIC_LIBS := \
+    libditto
 include $(BUILD_STATIC_LIB)
 
 include $(CLEAR_VARS)
@@ -66,6 +68,8 @@ LOCAL_EXPORTED_DIRS := \
     $(LOCAL_DIR)/inc
 LOCAL_LINKER_FILE := \
     $(LOCAL_DIR)/postform.ld
+LOCAL_STATIC_LIBS := \
+    libditto_host
 include $(BUILD_STATIC_LIB)
 
 include $(CLEAR_VARS)
@@ -81,4 +85,6 @@ LOCAL_SRC := \
     $(LOCAL_DIR)/test/timestamp_mock.cpp \
     $(LOCAL_DIR)/test/logger_test.cpp \
     $(LOCAL_DIR)/test/serial_logger_test.cpp
+LOCAL_STATIC_LIBS := \
+    libditto_host
 include $(BUILD_HOST_TEST)

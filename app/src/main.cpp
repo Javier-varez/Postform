@@ -21,7 +21,7 @@ FlashRegisters flash_regs;
 
 static UNINIT std::array<std::uint8_t, 1024> s_up_buffer;
 static std::array<Postform::Rtt::ChannelDescriptor, 1> s_up_descriptors{
-    {"postform_channel", s_up_buffer}};
+    {{"postform_channel", s_up_buffer}}};
 
 extern "C" Postform::Rtt::ControlBlock<1, 0> _SEGGER_RTT{s_up_descriptors, {}};
 
