@@ -73,6 +73,8 @@ LOCAL_STATIC_LIBS := \
 include $(BUILD_STATIC_LIB)
 
 include $(CLEAR_VARS)
+CC := clang
+CXX := clang++
 LOCAL_NAME := postform_tests
 LOCAL_CFLAGS := \
     -I$(LOCAL_DIR)/test \
