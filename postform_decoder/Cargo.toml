@@ -9,7 +9,7 @@ repository = "https://github.com/Javier-varez/Postform"
 categories = ["embedded"]
 keywords = ["embedded", "log", "logger"]
 readme = "../README.md"
-edition = "2018"
+edition = "2021"
 
 [build-dependencies]
 bindgen = "0.57"
