@@ -28,6 +28,8 @@ enum Options {
         core: Option<Core>,
         #[structopt(long)]
         compdb: bool,
+        #[structopt(long)]
+        dry_run: bool,
     },
     /// Bless the test output given by the current implementation of Postform
     Bless,
@@ -66,7 +68,8 @@ fn main() {
             core,
             force,
             compdb,
-        } => build_firmware(core, force, compdb),
+            dry_run,
+        } => build_firmware(core, force, compdb, dry_run),
         Options::Bless => bless_cxx_tests(),
         Options::Test => run_tests(),
         Options::Clean => clean(),
@@ -90,7 +93,7 @@ fn build(release: bool) {
     cmd!("cargo build").args(release).run().unwrap();
 }
 
-fn build_firmware(core: Option<Core>, force_clean: bool, compdb: bool) {
+fn build_firmware(core: Option<Core>, force_clean: bool, compdb: bool, dry_run: bool) {
     let root_dir = cwd().unwrap();
     let mut build_dir = root_dir.clone();
     build_dir.push("fw_build");
@@ -129,7 +132,9 @@ fn build_firmware(core: Option<Core>, force_clean: bool, compdb: bool) {
     } else {
         cmake_cmd.arg(root_dir).run().unwrap();
     }
-    cmd!("cmake --build .").run().unwrap();
+    if !dry_run {
+        cmd!("cmake --build .").run().unwrap();
+    }
 }
 
 fn clean() {
@@ -232,7 +237,7 @@ fn bless_cxx_tests() {
 
 fn run_example_app() {
     // build the firmware, then run postform_rtt
-    build_firmware(Some(Core::CortexM3), false, false);
+    build_firmware(Some(Core::CortexM3), false, false, false);
     cmd!("cargo run --bin=postform_rtt -- --chip STM32F103C8 fw_build/m3/app/postform_format")
         .run()
         .unwrap();
