@@ -86,6 +86,25 @@ jobs:
       with:
         clangFormatVersion: 10
 
+  clang-tidy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - name: Generate compilation database
+      uses: actions-rs/cargo@v1
+      with:
+        command: xtask
+        args: build-firmware --compdb
+    - uses: ZedThree/clang-tidy-review@v0.7.0
+      id: review
+    # If there are any comments, fail the check
+    - if: steps.review.outputs.total_comments > 0
+      run: exit 1
+
   tests:
     runs-on: ubuntu-latest
 
