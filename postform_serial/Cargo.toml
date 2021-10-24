@@ -9,7 +9,7 @@ repository = "https://github.com/Javier-varez/Postform"
 categories = ["embedded"]
 keywords = ["embedded", "log", "logger"]
 readme = "../README.md"
-edition = "2018"
+edition = "2021"
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
