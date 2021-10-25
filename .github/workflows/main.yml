@@ -94,11 +94,19 @@ jobs:
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
+    - name: arm-none-eabi-gcc
+      uses: fiam/arm-none-eabi-gcc@v1.0.4
+      with:
+        release: '10-2020-q4'
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev ninja-build
     - name: Generate compilation database
       uses: actions-rs/cargo@v1
       with:
         command: xtask
-        args: docker build-firmware --compdb --dry-run
+        args: build-firmware --compdb --dry-run
     - uses: ZedThree/clang-tidy-review@v0.7.0
       id: review
       with:
