@@ -91,30 +91,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
+    - name: Run static analysis for C++ project
+      uses: JacobDomagala/StaticAnalysis@v0.0.4
       with:
-        toolchain: stable
-    - name: arm-none-eabi-gcc
-      uses: fiam/arm-none-eabi-gcc@v1.0.4
-      with:
-        release: '10-2020-q4'
-    - name: Install dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y libusb-1.0-0-dev libftdi1-dev libudev-dev ninja-build
-    - name: Generate compilation database
-      uses: actions-rs/cargo@v1
-      with:
-        command: xtask
-        args: build-firmware --compdb --dry-run
-    - uses: ZedThree/clang-tidy-review@v0.7.0
-      id: review
-      with:
-        clang_tidy_checks: ''
-        build_dir: 'fw_build/m3'
-    # If there are any comments, fail the check
-    - if: steps.review.outputs.total_comments > 0
-      run: exit 1
+        cmake_args: -DPOSTFORM_BUILD_EXAMPLES=true -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/armv7m.cmake -DPOSTFORM_BUILD_TARGET_APP=true -DCMAKE_CXX_COMPILER=clang++
+        init_script: .github/workflows/init-script.sh
 
   tests:
     runs-on: ubuntu-latest
