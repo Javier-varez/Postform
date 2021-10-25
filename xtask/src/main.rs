@@ -35,6 +35,8 @@ enum Options {
     Bless,
     /// Run Postform tests and display an output diff
     Test,
+    /// Runs multiple linters on the code
+    Lint,
     /// Cleans all target folders
     Clean,
     /// Runs the example application on an STM32F103C8 microcontroller
@@ -74,6 +76,7 @@ fn main() {
         } => build_firmware(core, force, compdb, dry_run),
         Options::Bless => bless_cxx_tests(),
         Options::Test => run_tests(),
+        Options::Lint => run_lint(),
         Options::Clean => clean(),
         Options::RunExampleApp => run_example_app(),
     }
@@ -243,4 +246,10 @@ fn run_example_app() {
     cmd!("cargo run --bin=postform_rtt -- --chip STM32F103C8 fw_build/m3/app/postform_format")
         .run()
         .unwrap();
+}
+
+fn run_lint() {
+    cmd!("cargo clippy").run().unwrap();
+    build_firmware(Some(Core::CortexM3), false, true, true);
+    cmd!("run-clang-tidy-12").run().unwrap();
 }
