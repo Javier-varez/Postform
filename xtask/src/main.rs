@@ -50,7 +50,7 @@ where
     let uid = cmd!("id -u").read().unwrap();
     let gid = cmd!("id -g").read().unwrap();
 
-    cmd!("docker run --rm -v {root_dir}:/workspace --workdir /workspace --user {uid}:{gid} javiervarez/ate_builder:main cargo xtask").args(args).run().unwrap();
+    cmd!("docker run --rm -v {root_dir}:{root_dir} --workdir {root_dir} --user {uid}:{gid} javiervarez/ate_builder:main cargo xtask").args(args).run().unwrap();
 }
 
 fn main() {
