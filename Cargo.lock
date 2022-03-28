@@ -1102,7 +1102,7 @@ dependencies = [
 
 [[package]]
 name = "postform_decoder"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "bindgen",
  "byteorder",
@@ -1117,7 +1117,7 @@ dependencies = [
 
 [[package]]
 name = "postform_persist"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "color-eyre",
  "colored",
@@ -1131,7 +1131,7 @@ dependencies = [
 
 [[package]]
 name = "postform_rtt"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "color-eyre",
  "ctrlc",
@@ -1149,7 +1149,7 @@ dependencies = [
 
 [[package]]
 name = "postform_serial"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "color-eyre",
  "ctrlc",
