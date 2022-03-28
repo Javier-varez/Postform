@@ -8,3 +8,5 @@ postform-host/target
 target
 libpostform/docs
 .cache
+.idea
+cmake-build-release

@@ -1,4 +1,3 @@
-
 #include <atomic>
 #include <cstdio>
 
@@ -58,6 +57,8 @@ int main(int argc, const char* argv[]) {
               static_cast<unsigned long>(0x12341234),
               static_cast<unsigned long long>(0x1234567812345678));
     LOG_ERROR(&logger, "Pointer %p", reinterpret_cast<void*>(0x12341234));
+
+    LOG_ERROR(&logger, "Char %c works!", '@');
 
     constexpr auto interned_string =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "

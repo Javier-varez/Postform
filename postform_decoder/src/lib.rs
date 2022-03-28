@@ -213,6 +213,14 @@ fn decode_signed(message: &'_ mut &'_ [u8]) -> Result<i64, Error> {
     leb128::read::signed(message).map_err(|_| Error::InvalidLogMessage)
 }
 
+fn format_char<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+    let integer_val = decode_unsigned(buffer)?;
+    let char_val = char::from_u32(integer_val as u32).ok_or(Error::InvalidLogMessage)?;
+    let integer_str = format!("{}", char_val);
+    out_str.push_str(&integer_str);
+    Ok(())
+}
+
 fn format_unsigned<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
     let integer_val = decode_unsigned(buffer)?;
     let integer_str = format!("{}", integer_val);
@@ -248,7 +256,7 @@ fn format_pointer<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<
     Ok(())
 }
 
-const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 24] = [
+const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 25] = [
     ("%s", |_, out_str, buffer| {
         let nul_range_end = buffer
             .iter()
@@ -298,6 +306,7 @@ const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 24] = [
         out_str.push('%');
         Ok(())
     }),
+    ("%c", |_, out_str, buffer| format_char(out_str, buffer)),
 ];
 
 /// Decodes Postform logs from the ElfMetadata and a buffer.
@@ -372,14 +381,15 @@ impl<'a> Decoder<'a> {
             // Advance the format string
             format = format.chars().skip(format_spec_pos).collect();
 
-            for (format_spec, handler) in &FORMAT_SPEC_TABLE {
-                if format.starts_with(format_spec) {
-                    handler(self, &mut formatted_str, &mut arguments)?;
-                    // Advance the format string past the format specifier
-                    format = format.chars().skip(format_spec.len()).collect();
-                    break;
-                }
-            }
+            let (format_spec, handler) = FORMAT_SPEC_TABLE
+                .iter()
+                .find(|(format_spec, _)| format.starts_with(format_spec))
+                .ok_or(Error::InvalidFormatSpecifier(
+                    format.chars().next().unwrap(),
+                ))?;
+            handler(self, &mut formatted_str, &mut arguments)?;
+            // Advance the format string past the format specifier
+            format = format.chars().skip(format_spec.len()).collect();
         }
     }
 }
