@@ -14,6 +14,12 @@
 
 namespace Postform {
 
+#if !defined(__clang__) && defined(__GNUC__)
+constexpr static bool BUILT_WITH_GCC = true;
+#else
+constexpr static bool BUILT_WITH_GCC = false;
+#endif
+
 /**
  * @brief Describes supported log levels by Postform
  */
@@ -209,15 +215,9 @@ constexpr char InternedUserString<N...>::string[];
  * This is currently only supported by clang.
  */
 template <typename T, T... chars>
-constexpr Postform::InternedString operator""_intern() {
-#if !defined(__clang__) && defined(__GNUC__)
-#pragma message(                                          \
-    "Operator _intern is not supported on GCC.\n"         \
-    "Section attributes for static member variables are " \
-    "ignored in templated classes\n"                      \
-    "For more information visit the tracking issue: "     \
-    "https://github.com/Javier-varez/Postform/issues/79")
-#endif
+constexpr std::enable_if_t<!Postform::BUILT_WITH_GCC && sizeof(T) == 1,
+                           Postform::InternedString>
+operator""_intern() {
   return Postform::InternedString{
       Postform::InternedUserString<chars..., '\0'>::string};
 }
