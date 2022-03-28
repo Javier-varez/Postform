@@ -1,4 +1,3 @@
-
 #ifndef POSTFORM_FORMAT_VALIDATOR_H_
 #define POSTFORM_FORMAT_VALIDATOR_H_
 
@@ -48,7 +47,7 @@ template <class T>
     const char* fmt, [[maybe_unused]] T arg, std::size_t* position) {
   // This array needs to be defined inside the template in order to have
   // visibility of T.
-  constexpr std::array<FormatSpecHandler, 8> format_spec_handlers = {
+  constexpr std::array<FormatSpecHandler, 9> format_spec_handlers = {
       FormatSpecHandler{SizeSpecHandlers{}, "s",
                         []() { return std::is_convertible_v<T, const char*>; }},
       FormatSpecHandler{
@@ -74,6 +73,12 @@ template <class T>
       FormatSpecHandler{
           SizeSpecHandlers{}, "k",
           []() { return std::is_same_v<T, Postform::InternedString>; }},
+      FormatSpecHandler{SizeSpecHandlers{}, "c",
+                        []() {
+                          return std::is_same_v<T, signed char> ||
+                                 std::is_same_v<T, unsigned char> ||
+                                 std::is_same_v<T, char>;
+                        }},
   };
 
   /// Common code for handling all supported format_specifiers

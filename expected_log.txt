@@ -1,250 +1,270 @@
 0.000000     Debug      : Iteration number: 0
-└── File: ../app/src/host_main.cpp, Line number: 30
+└── File: ../app/src/host_main.cpp, Line number: 29
 1.000000     Debug      : Is this nice or what?!
-└── File: ../app/src/host_main.cpp, Line number: 31
+└── File: ../app/src/host_main.cpp, Line number: 30
 2.000000     Info       : I am 28 years old...
-└── File: ../app/src/host_main.cpp, Line number: 32
+└── File: ../app/src/host_main.cpp, Line number: 31
 3.000000     Warning    : Third string! With multiple args and more numbers: -1124
-└── File: ../app/src/host_main.cpp, Line number: 34
+└── File: ../app/src/host_main.cpp, Line number: 33
 4.000000     Error      : Oh boy, error 234556 just happened
-└── File: ../app/src/host_main.cpp, Line number: 35
+└── File: ../app/src/host_main.cpp, Line number: 34
 5.000000     Error      : This is my char array: 123
-└── File: ../app/src/host_main.cpp, Line number: 37
+└── File: ../app/src/host_main.cpp, Line number: 36
 6.000000     Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 43
+└── File: ../app/src/host_main.cpp, Line number: 42
 7.000000     Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-└── File: ../app/src/host_main.cpp, Line number: 47
+└── File: ../app/src/host_main.cpp, Line number: 46
 8.000000     Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 53
+└── File: ../app/src/host_main.cpp, Line number: 52
 9.000000     Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-└── File: ../app/src/host_main.cpp, Line number: 59
+└── File: ../app/src/host_main.cpp, Line number: 58
 10.000000    Error      : Pointer 0x12341234
-└── File: ../app/src/host_main.cpp, Line number: 60
-11.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
-Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-└── File: ../app/src/host_main.cpp, Line number: 92
-12.000000    Debug      : Iteration number: 1
-└── File: ../app/src/host_main.cpp, Line number: 30
-13.000000    Debug      : Is this nice or what?!
-└── File: ../app/src/host_main.cpp, Line number: 31
-14.000000    Info       : I am 28 years old...
-└── File: ../app/src/host_main.cpp, Line number: 32
-15.000000    Warning    : Third string! With multiple args and more numbers: -1124
-└── File: ../app/src/host_main.cpp, Line number: 34
-16.000000    Error      : Oh boy, error 234556 just happened
-└── File: ../app/src/host_main.cpp, Line number: 35
-17.000000    Error      : This is my char array: 123
-└── File: ../app/src/host_main.cpp, Line number: 37
-18.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 43
-19.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-└── File: ../app/src/host_main.cpp, Line number: 47
-20.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 53
-21.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
 └── File: ../app/src/host_main.cpp, Line number: 59
-22.000000    Error      : Pointer 0x12341234
-└── File: ../app/src/host_main.cpp, Line number: 60
-23.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+11.000000    Error      : Char @ works!
+└── File: ../app/src/host_main.cpp, Line number: 61
+12.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-└── File: ../app/src/host_main.cpp, Line number: 92
-24.000000    Debug      : Iteration number: 2
+└── File: ../app/src/host_main.cpp, Line number: 93
+13.000000    Debug      : Iteration number: 1
+└── File: ../app/src/host_main.cpp, Line number: 29
+14.000000    Debug      : Is this nice or what?!
 └── File: ../app/src/host_main.cpp, Line number: 30
-25.000000    Debug      : Is this nice or what?!
+15.000000    Info       : I am 28 years old...
 └── File: ../app/src/host_main.cpp, Line number: 31
-26.000000    Info       : I am 28 years old...
-└── File: ../app/src/host_main.cpp, Line number: 32
-27.000000    Warning    : Third string! With multiple args and more numbers: -1124
+16.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: ../app/src/host_main.cpp, Line number: 33
+17.000000    Error      : Oh boy, error 234556 just happened
 └── File: ../app/src/host_main.cpp, Line number: 34
-28.000000    Error      : Oh boy, error 234556 just happened
-└── File: ../app/src/host_main.cpp, Line number: 35
-29.000000    Error      : This is my char array: 123
-└── File: ../app/src/host_main.cpp, Line number: 37
-30.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 43
-31.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-└── File: ../app/src/host_main.cpp, Line number: 47
-32.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 53
-33.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+18.000000    Error      : This is my char array: 123
+└── File: ../app/src/host_main.cpp, Line number: 36
+19.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 42
+20.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: ../app/src/host_main.cpp, Line number: 46
+21.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 52
+22.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: ../app/src/host_main.cpp, Line number: 58
+23.000000    Error      : Pointer 0x12341234
 └── File: ../app/src/host_main.cpp, Line number: 59
-34.000000    Error      : Pointer 0x12341234
-└── File: ../app/src/host_main.cpp, Line number: 60
-35.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+24.000000    Error      : Char @ works!
+└── File: ../app/src/host_main.cpp, Line number: 61
+25.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-└── File: ../app/src/host_main.cpp, Line number: 92
-36.000000    Debug      : Iteration number: 3
+└── File: ../app/src/host_main.cpp, Line number: 93
+26.000000    Debug      : Iteration number: 2
+└── File: ../app/src/host_main.cpp, Line number: 29
+27.000000    Debug      : Is this nice or what?!
 └── File: ../app/src/host_main.cpp, Line number: 30
-37.000000    Debug      : Is this nice or what?!
+28.000000    Info       : I am 28 years old...
 └── File: ../app/src/host_main.cpp, Line number: 31
-38.000000    Info       : I am 28 years old...
-└── File: ../app/src/host_main.cpp, Line number: 32
-39.000000    Warning    : Third string! With multiple args and more numbers: -1124
+29.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: ../app/src/host_main.cpp, Line number: 33
+30.000000    Error      : Oh boy, error 234556 just happened
 └── File: ../app/src/host_main.cpp, Line number: 34
-40.000000    Error      : Oh boy, error 234556 just happened
-└── File: ../app/src/host_main.cpp, Line number: 35
-41.000000    Error      : This is my char array: 123
-└── File: ../app/src/host_main.cpp, Line number: 37
-42.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 43
-43.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-└── File: ../app/src/host_main.cpp, Line number: 47
-44.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 53
-45.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+31.000000    Error      : This is my char array: 123
+└── File: ../app/src/host_main.cpp, Line number: 36
+32.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 42
+33.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: ../app/src/host_main.cpp, Line number: 46
+34.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 52
+35.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: ../app/src/host_main.cpp, Line number: 58
+36.000000    Error      : Pointer 0x12341234
 └── File: ../app/src/host_main.cpp, Line number: 59
-46.000000    Error      : Pointer 0x12341234
-└── File: ../app/src/host_main.cpp, Line number: 60
-47.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+37.000000    Error      : Char @ works!
+└── File: ../app/src/host_main.cpp, Line number: 61
+38.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-└── File: ../app/src/host_main.cpp, Line number: 92
-48.000000    Debug      : Iteration number: 4
+└── File: ../app/src/host_main.cpp, Line number: 93
+39.000000    Debug      : Iteration number: 3
+└── File: ../app/src/host_main.cpp, Line number: 29
+40.000000    Debug      : Is this nice or what?!
 └── File: ../app/src/host_main.cpp, Line number: 30
-49.000000    Debug      : Is this nice or what?!
+41.000000    Info       : I am 28 years old...
 └── File: ../app/src/host_main.cpp, Line number: 31
-50.000000    Info       : I am 28 years old...
-└── File: ../app/src/host_main.cpp, Line number: 32
-51.000000    Warning    : Third string! With multiple args and more numbers: -1124
+42.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: ../app/src/host_main.cpp, Line number: 33
+43.000000    Error      : Oh boy, error 234556 just happened
 └── File: ../app/src/host_main.cpp, Line number: 34
-52.000000    Error      : Oh boy, error 234556 just happened
-└── File: ../app/src/host_main.cpp, Line number: 35
-53.000000    Error      : This is my char array: 123
-└── File: ../app/src/host_main.cpp, Line number: 37
-54.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 43
-55.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-└── File: ../app/src/host_main.cpp, Line number: 47
-56.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 53
-57.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+44.000000    Error      : This is my char array: 123
+└── File: ../app/src/host_main.cpp, Line number: 36
+45.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 42
+46.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: ../app/src/host_main.cpp, Line number: 46
+47.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 52
+48.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: ../app/src/host_main.cpp, Line number: 58
+49.000000    Error      : Pointer 0x12341234
 └── File: ../app/src/host_main.cpp, Line number: 59
-58.000000    Error      : Pointer 0x12341234
-└── File: ../app/src/host_main.cpp, Line number: 60
-59.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+50.000000    Error      : Char @ works!
+└── File: ../app/src/host_main.cpp, Line number: 61
+51.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-└── File: ../app/src/host_main.cpp, Line number: 92
-60.000000    Debug      : Iteration number: 5
+└── File: ../app/src/host_main.cpp, Line number: 93
+52.000000    Debug      : Iteration number: 4
+└── File: ../app/src/host_main.cpp, Line number: 29
+53.000000    Debug      : Is this nice or what?!
 └── File: ../app/src/host_main.cpp, Line number: 30
-61.000000    Debug      : Is this nice or what?!
+54.000000    Info       : I am 28 years old...
 └── File: ../app/src/host_main.cpp, Line number: 31
-62.000000    Info       : I am 28 years old...
-└── File: ../app/src/host_main.cpp, Line number: 32
-63.000000    Warning    : Third string! With multiple args and more numbers: -1124
+55.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: ../app/src/host_main.cpp, Line number: 33
+56.000000    Error      : Oh boy, error 234556 just happened
 └── File: ../app/src/host_main.cpp, Line number: 34
-64.000000    Error      : Oh boy, error 234556 just happened
-└── File: ../app/src/host_main.cpp, Line number: 35
-65.000000    Error      : This is my char array: 123
-└── File: ../app/src/host_main.cpp, Line number: 37
-66.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 43
-67.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-└── File: ../app/src/host_main.cpp, Line number: 47
-68.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 53
-69.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+57.000000    Error      : This is my char array: 123
+└── File: ../app/src/host_main.cpp, Line number: 36
+58.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 42
+59.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: ../app/src/host_main.cpp, Line number: 46
+60.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 52
+61.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: ../app/src/host_main.cpp, Line number: 58
+62.000000    Error      : Pointer 0x12341234
 └── File: ../app/src/host_main.cpp, Line number: 59
-70.000000    Error      : Pointer 0x12341234
-└── File: ../app/src/host_main.cpp, Line number: 60
-71.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+63.000000    Error      : Char @ works!
+└── File: ../app/src/host_main.cpp, Line number: 61
+64.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-└── File: ../app/src/host_main.cpp, Line number: 92
-72.000000    Debug      : Iteration number: 6
+└── File: ../app/src/host_main.cpp, Line number: 93
+65.000000    Debug      : Iteration number: 5
+└── File: ../app/src/host_main.cpp, Line number: 29
+66.000000    Debug      : Is this nice or what?!
 └── File: ../app/src/host_main.cpp, Line number: 30
-73.000000    Debug      : Is this nice or what?!
+67.000000    Info       : I am 28 years old...
 └── File: ../app/src/host_main.cpp, Line number: 31
-74.000000    Info       : I am 28 years old...
-└── File: ../app/src/host_main.cpp, Line number: 32
-75.000000    Warning    : Third string! With multiple args and more numbers: -1124
+68.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: ../app/src/host_main.cpp, Line number: 33
+69.000000    Error      : Oh boy, error 234556 just happened
 └── File: ../app/src/host_main.cpp, Line number: 34
-76.000000    Error      : Oh boy, error 234556 just happened
-└── File: ../app/src/host_main.cpp, Line number: 35
-77.000000    Error      : This is my char array: 123
-└── File: ../app/src/host_main.cpp, Line number: 37
-78.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 43
-79.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-└── File: ../app/src/host_main.cpp, Line number: 47
-80.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 53
-81.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+70.000000    Error      : This is my char array: 123
+└── File: ../app/src/host_main.cpp, Line number: 36
+71.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 42
+72.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: ../app/src/host_main.cpp, Line number: 46
+73.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 52
+74.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: ../app/src/host_main.cpp, Line number: 58
+75.000000    Error      : Pointer 0x12341234
 └── File: ../app/src/host_main.cpp, Line number: 59
-82.000000    Error      : Pointer 0x12341234
-└── File: ../app/src/host_main.cpp, Line number: 60
-83.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+76.000000    Error      : Char @ works!
+└── File: ../app/src/host_main.cpp, Line number: 61
+77.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-└── File: ../app/src/host_main.cpp, Line number: 92
-84.000000    Debug      : Iteration number: 7
+└── File: ../app/src/host_main.cpp, Line number: 93
+78.000000    Debug      : Iteration number: 6
+└── File: ../app/src/host_main.cpp, Line number: 29
+79.000000    Debug      : Is this nice or what?!
 └── File: ../app/src/host_main.cpp, Line number: 30
-85.000000    Debug      : Is this nice or what?!
+80.000000    Info       : I am 28 years old...
 └── File: ../app/src/host_main.cpp, Line number: 31
-86.000000    Info       : I am 28 years old...
-└── File: ../app/src/host_main.cpp, Line number: 32
-87.000000    Warning    : Third string! With multiple args and more numbers: -1124
+81.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: ../app/src/host_main.cpp, Line number: 33
+82.000000    Error      : Oh boy, error 234556 just happened
 └── File: ../app/src/host_main.cpp, Line number: 34
-88.000000    Error      : Oh boy, error 234556 just happened
-└── File: ../app/src/host_main.cpp, Line number: 35
-89.000000    Error      : This is my char array: 123
-└── File: ../app/src/host_main.cpp, Line number: 37
-90.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 43
-91.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-└── File: ../app/src/host_main.cpp, Line number: 47
-92.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 53
-93.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+83.000000    Error      : This is my char array: 123
+└── File: ../app/src/host_main.cpp, Line number: 36
+84.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 42
+85.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: ../app/src/host_main.cpp, Line number: 46
+86.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 52
+87.000000    Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: ../app/src/host_main.cpp, Line number: 58
+88.000000    Error      : Pointer 0x12341234
 └── File: ../app/src/host_main.cpp, Line number: 59
-94.000000    Error      : Pointer 0x12341234
-└── File: ../app/src/host_main.cpp, Line number: 60
-95.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+89.000000    Error      : Char @ works!
+└── File: ../app/src/host_main.cpp, Line number: 61
+90.000000    Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-└── File: ../app/src/host_main.cpp, Line number: 92
-96.000000    Debug      : Iteration number: 8
+└── File: ../app/src/host_main.cpp, Line number: 93
+91.000000    Debug      : Iteration number: 7
+└── File: ../app/src/host_main.cpp, Line number: 29
+92.000000    Debug      : Is this nice or what?!
 └── File: ../app/src/host_main.cpp, Line number: 30
-97.000000    Debug      : Is this nice or what?!
+93.000000    Info       : I am 28 years old...
 └── File: ../app/src/host_main.cpp, Line number: 31
-98.000000    Info       : I am 28 years old...
-└── File: ../app/src/host_main.cpp, Line number: 32
-99.000000    Warning    : Third string! With multiple args and more numbers: -1124
+94.000000    Warning    : Third string! With multiple args and more numbers: -1124
+└── File: ../app/src/host_main.cpp, Line number: 33
+95.000000    Error      : Oh boy, error 234556 just happened
 └── File: ../app/src/host_main.cpp, Line number: 34
-100.000000   Error      : Oh boy, error 234556 just happened
-└── File: ../app/src/host_main.cpp, Line number: 35
-101.000000   Error      : This is my char array: 123
-└── File: ../app/src/host_main.cpp, Line number: 37
-102.000000   Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 43
-103.000000   Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-└── File: ../app/src/host_main.cpp, Line number: 47
-104.000000   Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 53
-105.000000   Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+96.000000    Error      : This is my char array: 123
+└── File: ../app/src/host_main.cpp, Line number: 36
+97.000000    Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 42
+98.000000    Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: ../app/src/host_main.cpp, Line number: 46
+99.000000    Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 52
+100.000000   Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: ../app/src/host_main.cpp, Line number: 58
+101.000000   Error      : Pointer 0x12341234
 └── File: ../app/src/host_main.cpp, Line number: 59
-106.000000   Error      : Pointer 0x12341234
-└── File: ../app/src/host_main.cpp, Line number: 60
-107.000000   Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+102.000000   Error      : Char @ works!
+└── File: ../app/src/host_main.cpp, Line number: 61
+103.000000   Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-└── File: ../app/src/host_main.cpp, Line number: 92
-108.000000   Debug      : Iteration number: 9
+└── File: ../app/src/host_main.cpp, Line number: 93
+104.000000   Debug      : Iteration number: 8
+└── File: ../app/src/host_main.cpp, Line number: 29
+105.000000   Debug      : Is this nice or what?!
 └── File: ../app/src/host_main.cpp, Line number: 30
-109.000000   Debug      : Is this nice or what?!
+106.000000   Info       : I am 28 years old...
 └── File: ../app/src/host_main.cpp, Line number: 31
-110.000000   Info       : I am 28 years old...
-└── File: ../app/src/host_main.cpp, Line number: 32
-111.000000   Warning    : Third string! With multiple args and more numbers: -1124
+107.000000   Warning    : Third string! With multiple args and more numbers: -1124
+└── File: ../app/src/host_main.cpp, Line number: 33
+108.000000   Error      : Oh boy, error 234556 just happened
 └── File: ../app/src/host_main.cpp, Line number: 34
-112.000000   Error      : Oh boy, error 234556 just happened
-└── File: ../app/src/host_main.cpp, Line number: 35
-113.000000   Error      : This is my char array: 123
-└── File: ../app/src/host_main.cpp, Line number: 37
-114.000000   Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 43
-115.000000   Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-└── File: ../app/src/host_main.cpp, Line number: 47
-116.000000   Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
-└── File: ../app/src/host_main.cpp, Line number: 53
-117.000000   Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+109.000000   Error      : This is my char array: 123
+└── File: ../app/src/host_main.cpp, Line number: 36
+110.000000   Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 42
+111.000000   Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: ../app/src/host_main.cpp, Line number: 46
+112.000000   Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 52
+113.000000   Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: ../app/src/host_main.cpp, Line number: 58
+114.000000   Error      : Pointer 0x12341234
 └── File: ../app/src/host_main.cpp, Line number: 59
-118.000000   Error      : Pointer 0x12341234
-└── File: ../app/src/host_main.cpp, Line number: 60
-119.000000   Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+115.000000   Error      : Char @ works!
+└── File: ../app/src/host_main.cpp, Line number: 61
+116.000000   Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
 Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
-└── File: ../app/src/host_main.cpp, Line number: 92
+└── File: ../app/src/host_main.cpp, Line number: 93
+117.000000   Debug      : Iteration number: 9
+└── File: ../app/src/host_main.cpp, Line number: 29
+118.000000   Debug      : Is this nice or what?!
+└── File: ../app/src/host_main.cpp, Line number: 30
+119.000000   Info       : I am 28 years old...
+└── File: ../app/src/host_main.cpp, Line number: 31
+120.000000   Warning    : Third string! With multiple args and more numbers: -1124
+└── File: ../app/src/host_main.cpp, Line number: 33
+121.000000   Error      : Oh boy, error 234556 just happened
+└── File: ../app/src/host_main.cpp, Line number: 34
+122.000000   Error      : This is my char array: 123
+└── File: ../app/src/host_main.cpp, Line number: 36
+123.000000   Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 42
+124.000000   Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
+└── File: ../app/src/host_main.cpp, Line number: 46
+125.000000   Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
+└── File: ../app/src/host_main.cpp, Line number: 52
+126.000000   Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
+└── File: ../app/src/host_main.cpp, Line number: 58
+127.000000   Error      : Pointer 0x12341234
+└── File: ../app/src/host_main.cpp, Line number: 59
+128.000000   Error      : Char @ works!
+└── File: ../app/src/host_main.cpp, Line number: 61
+129.000000   Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue, libero vitae condimentum egestas, tortor metus condimentum augue, in pretium dolor purus quis lectus. Aenean nunc sapien, eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida mauris risus nec est. Aliquam ante sapien, vehicula vel elementum at, feugiat quis libero. Nulla in lorem eu erat vulputate efficitur. Etiam dapibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscipit augue. Donec vel lorem justo. Aenean id dolor quis erat blandit cursus. Aenean varius fringilla eros vitae vestibulum.
+Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam vulputate, luctus sapien vel, tristique arcu. Suspendisse et ultrices odio. Pellentesque consectetur lacus sapien, ut ornare odio sagittis vel. Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit amet metus aliquet pharetra ac in ante. Phasellus sit amet dui vehicula, tristique neque et, ullamcorper est. Integer ullamcorper risus in mattis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vivamus pellentesque purus sed velit placerat ultricies. In ut erat diam. Suspendisse potenti.
+└── File: ../app/src/host_main.cpp, Line number: 93
