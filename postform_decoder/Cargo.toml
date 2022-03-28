@@ -1,6 +1,6 @@
 [package]
 name = "postform_decoder"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Javier Alvarez <javier.alvarez@allthingsembedded.net>"]
 description = "Decoder for the Postform logging framework, an efficient logging framework for mcu's"
 license = "MIT OR Apache-2.0"
