@@ -125,67 +125,7 @@ cargo xtask run-example-app
 
 This will build the example firmware application for the cortex-m3 and then immediately trigger `postform_rtt` (building it if needed). Then `postform_rtt` will connect to the target MCU via RTT (using an SWD connection) and load all debugging information from the FW ELF file. The example app is built for an `STM32F103C8` microcontrollers connected via a debugger compatible with `probe-rs`, like an `ST-Link` or a `J-Link`.
 
-```bash
-$ cargo xtask run-example-app
-    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
-     Running `xtask/target/debug/xtask run-example-app`
-$ cmake -G Ninja -DPOSTFORM_BUILD_EXAMPLES=true -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/armv7m.cmake -DPOSTFORM_BUILD_TARGET_APP=true
--- The C compiler identification is Clang 12.0.1
--- The CXX compiler identification is Clang 12.0.1
--- Check for working C compiler: /usr/bin/clang
--- Check for working C compiler: /usr/bin/clang -- works
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Detecting C compile features
--- Detecting C compile features - done
--- Check for working CXX compiler: /usr/bin/clang++
--- Check for working CXX compiler: /usr/bin/clang++ -- works
--- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - done
--- Detecting CXX compile features
--- Detecting CXX compile features - done
--- Configuring done
--- Generating done
--- Build files have been written to: /home/javier/Documents/code/Postform/fw_build/m3
-$ cmake --build .
-[14/14] Linking CXX executable app/postform_format
-$ cargo run --bin=postform_rtt -- --chip STM32F103C8 fw_build/m3/app/postform_format
-    Finished dev [unoptimized + debuginfo] target(s) in 0.05s
-     Running `target/debug/postform_rtt --chip STM32F103C8 fw_build/m3/app/postform_format`
-0.000001     Debug      : Iteration number: 0
-└── File: ../../app/src/main.cpp, Line number: 86
-0.000355     Debug      : Is this nice or what?!
-└── File: ../../app/src/main.cpp, Line number: 88
-0.000374     Info       : I am 28 years old...
-└── File: ../../app/src/main.cpp, Line number: 89
-0.000388     Warning    : Third string! With multiple args and more numbers: -1124
-└── File: ../../app/src/main.cpp, Line number: 91
-0.000412     Error      : Oh boy, error 234556 just happened
-└── File: ../../app/src/main.cpp, Line number: 92
-0.000429     Error      : This is my char array: 123
-└── File: ../../app/src/main.cpp, Line number: 94
-0.000447     Error      : different unsigned sizes: 123, 43212, 123123123, 123123123, 123123123
-└── File: ../../app/src/main.cpp, Line number: 100
-0.000484     Error      : different signed sizes: -123, -13212, -123123123, -123123123, -123123123
-└── File: ../../app/src/main.cpp, Line number: 104
-0.000528     Error      : different octal sizes: 123, 123, 123123, 123123123, 123123123
-└── File: ../../app/src/main.cpp, Line number: 110
-0.000561     Error      : different hex sizes: f3, 1321, 12341235, 12341234, 1234567812345678
-└── File: ../../app/src/main.cpp, Line number: 116
-0.000607     Error      : Pointer 0x12341234
-└── File: ../../app/src/main.cpp, Line number: 117
-0.000625     Debug      : Now if I wanted to print a really long text I can use %k: Lorem ipsum dolor sit amet, consectetur adipiscing
- eleifend quis convallis ut, venenatis quis mauris. Morbi tempor, ex a lobortis luctus, sem nunc laoreet dolor, pellentesque gravida m
-pibus purus sed sagittis lobortis. Sed quis porttitor nulla. Nulla in ante ac arcu semper efficitur ut at erat. Fusce porttitor suscip
-Morbi tristique tristique nulla, at posuere ex sagittis at. Aliquam est quam, porta nec erat ac, convallis tempus augue. Nam eu quam v
- Cras molestie eros odio, vitae ullamcorper ante vestibulum non. Vestibulum facilisis diam vel condimentum gravida. Donec in odio sit
-tis laoreet. Nullam dignissim vel ex vel molestie. Vestibulum id eleifend metus. Curabitur malesuada condimentum augue ut molestie. Vi
-└── File: ../../app/src/main.cpp, Line number: 149
-1.000002     Debug      : Iteration number: 1
-└── File: ../../app/src/main.cpp, Line number: 86
-1.000454     Debug      : Is this nice or what?!
-└── File: ../../app/src/main.cpp, Line number: 88
-```
+[![asciicast](https://asciinema.org/a/2PQc3nY6NC8ngF36e9Vupfkxu.svg)](https://asciinema.org/a/2PQc3nY6NC8ngF36e9Vupfkxu)
 
 ## Running in a docker container
 
