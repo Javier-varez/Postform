@@ -1,9 +1,8 @@
-
 #include "postform/macros.h"
 
 // Compile-time tests for the POSTFORM_NARG macro
 // This can fail if the gnu extensions are not enabled.
-// Make sure to build with -std=gnu++17
+// Make sure to build with -std=gnu++20
 static_assert(POSTFORM_NARG() == 0, "Make sure to enable gnu extensions");
 static_assert(POSTFORM_NARG(1) == 1);
 static_assert(POSTFORM_NARG(1, 2) == 2);

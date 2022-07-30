@@ -25,8 +25,9 @@ target_compile_options(postform
     -Wall
     -Wextra
     -Werror
-    -std=gnu++17
     -DPOSTFORM_COMMIT_ID=${POSTFORM_VERSION})
+
+target_compile_features(postform PUBLIC cxx_std_20)
 
 # Clang emits a warning for the string literal operator template GNU extension
 # We are opting in gnu extensions, so this warning is fine.
@@ -72,8 +73,9 @@ if (POSTFORM_BUILD_UNITTESTS MATCHES "true")
       -Wall
       -Wextra
       -Werror
-      -std=gnu++17
       -DPOSTFORM_COMMIT_ID=${POSTFORM_VERSION})
+
+  target_compile_features(postform_tests PUBLIC cxx_std_20)
 
   # Clang emits a warning for the string literal operator template GNU extension
   # We are opting in gnu extensions, so this warning is fine.

@@ -6,9 +6,8 @@ if (POSTFORM_BUILD_TARGET_APP MATCHES "true")
     src/main.cpp src/postform_config.cpp)
 
   target_include_directories(postform_format PRIVATE inc)
-
-  target_compile_options(postform_format PRIVATE
-    -Os -std=gnu++17)
+  target_compile_options(postform_format PRIVATE -Os)
+  target_compile_features(postform_format PUBLIC cxx_std_20)
 
   # Clang emits a warning for the string literal operator template GNU extension
   # We are opting in gnu extensions, so this warning is fine.
@@ -45,8 +44,8 @@ else()
   add_executable(postform_test
     src/host_main.cpp)
 
-  target_compile_options(postform_test PRIVATE
-    -Os -std=gnu++17)
+  target_compile_options(postform_test PRIVATE -Os)
+  target_compile_features(postform_test PUBLIC cxx_std_20)
 
   # Clang emits a warning for the string literal operator template GNU extension
   # We are opting in gnu extensions, so this warning is fine.
