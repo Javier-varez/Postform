@@ -1,4 +1,3 @@
-
 #ifndef POSTFORM_RTT_RTT_H_
 #define POSTFORM_RTT_RTT_H_
 
@@ -54,8 +53,8 @@ struct ControlBlock {
   std::array<Rtt::Channel, UP_CHANNELS> up_channels;
   std::array<Rtt::Channel, DOWN_CHANNELS> down_channels;
 
-  ControlBlock(std::span<ChannelDescriptor> up_channel_descriptors,
-               std::span<ChannelDescriptor> down_channel_descriptors)
+  ControlBlock(std::span<const ChannelDescriptor> up_channel_descriptors,
+               std::span<const ChannelDescriptor> down_channel_descriptors)
       : header(UP_CHANNELS, DOWN_CHANNELS) {
     DITTO_VERIFY(up_channel_descriptors.size() == UP_CHANNELS);
     DITTO_VERIFY(down_channel_descriptors.size() == DOWN_CHANNELS);
