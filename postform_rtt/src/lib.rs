@@ -41,7 +41,7 @@ struct RttChannel {
 pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &Path) -> Result<()> {
     let mut mutex_guard = session.lock().unwrap();
     log::info!("Loading FW to target");
-    download_file(&mut mutex_guard, &elf_path, Format::Elf)?;
+    download_file(&mut mutex_guard, elf_path, Format::Elf)?;
     log::info!("Download complete!");
 
     let file_contents = fs::read(elf_path)?;
@@ -55,7 +55,7 @@ pub fn download_firmware(session: &Arc<Mutex<Session>>, elf_path: &Path) -> Resu
     let _ = core.reset_and_halt(Duration::from_millis(100))?;
     // If the main address has bit 0 set to indicate thumb mode in an ARM binary, let's set it back
     // to 0
-    let main = (main.address() as u32) & !0x01;
+    let main = main.address() & !0x01_u64;
     core.set_hw_breakpoint(main)?;
     log::debug!("Inserting breakpoint at main() @ 0x{:x}", main);
     core.run()?;
@@ -92,7 +92,7 @@ pub fn configure_rtt_mode(
         + CHANNEL_SIZE * channel_idx
         + offset_of!(RttChannel => flags).get_byte_offset();
     log::info!("Setting mode to {:?}", mode);
-    core.write_word_32(mode_flags_addr as u32, mode as u32)?;
+    core.write_word_32(mode_flags_addr as u64, mode as u32)?;
 
     Ok(())
 }
@@ -133,5 +133,13 @@ pub fn attach_rtt(session: Arc<Mutex<Session>>, elf_file: &ElfFile) -> Result<Rt
         .ok_or(RttError::MissingSymbol("_SEGGER_RTT"))?;
     log::info!("Attaching RTT to address 0x{:x}", segger_rtt.address());
     let scan_region = ScanRegion::Exact(segger_rtt.address() as u32);
-    Ok(Rtt::attach_region(session, &scan_region)?)
+    let mut locked_session = session.lock().unwrap();
+    let memory_map = locked_session.target().memory_map.clone();
+    // TODO: Support multicore
+    let mut core = locked_session.core(0)?;
+    Ok(Rtt::attach_region(
+        &mut core,
+        &memory_map[..],
+        &scan_region,
+    )?)
 }

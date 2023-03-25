@@ -41,7 +41,7 @@ pub enum Error {
 }
 
 /// Available log levels of Postform.
-#[derive(Copy, Clone, Debug, strum_macros::ToString)]
+#[derive(Copy, Clone, Debug, strum_macros::IntoStaticStr)]
 pub enum LogLevel {
     Debug,
     Info,
@@ -52,10 +52,16 @@ pub enum LogLevel {
 
 impl LogLevel {
     fn get_start_section_label(&self) -> String {
-        format!("__Interned{}Start", self.to_string())
+        format!(
+            "__Interned{}Start",
+            <LogLevel as Into<&'static str>>::into(*self)
+        )
     }
     fn get_end_section_label(&self) -> String {
-        format!("__Interned{}End", self.to_string())
+        format!(
+            "__Interned{}End",
+            <LogLevel as Into<&'static str>>::into(*self)
+        )
     }
 
     fn find_level_in_elf(&self, elf_file: &ElfFile) -> Result<(usize, usize), Error> {
@@ -213,7 +219,7 @@ fn decode_signed(message: &'_ mut &'_ [u8]) -> Result<i64, Error> {
     leb128::read::signed(message).map_err(|_| Error::InvalidLogMessage)
 }
 
-fn format_char<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+fn format_char(out_str: &mut String, buffer: &mut &[u8]) -> Result<(), Error> {
     let integer_val = decode_unsigned(buffer)?;
     let char_val = char::from_u32(integer_val as u32).ok_or(Error::InvalidLogMessage)?;
     let integer_str = format!("{}", char_val);
@@ -221,35 +227,35 @@ fn format_char<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(),
     Ok(())
 }
 
-fn format_unsigned<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+fn format_unsigned(out_str: &mut String, buffer: &mut &[u8]) -> Result<(), Error> {
     let integer_val = decode_unsigned(buffer)?;
     let integer_str = format!("{}", integer_val);
     out_str.push_str(&integer_str);
     Ok(())
 }
 
-fn format_signed<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+fn format_signed(out_str: &mut String, buffer: &mut &[u8]) -> Result<(), Error> {
     let integer_val = decode_signed(buffer)?;
     let integer_str = format!("{}", integer_val);
     out_str.push_str(&integer_str);
     Ok(())
 }
 
-fn format_octal<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+fn format_octal(out_str: &mut String, buffer: &mut &[u8]) -> Result<(), Error> {
     let integer_val = decode_unsigned(buffer)?;
     let integer_str = format!("{:o}", integer_val);
     out_str.push_str(&integer_str);
     Ok(())
 }
 
-fn format_hex<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+fn format_hex(out_str: &mut String, buffer: &mut &[u8]) -> Result<(), Error> {
     let integer_val = decode_unsigned(buffer)?;
     let integer_str = format!("{:x}", integer_val);
     out_str.push_str(&integer_str);
     Ok(())
 }
 
-fn format_pointer<'a>(out_str: &mut String, buffer: &'_ mut &'a [u8]) -> Result<(), Error> {
+fn format_pointer(out_str: &mut String, buffer: &mut &[u8]) -> Result<(), Error> {
     let integer_val = decode_unsigned(buffer)?;
     let integer_str = format!("0x{:x}", integer_val);
     out_str.push_str(&integer_str);
@@ -296,9 +302,7 @@ const FORMAT_SPEC_TABLE: [(&str, FormatSpecHandler); 25] = [
     ("%p", |_, out_str, buffer| format_pointer(out_str, buffer)),
     ("%k", |decoder, out_str, buffer| {
         let str_ptr = decode_unsigned(buffer)? as usize;
-        let interned_string = decoder
-            .elf_metadata
-            .recover_interned_string(str_ptr as usize)?;
+        let interned_string = decoder.elf_metadata.recover_interned_string(str_ptr)?;
         out_str.push_str(&interned_string);
         Ok(())
     }),
@@ -461,7 +465,7 @@ pub fn print_log(log: &Log) {
     println!(
         "{timestamp:<12.6} {level:<11}: {msg}",
         timestamp = log.timestamp,
-        level = log.level.to_string().color(color_for_level(log.level)),
+        level = <LogLevel as Into<&'static str>>::into(log.level).color(color_for_level(log.level)),
         msg = log.message
     );
     println!(

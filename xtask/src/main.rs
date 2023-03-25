@@ -251,5 +251,5 @@ fn run_example_app() {
 fn run_lint() {
     cmd!("cargo clippy").run().unwrap();
     build_firmware(Some(Core::CortexM3), false, true, true);
-    cmd!("run-clang-tidy-12").run().unwrap();
+    cmd!("run-clang-tidy").run().unwrap();
 }

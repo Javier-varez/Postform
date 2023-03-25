@@ -5,6 +5,7 @@ use postform_rtt::{
     RttMode,
 };
 use probe_rs::{DebugProbeError, DebugProbeSelector, Probe};
+use probe_rs_gdb_server::GdbInstanceConfiguration;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::{
     fs,
@@ -158,10 +159,12 @@ fn main() -> color_eyre::eyre::Result<()> {
     let rtt_channel = opts.channel.unwrap_or(0);
 
     if let Some(chip) = opts.chip {
-        let session = Arc::new(Mutex::new(probe.attach(chip)?));
+        let session = Arc::new(Mutex::new(
+            probe.attach(chip, probe_rs::Permissions::new())?,
+        ));
 
         let elf_contents = fs::read(elf_name.clone())?;
-        let elf_file = ElfFile::parse(&elf_contents)?;
+        let elf_file = ElfFile::parse(&elf_contents[..])?;
         let segger_rtt = elf_file
             .symbols()
             .find(|s| s.name().unwrap() == "_SEGGER_RTT")
@@ -196,7 +199,14 @@ fn main() -> color_eyre::eyre::Result<()> {
                 let gdb_connection_string = "127.0.0.1:1337";
                 // This next unwrap will always resolve as the connection string is always Some(T).
                 log::info!("Firing up GDB stub at {}.", gdb_connection_string);
-                if let Err(e) = probe_rs_gdb_server::run(Some(gdb_connection_string), &session) {
+                let config = {
+                    let locked_session = session.lock().unwrap();
+                    GdbInstanceConfiguration::from_session(
+                        &locked_session,
+                        Some(gdb_connection_string),
+                    )
+                };
+                if let Err(e) = probe_rs_gdb_server::run(&session, config.iter()) {
                     log::error!("During the execution of GDB an error was encountered:");
                     log::error!("{:?}", e);
                 }
@@ -207,7 +217,12 @@ fn main() -> color_eyre::eyre::Result<()> {
             let mut buffer = [0u8; 1024];
             let mut decoder = SerialDecoder::new(&elf_metadata);
             loop {
-                let count = log_channel.read(&mut buffer[..])?;
+                let count = {
+                    let mut locked_session = session.lock().unwrap();
+                    // TODO(ja): Support multicore
+                    let mut core = locked_session.core(0)?;
+                    log_channel.read(&mut core, &mut buffer[..])?
+                };
                 if count > 0 {
                     decoder.feed_and_do(&buffer[..count], |log| {
                         print_log(&log);
