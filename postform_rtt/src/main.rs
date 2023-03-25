@@ -189,7 +189,9 @@ fn main() -> color_eyre::eyre::Result<()> {
             RttMode::Blocking,
         )?;
         let mut rtt = attach_rtt(session.clone(), &elf_file)?;
-        run_core(session.clone())?;
+        if !opts.attach {
+            run_core(session.clone())?;
+        }
 
         if !opts.gdb_server {
             disable_cdebugen(session.clone())?;
