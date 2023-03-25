@@ -1,4 +1,3 @@
-
 #include <cstdint>
 #include <cstdio>
 
@@ -39,6 +38,10 @@ void assert_failed(const char* condition, int line, const char* file) {
             "Condition `%s` failed in file `%s`, line %d",
             condition, file, line);
   while (true) {
+    // Remember that infinite loops without side-effects are UB! (and normally
+    // are plainly removed...)
+    volatile int a = 0;
+    static_cast<void>(a);
   }
 }
 }  // namespace Ditto
