@@ -129,23 +129,24 @@ impl ElfMetadata {
     pub fn from_elf_file(elf_path: &Path, disable_version_check: bool) -> Result<Self, Error> {
         let file_contents = fs::read(elf_path)?;
         let elf_file = ElfFile::parse(&file_contents[..])?;
+        if !disable_version_check {
+            let postform_version = elf_file
+                .section_by_name(".postform_version")
+                .ok_or(Error::MissingPostformVersion)?
+                .data()?;
 
-        let postform_version = elf_file
-            .section_by_name(".postform_version")
-            .ok_or(Error::MissingPostformVersion)?
-            .data()?;
-
-        let postform_version = String::from_utf8_lossy(
-            &postform_version[..postform_version
-                .iter()
-                .position(|&c| c == b'\0')
-                .unwrap_or(postform_version.len())],
-        );
-        if !disable_version_check && postform_version != POSTFORM_VERSION {
-            return Err(Error::MismatchedPostformVersions(
-                postform_version.to_string(),
-                POSTFORM_VERSION.to_string(),
-            ));
+            let postform_version = String::from_utf8_lossy(
+                &postform_version[..postform_version
+                    .iter()
+                    .position(|&c| c == b'\0')
+                    .unwrap_or(postform_version.len())],
+            );
+            if postform_version != POSTFORM_VERSION {
+                return Err(Error::MismatchedPostformVersions(
+                    postform_version.to_string(),
+                    POSTFORM_VERSION.to_string(),
+                ));
+            }
         }
         let interned_strings = elf_file
             .section_by_name(".interned_strings")
